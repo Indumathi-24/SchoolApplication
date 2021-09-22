@@ -4,23 +4,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.school.entity.HeadMasterLogin;
 import com.school.exception.DatabaseException;
+import com.school.exception.HeadMasterNotFoundException;
 import com.school.exception.ServiceException;
 import com.school.repository.HeadMasterLoginRepository;
+import com.school.repository.HeadMasterRepository;
 import com.school.service.HeadMasterLoginService;
 
 @Service
 public class HeadMasterLoginServiceImpl implements HeadMasterLoginService{
-	static Logger logger = Logger.getLogger("HeadMasterLoginService.class");
+	static Logger logger = Logger.getLogger("HeadMasterLoginServiceImpl.class");
+	@Autowired
+	private HeadMasterRepository headMasterRepository;
+	
 	@Autowired
 	private HeadMasterLoginRepository headMasterLoginRepository;
+	
 	public Long createLogin(Long id,HeadMasterLogin login) throws ServiceException
 	{
 		logger.debug("In Adding HeadMaster Login details...");
+		Long headMasterLoginId;
 		try {
-			return headMasterLoginRepository.createLogin(id,login);
-		} catch (DatabaseException e) {
+			headMasterRepository.checkHeadMaster(id);
+			headMasterLoginId = headMasterLoginRepository.createLogin(id,login);
+		} catch (DatabaseException | HeadMasterNotFoundException e) {
 			throw new ServiceException(e.getMessage());
 		}
+		return headMasterLoginId;
 	}
 	@Override
 	public HeadMasterLogin getLoginDetails(Long id) throws ServiceException  {

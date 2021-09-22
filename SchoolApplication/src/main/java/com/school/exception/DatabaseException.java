@@ -7,7 +7,4 @@ public class DatabaseException extends Exception {
        {
     	   super(msg);
        }
-
-	public DatabaseException(ResponseEntity responseEntity) {
-	}
 }

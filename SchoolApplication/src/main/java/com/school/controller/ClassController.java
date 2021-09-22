@@ -29,21 +29,21 @@ public class ClassController {
 	 private ClassService classService;
      
 	 @PostMapping
-     public ResponseEntity<Response> addClass(@RequestBody Class classEntity){
+     public ResponseEntity<Response> addClass(@RequestBody Class classDetail){
 		logger.debug("In Add Class Details Method");
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
 		Long roomNo=null;
 		try {
-			roomNo = classService.addClass(classEntity);
+			roomNo = classService.addClass(classDetail);
 			response.setData(roomNo);
 			response.setStatusText("Class Details Added");
 			response.setStatusCode(200);
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.setStatusCode(404);
 			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		
 		return responseBody;
@@ -60,11 +60,11 @@ public class ClassController {
 			response.setData(classList);
 			response.setStatusText("All Class Details Retrieved");
 			response.setStatusCode(200);
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			 response.setStatusCode(404);
 			 response.setStatusText(e.getMessage());
-			 responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			 responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		
 		 return responseBody;
@@ -84,28 +84,28 @@ public class ClassController {
 		} catch (ServiceException e) {
 			 response.setStatusCode(404);
 			 response.setStatusText(e.getMessage());
-			 responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			 responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		return responseBody; 
 	 }
 	 @PutMapping("/{roomNo}")
-	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@RequestBody Class classEntity) throws ClassNotFoundException
+	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@RequestBody Class classDetail) 
 	 {
 		 logger.debug("In Update Class Details Method");
 		 ResponseEntity<Response> responseBody=null;
 		 Response response = new Response();
 		 try {
-			 	Class classDetail = classService.updateClass(roomNo,classEntity);
-			 	response.setData(classDetail);
+			 	Class classDetails = classService.updateClass(roomNo,classDetail);
+			 	response.setData(classDetails);
 			 	response.setStatusText("Class Details Updated Successfully");
 				response.setStatusCode(200);
-			 	responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			 	responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 			} 
 		 catch (ServiceException e) 
 		    {
 			 response.setStatusCode(404);
 			 response.setStatusText(e.getMessage());
-			 responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			 responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 			}
 	    return responseBody; 
 	 }

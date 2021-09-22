@@ -15,12 +15,12 @@ import com.school.service.HeadMasterService;
 public class HeadMasterServiceImpl implements HeadMasterService{
 	static Logger logger = Logger.getLogger("HeadMasterService.class");
 	@Autowired
-	private HeadMasterRepository HeadMasterRepositoryImpl;
+	private HeadMasterRepository headMasterRepository;
 	@Override
 	public Long addHeadMasterDetails(HeadMaster headMasterDetails) throws ServiceException {
 		logger.debug("In Adding HeadMaster details...");
 		try {
-			return HeadMasterRepositoryImpl.addHeadMasterDetails(headMasterDetails);
+			return headMasterRepository.addHeadMasterDetails(headMasterDetails);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -29,7 +29,7 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 	public List<HeadMaster> getAllHeadMasterDetails() throws ServiceException {
 		logger.debug("In Retrieving All HeadMaster details...");
 		try {
-			return HeadMasterRepositoryImpl.getAllHeadMasterDetails();
+			return headMasterRepository.getAllHeadMasterDetails();
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -38,7 +38,7 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 	public HeadMaster updateHeadMasterDetails(Long id, HeadMaster headMasterDetails) throws ServiceException {
 		logger.debug("In Updating HeadMaster details...");
 		try {
-			return HeadMasterRepositoryImpl.updateHeadMasterDetails(id,headMasterDetails);
+			return headMasterRepository.updateHeadMasterDetails(id,headMasterDetails);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -47,7 +47,7 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 	public String deleteHeadMasterDetails(Long id) throws ServiceException {
 		logger.debug("In Deleting HeadMaster details...");
 		try {
-			return HeadMasterRepositoryImpl.deleteHeadMasterDetails(id);
+			return headMasterRepository.deleteHeadMasterDetails(id);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -56,7 +56,7 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 	public HeadMaster getParticularHeadMasterDetails(Long id) throws ServiceException {
 		logger.debug("In Retrieving HeadMaster details...");
 		try {
-			return HeadMasterRepositoryImpl.getParticularHeadMasterDetails(id);
+			return headMasterRepository.getParticularHeadMasterDetails(id);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}

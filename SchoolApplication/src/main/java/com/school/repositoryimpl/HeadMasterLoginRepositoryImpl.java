@@ -35,23 +35,19 @@ public class HeadMasterLoginRepositoryImpl implements HeadMasterLoginRepository{
 		Long headMasterLogin = null;
 		try {
 			logger.info("Adding HeadMaster Login Details...");
-			boolean status=headMasterRepository.checkHeadMaster(id);
-			if(status)
+			session=sessionFactory.getCurrentSession();
+			HeadMaster headMaster=new HeadMaster();
+			HeadMasterLogin login=new HeadMasterLogin();
+			headMaster.setId(id);
+			login.setHeadMaster(headMaster);
+			login.setPassword(loginDetail.getPassword());
+			headMasterLogin=(Long) session.save(login);
+			if(headMasterLogin !=null)
 			{
-				session=sessionFactory.getCurrentSession();
-				HeadMaster headMaster=new HeadMaster();
-				HeadMasterLogin login=new HeadMasterLogin();
-				headMaster.setId(id);
-				login.setHeadMaster(headMaster);
-				login.setPassword(loginDetail.getPassword());
-				headMasterLogin=(Long) session.save(login);
-				if(headMasterLogin !=null)
-				{
-					logger.info(" Adding HeadMaster Login Details is Completed...");
-				}
+				logger.info(" Adding HeadMaster Login Details is Completed...");
 			}
 		}
-		catch(HibernateException | HeadMasterNotFoundException e)
+		catch(HibernateException e)
 		{
 			logger.error("Error Occured while saving headMaster Login Details");
 			throw new DatabaseException(e.getMessage());
@@ -66,14 +62,11 @@ public class HeadMasterLoginRepositoryImpl implements HeadMasterLoginRepository{
 		Session session=null;
 		try {
 			logger.info("Retrieving HeadMaster Login Details...");
-			boolean status=headMasterRepository.checkHeadMaster(id);
-			if(status)
-			{
-				session=sessionFactory.getCurrentSession();
-				Query query=session.createQuery("from HeadMasterLogin t where t.headMaster.id=:staffId");
-				query.setParameter("staffId", id);
-				headMaster=(HeadMasterLogin) query.getSingleResult();
-			}
+			headMasterRepository.checkHeadMaster(id);
+			session=sessionFactory.getCurrentSession();
+			Query query=session.createQuery("from HeadMasterLogin t where t.headMaster.id=:staffId");
+			query.setParameter("staffId", id);
+			headMaster=(HeadMasterLogin) query.getSingleResult();
 			if(headMaster!=null)
 			{
 				logger.info("Retrieving HeadMaster Login Details is Completed");
@@ -93,19 +86,17 @@ public class HeadMasterLoginRepositoryImpl implements HeadMasterLoginRepository{
 		int result=0;
 		try {
 			logger.info("Updating HeadMaster Login Details...");
-			boolean status=headMasterRepository.checkHeadMaster(id);
-			if(status)
+			headMasterRepository.checkHeadMaster(id);
+			session=sessionFactory.getCurrentSession();
+			Query query=session.createQuery("Update HeadMasterLogin t set t.password=:password where t.headMaster.id=:hMId");
+			query.setParameter("hMId", id);
+			query.setParameter("password", login.getPassword());
+			result=query.executeUpdate();
+			if(result==1)
 			{
-				session=sessionFactory.getCurrentSession();
-				Query query=session.createQuery("Update HeadMasterLogin t set t.password=:password where t.headMaster.id=:hMId");
-				query.setParameter("hMId", id);
-				query.setParameter("password", login.getPassword());
-				result=query.executeUpdate();
-				if(result==1)
-				{
-					logger.info("Updating HeadMaster Login Details is Completed");
-				}
+				logger.info("Updating HeadMaster Login Details is Completed");
 			}
+			
 		   }
 			catch(HibernateException | HeadMasterNotFoundException e)
 			{

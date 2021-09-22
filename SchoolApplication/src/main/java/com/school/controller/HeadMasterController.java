@@ -31,21 +31,21 @@ public class HeadMasterController {
 	@Autowired
 	private HeadMasterService headMasterServiceImpl;
 	@PostMapping
-	public ResponseEntity<Response> addHeadMasterDetails(@RequestBody HeadMaster HeadMasterDetails)
+	public ResponseEntity<Response> addHeadMasterDetails(@RequestBody HeadMaster headMasterDetails)
 	{
 		logger.debug("In Adding HeadMaster details...");
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
 		try {
-			Long headMasterId = headMasterServiceImpl.addHeadMasterDetails(HeadMasterDetails);
+			Long headMasterId = headMasterServiceImpl.addHeadMasterDetails(headMasterDetails);
 			response.setData(headMasterId);
 			response.setStatusCode(200);
 			response.setStatusText("HeadMaster Details Added Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.setStatusCode(404);
 			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		return responseBody;
 	}
@@ -60,11 +60,11 @@ public class HeadMasterController {
 			response.setData(headMasterList);
 			response.setStatusCode(200);
 			response.setStatusText("All Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.setStatusCode(404);
 			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		return responseBody;
 	}
@@ -79,11 +79,11 @@ public class HeadMasterController {
 			response.setData(headMaster);
 			response.setStatusCode(200);
 			response.setStatusText("Particular Details Updated Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.setStatusCode(404);
 			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		return responseBody;
 	}
@@ -98,11 +98,11 @@ public class HeadMasterController {
 			response.setData(status);
 			response.setStatusCode(200);
 			response.setStatusText("Particular Details Deleted Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.setStatusCode(404);
 			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		return responseBody;
 	}
@@ -118,11 +118,11 @@ public class HeadMasterController {
 			response.setData(headMaster);
 			response.setStatusCode(200);
 			response.setStatusText("Particular HeadMaster Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response, new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response, new HttpHeaders(),HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.setStatusCode(404);
 			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
 		}
 		return responseBody;
 	}

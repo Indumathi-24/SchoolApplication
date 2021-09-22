@@ -1,8 +1,4 @@
 package com.school.service;
-
-import org.springframework.http.ResponseEntity;
-
-
 import com.school.entity.HeadMasterLogin;
 import com.school.exception.ServiceException;
 

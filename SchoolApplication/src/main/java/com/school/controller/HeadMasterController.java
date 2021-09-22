@@ -37,8 +37,8 @@ public class HeadMasterController {
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
 		try {
-			HeadMaster headMaster = headMasterServiceImpl.addHeadMasterDetails(HeadMasterDetails);
-			response.setData(headMaster);
+			Long headMasterId = headMasterServiceImpl.addHeadMasterDetails(HeadMasterDetails);
+			response.setData(headMasterId);
 			response.setStatusCode(200);
 			response.setStatusText("HeadMaster Details Added Successfully");
 			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);

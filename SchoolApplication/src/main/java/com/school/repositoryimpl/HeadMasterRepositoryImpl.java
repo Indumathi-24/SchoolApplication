@@ -41,18 +41,18 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 	}
 	
 	@Override
-	public HeadMaster addHeadMasterDetails(HeadMaster headMasterDetails) throws DatabaseException {
+	public Long addHeadMasterDetails(HeadMaster headMaster) throws DatabaseException {
 		logger.debug("In Adding HeadMaster Details...");
 		Session session=null;
-		HeadMaster headMaster =null;
+		Long headMasterId =null;
 		try
 		{
 			logger.info("Adding HeadMaster Details...");
 			session=sessionFactory.getCurrentSession();
-			Long count = (Long) session.save(headMasterDetails);
-			if(count>0)
+			headMasterId = (Long) session.save(headMaster);
+			if(headMasterId!=null)
 			{
-				headMaster = headMasterDetails;
+				logger.info("Adding HeadMaster Details is Completed");
 			}
 		}
 		catch(HibernateException e)
@@ -60,7 +60,7 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 			logger.debug("Error Occured While Saving Details ");
 			throw new DatabaseException(e.getMessage());	
 		}			
-		return headMaster;
+		return headMasterId;
 	}
 	@Override
 	public List<HeadMaster> getAllHeadMasterDetails() throws DatabaseException {
@@ -94,18 +94,18 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 		try {
 
 			logger.info("Updating HeadMaster Details...");
-		    boolean status =checkHeadMaster(id);
+		    checkHeadMaster(id);
 		    session=sessionFactory.getCurrentSession();
 		    session.find(HeadMaster.class, id);
-		    	HeadMaster newHeadMasterDetails=session.load(HeadMaster.class, id);
-		    	newHeadMasterDetails.setName(headMasterDetails.getName());
-		    	newHeadMasterDetails.setDateOfBirth(headMasterDetails.getDateOfBirth());
-		    	newHeadMasterDetails.setGender(headMasterDetails.getGender());
-		    	newHeadMasterDetails.setQualification(headMasterDetails.getQualification());
-		    	newHeadMasterDetails.setEmail(headMasterDetails.getEmail());
-		    	newHeadMasterDetails.setContactNo(headMasterDetails.getContactNo());
-		    	newHeadMasterDetails.setAddress(headMasterDetails.getAddress());
-		    	headMaster = (HeadMaster) session.merge(newHeadMasterDetails);
+		    HeadMaster newHeadMasterDetails=session.load(HeadMaster.class, id);
+		    newHeadMasterDetails.setName(headMasterDetails.getName());
+		    newHeadMasterDetails.setDateOfBirth(headMasterDetails.getDateOfBirth());
+		    newHeadMasterDetails.setGender(headMasterDetails.getGender());
+		    newHeadMasterDetails.setQualification(headMasterDetails.getQualification());
+		    newHeadMasterDetails.setEmail(headMasterDetails.getEmail());
+		    newHeadMasterDetails.setContactNo(headMasterDetails.getContactNo());
+		    newHeadMasterDetails.setAddress(headMasterDetails.getAddress());
+		    headMaster = (HeadMaster) session.merge(newHeadMasterDetails);
 		    if(headMaster!=null)
 			{
 				logger.info("Updating HeadMasterDetails is Completed...");
@@ -125,15 +125,13 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 		try
 		{
 			logger.info("Deleting HeadMaster Details...");
-			boolean statusMsg =checkHeadMaster(id);
-			if(statusMsg)
-			{
-				session=sessionFactory.getCurrentSession();
-				session.find(HeadMaster.class, id);
-				HeadMaster headMasterDetails=session.load(HeadMaster.class, id);
-				session.delete(headMasterDetails);
-				status = "Deleted Successfully";
-			}
+			checkHeadMaster(id);
+			session=sessionFactory.getCurrentSession();
+			session.find(HeadMaster.class, id);
+			HeadMaster headMasterDetails=session.load(HeadMaster.class, id);
+			session.delete(headMasterDetails);
+			status = "Deleted Successfully";
+			
 		}
 		catch(HibernateException | HeadMasterNotFoundException e)
 		{
@@ -150,14 +148,11 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 		try
 		{
 			logger.info("Retrieving HeadMaster Details...");
-			boolean status=checkHeadMaster(id);
-			if(status)
-			{
-				session=sessionFactory.getCurrentSession();
-				Query query=session.createQuery("FROM HeadMaster WHERE id=:headMasterId");
-				query.setParameter("headMasterId", id);
-				headMasterDetails = (HeadMaster) query.getSingleResult();
-			}
+			checkHeadMaster(id);
+			session=sessionFactory.getCurrentSession();
+			Query query=session.createQuery("FROM HeadMaster WHERE id=:headMasterId");
+			query.setParameter("headMasterId", id);
+			headMasterDetails = (HeadMaster) query.getSingleResult();
 			if(headMasterDetails!=null)
 			{
 				logger.info("Retrieving HeadMaster Details is Completed");

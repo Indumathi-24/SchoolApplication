@@ -9,7 +9,7 @@ import com.school.exception.HeadMasterNotFoundException;
 import com.school.exception.ServiceException;
 
 public interface HeadMasterService {
-	HeadMaster addHeadMasterDetails(HeadMaster headMasterDetails) throws ServiceException;
+	Long addHeadMasterDetails(HeadMaster headMasterDetails) throws ServiceException;
 	List<HeadMaster> getAllHeadMasterDetails() throws ServiceException;
 	HeadMaster updateHeadMasterDetails(Long id,HeadMaster headMasterDetails) throws  ServiceException;
 	String deleteHeadMasterDetails(Long id) throws ServiceException;

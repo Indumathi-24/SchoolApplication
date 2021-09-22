@@ -9,8 +9,8 @@ import com.school.exception.DatabaseException;
 import com.school.exception.HeadMasterNotFoundException;
 
 public interface HeadMasterRepository {
-	boolean checkHeadMaster(Long id) throws HeadMasterNotFoundException;
-	HeadMaster addHeadMasterDetails(HeadMaster headMasterDeteails) throws DatabaseException;
+	void checkHeadMaster(Long id) throws HeadMasterNotFoundException;
+	Long addHeadMasterDetails(HeadMaster headMasterDeteails) throws DatabaseException;
 	List<HeadMaster> getAllHeadMasterDetails() throws DatabaseException;
 	HeadMaster updateHeadMasterDetails(Long id,HeadMaster headMasterDetails) throws DatabaseException;
 	String deleteHeadMasterDetails(Long id) throws DatabaseException;

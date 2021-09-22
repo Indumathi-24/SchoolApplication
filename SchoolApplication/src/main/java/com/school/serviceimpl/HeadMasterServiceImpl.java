@@ -17,7 +17,7 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 	@Autowired
 	private HeadMasterRepository HeadMasterRepositoryImpl;
 	@Override
-	public HeadMaster addHeadMasterDetails(HeadMaster headMasterDetails) throws ServiceException {
+	public Long addHeadMasterDetails(HeadMaster headMasterDetails) throws ServiceException {
 		logger.debug("In Adding HeadMaster details...");
 		try {
 			return HeadMasterRepositoryImpl.addHeadMasterDetails(headMasterDetails);

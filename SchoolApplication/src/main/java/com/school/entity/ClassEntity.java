@@ -21,9 +21,9 @@ import lombok.Setter;
 public class ClassEntity implements Serializable{
     @Id
     private Long roomNo;
-    @Column()
+    @Column(nullable=false)
     private String standard;
-    @Column()
+    @Column(nullable=false)
     private String section;
 	@OneToMany(mappedBy="classEntity",fetch=FetchType.LAZY)
 	@JsonIgnore

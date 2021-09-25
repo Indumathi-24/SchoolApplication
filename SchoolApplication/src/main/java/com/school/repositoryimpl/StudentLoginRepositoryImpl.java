@@ -1,25 +1,20 @@
 package com.school.repositoryimpl;
 
 import org.apache.log4j.Logger;
+
 import org.hibernate.HibernateException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.school.controller.Response;
 import com.school.dto.StudentLogin;
-import com.school.entity.StudentEntity;
 import com.school.entity.StudentLoginEntity;
 import com.school.exception.DatabaseException;
-import com.school.exception.StudentNotFoundException;
-import com.school.repository.StudentRepository;
+import com.school.exception.NotFoundException;
+import com.school.exception.StudentLoginNotFoundException;
 import com.school.util.StudentLoginMapper;
 import com.school.repository.StudentLoginRepository;
 @Repository
@@ -28,6 +23,17 @@ public class StudentLoginRepositoryImpl implements StudentLoginRepository{
 	static Logger logger = Logger.getLogger("StudentLoginRepositoryImpl.class");
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	public void checkStudentLogin(Long id) throws StudentLoginNotFoundException  {
+		logger.debug("In Checking Student Login Id...");
+		Session session = sessionFactory.getCurrentSession();
+		Query<StudentLoginEntity> query = session.createQuery("FROM StudentLoginEntity WHERE autoId=:studentId");
+		query.setParameter("studentId", id);
+		StudentLoginEntity studentLoginDetail = query.uniqueResultOptional().orElse(null);
+		if (studentLoginDetail==null) {
+			throw new StudentLoginNotFoundException("Student Login Not Found with"+" "+id+"!");
+		}	
+	}
 
 	@Override
 	public Long createLogin(Long rollNo,StudentLogin login) throws DatabaseException {
@@ -99,5 +105,30 @@ public class StudentLoginRepositoryImpl implements StudentLoginRepository{
 			
 			return result;
 			
+	}
+	
+	@Override
+	public Long getParticularLoginDetails(Long autoId) throws DatabaseException, NotFoundException {
+		logger.debug("In Retrieving Student Login Id...");
+		Session session=null;
+		Long headMasterId =0l;
+		try {
+			logger.info("Retrieving Student Login Id...");
+			checkStudentLogin(autoId);
+			session=sessionFactory.getCurrentSession();
+			Query query=session.createQuery("Select student.rollNo from StudentLoginEntity  where autoId=:staffId");
+			query.setParameter("staffId", autoId);
+			headMasterId= (Long) query.uniqueResult();
+			if(headMasterId!=null)
+			{
+				logger.info("Retrieving HeadMaster Login Id is Completed");
+			}
+		}
+		catch(HibernateException e)
+		{
+			logger.error("Error Occured while Retrieving headMaster Login Id");
+			throw new DatabaseException(e.getMessage());
+		}
+		return headMasterId;
 	}
 }

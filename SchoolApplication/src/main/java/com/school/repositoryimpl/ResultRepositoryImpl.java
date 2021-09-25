@@ -1,6 +1,7 @@
 package com.school.repositoryimpl;
 
 import org.hibernate.Session;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,6 @@ import org.hibernate.HibernateException;
 
 import com.school.dto.Result;
 import com.school.entity.ResultEntity;
-import com.school.entity.StudentEntity;
 import com.school.exception.DatabaseException;
 import com.school.repository.ResultRepository;
 import com.school.util.ResultMapper;
@@ -29,7 +29,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 	{
 		logger.debug("In Adding Student's Result...");
 		Session session = null;
-		Long resultId = null;
+		Long resultId = 0l;
         try
         {
         	logger.info("Adding Student Results");

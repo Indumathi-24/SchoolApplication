@@ -54,5 +54,14 @@ public class TeacherLoginServiceImpl implements TeacherLoginService {
 			throw new ServiceException(e.getMessage());
 		}
 	}
-
+	@Override
+	public Long getParticularLoginDetails(Long autoId) throws ServiceException, NotFoundException
+	{
+		logger.debug("In Retrieving Teacher Login Id...");
+		try {
+			return teacherLoginRepository.getParticularLoginDetails(autoId);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
 }

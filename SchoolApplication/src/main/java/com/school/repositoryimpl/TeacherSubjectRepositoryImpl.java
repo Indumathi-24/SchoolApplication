@@ -1,63 +1,63 @@
 package com.school.repositoryimpl;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.school.dto.TeacherSubject;
-import com.school.entity.SubjectEntity;
-import com.school.entity.TeacherEntity;
 import com.school.entity.TeacherSubjectEntity;
 import com.school.exception.DatabaseException;
-import com.school.exception.SubjectNotFoundException;
-import com.school.exception.TeacherNotFoundException;
 import com.school.repository.TeacherSubjectRepository;
 import com.school.util.TeacherSubjectMapper;
 
 @Repository
 @Transactional
 public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
+	
+	static Logger logger = Logger.getLogger("TeacherSubjectRepositoryImpl.class");
 	@Autowired
 	private SessionFactory sessionFactory;
 	
 	@Override
 	public Long assignTeacherSubject(Long teacherId, String subjectCode,
 			TeacherSubject teacherSubjectDetails) throws DatabaseException  {
+		logger.debug("In Adding Teacher Subject Details");
 		Session session=null;
 		Long id;
 		try
 		{
+			logger.info("Adding Teacher Subject Details");
 			session=sessionFactory.getCurrentSession();
 			TeacherSubjectEntity teacherSubjectAssignDetails = TeacherSubjectMapper.mapTeacherSubject(teacherId, subjectCode,teacherSubjectDetails);
 			id = (Long) session.save(teacherSubjectAssignDetails);
 			if(id!=null)
 			{
-				
+				logger.info("Adding Teacher Subject Details is Completed");
 			}
 			
 		}
 		catch(HibernateException e)
 		{
+			logger.error("Error Occured while Adding TeacherSubject Details");
 			throw new DatabaseException(e.getMessage());
 		}
 				
 		return id;
 	}
 	@Override
-	public Long updateTeacherSubjectAssign(Long teacherId, String subjectCode,
+	public Integer updateTeacherSubjectAssign(Long teacherId, String subjectCode,
 		TeacherSubject teacherSubjectDetails) throws DatabaseException {
 		
-		
+		logger.debug("In Updating Teacher Subject Details");
 		Session session=null;
-		long countOfUpdation;
+		Integer countOfUpdation;
 		try
 		{
+			logger.info("Updating Teacher Subject Details");
 			session=sessionFactory.getCurrentSession();
 			Query updateByTeacherId=session.createQuery("UPDATE TeacherSubjectEntity SET subjectCode=:code WHERE teacherId=:staffId");
 			updateByTeacherId.setParameter("code", subjectCode);
@@ -65,34 +65,38 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
 			countOfUpdation=updateByTeacherId.executeUpdate();
 			if(countOfUpdation>0)
 			{
-			
+				logger.info("Updating Teacher Subject Details is Completed");
 			}
 		}
 		catch(HibernateException e)
 		{
+			logger.error("Error Occured while Updating TeacherSubject Details");
 			throw new DatabaseException(e.getMessage());
 		}
 		return countOfUpdation;
 	}
 	@Override
-	public Long deleteTeacherSubjectAssign(Long teacherId, String subjectCode)
+	public Integer deleteTeacherSubjectAssign(Long teacherId, String subjectCode)
 			throws DatabaseException {
+		logger.debug("In Deleting Teacher Subject Details");
 		Session session=null;
-		long count;
+		Integer count;
 		try
 		{
+			logger.info("Deleting Teacher Subject Details");
 			session=sessionFactory.getCurrentSession();
-			Query query=session.createQuery("DELETE FROM TeacherSubject WHERE teacherId=:staffId AND subjectCode=:code");
+			Query query=session.createQuery("DELETE FROM TeacherSubjectEntity WHERE teacherId=:staffId AND subjectCode=:code");
 			query.setParameter("staffId",teacherId );
 			query.setParameter("code",subjectCode);
 			count=query.executeUpdate();
 			if(count>0)
 			{
-				
+				logger.debug("Deleting Teacher Subject Details is Completed");
 			}
 		}
 		catch(HibernateException e)
 		{
+			logger.error("Error Occured while Deleting TeacherSubject Details");
 			throw new DatabaseException(e.getMessage());
 		}
 		return count;

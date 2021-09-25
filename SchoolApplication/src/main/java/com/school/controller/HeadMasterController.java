@@ -1,12 +1,17 @@
 package com.school.controller;
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,86 +21,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.school.dto.HeadMaster;
 import com.school.entity.HeadMasterEntity;
-import com.school.exception.HeadMasterNotFoundException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.HeadMasterService;
+import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/headMaster")
 @CrossOrigin("http://localhost:4200")
 public class HeadMasterController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if(e instanceof HeadMasterNotFoundException)
-		{
-			logger.error("Error Occured while Processing HeadMaster Details,Enter Valid Id");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Processing HeadMaster Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
+	
 	static Logger logger = Logger.getLogger("HeadMasterController.class");
 	@Autowired
 	private HeadMasterService headMasterServiceImpl;
 	@PostMapping
-	public ResponseEntity<Response> addHeadMasterDetails(@RequestBody HeadMaster headMaster)
+	public ResponseEntity<Response> addHeadMasterDetails(@Valid @RequestBody HeadMaster headMaster)
 	{
 		logger.debug("In Adding HeadMaster details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		Long headMasterId =0l;
 		try {
-			Long headMasterId = headMasterServiceImpl.addHeadMasterDetails(headMaster);
-			response.setData(headMasterId);
-			response.setStatusCode(200);
-			response.setStatusText("HeadMaster Details Added Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			headMasterId = headMasterServiceImpl.addHeadMasterDetails(headMaster);
+			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Added Succesfully", headMasterId);
 		} catch (ServiceException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMasterId);
 		}
 		return responseBody;
 	}
+	
 	@GetMapping
 	public ResponseEntity<Response> getAllHeadMasterDetails()
 	{
 		logger.debug("In Retrieving All HeadMaster details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		List<HeadMasterEntity> headMasterList = null;
 		try {
-			List<HeadMasterEntity> headMasterList = headMasterServiceImpl.getAllHeadMasterDetails();
-			response.setData(headMasterList);
-			response.setStatusCode(200);
-			response.setStatusText("All Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+		    headMasterList = headMasterServiceImpl.getAllHeadMasterDetails();
+			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Retrieved Succesfully", headMasterList);
 		} catch (ServiceException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMasterList);
 		}
 		return responseBody;
 	}
+	
 	@PutMapping("/{id}")
-	public ResponseEntity<Response> updateHeadMasterDetails(@PathVariable("id") Long id,@RequestBody HeadMaster headMasterDetails)
+	public ResponseEntity<Response> updateHeadMasterDetails(@PathVariable("id") Long id,@Valid @RequestBody HeadMaster headMasterDetails)
 	{
 		logger.debug("In Updating HeadMaster details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		HeadMasterEntity headMaster =null;
 		try {
-			HeadMasterEntity headMaster = headMasterServiceImpl.updateHeadMasterDetails(id,headMasterDetails);
-			response.setData(headMaster);
-			response.setStatusCode(200);
-			response.setStatusText("Particular Details Updated Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			headMaster = headMasterServiceImpl.updateHeadMasterDetails(id,headMasterDetails);
+			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Updated Succesfully", headMaster);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
 		}
 		return responseBody;
 	}
@@ -105,15 +86,14 @@ public class HeadMasterController {
 	{
 		logger.debug("In Deleting HeadMaster details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		HeadMasterEntity headMaster = null;
 		try {
-			HeadMasterEntity headMaster =  headMasterServiceImpl.deleteHeadMasterDetails(id);
-			response.setData(headMaster);
-			response.setStatusCode(200);
-			response.setStatusText("Particular Details Deleted Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			headMaster =  headMasterServiceImpl.deleteHeadMasterDetails(id);
+			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Deleted Succesfully", headMaster);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
 		}
 		return responseBody;
 	}
@@ -123,16 +103,26 @@ public class HeadMasterController {
 	{
 		logger.debug("In Retrieving HeadMaster details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		HeadMasterEntity headMaster = null;
 		try {
-			HeadMasterEntity headMaster = headMasterServiceImpl.getParticularHeadMasterDetails(id);
-			response.setData(headMaster);
-			response.setStatusCode(200);
-			response.setStatusText("Particular HeadMaster Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response, new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			headMaster = headMasterServiceImpl.getParticularHeadMasterDetails(id);
+			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Retrieved Succesfully", headMaster);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
 		}
 		return responseBody;
 	}
+	
+	 @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
+	 }
 }

@@ -2,15 +2,19 @@ package com.school.controller;
 import java.util.ArrayList;
 
 
+
 import java.util.List;
-import com.school.exception.StudentNotFoundException;
+
+import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,54 +22,37 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.school.exception.ClassNotFoundException;
 import com.school.dto.Student;
 import com.school.entity.StudentEntity;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.StudentService;
+import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/student")
 @CrossOrigin("http://localhost:4200")
 public class StudentController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if(e instanceof ClassNotFoundException | e instanceof StudentNotFoundException)
-		{
-			logger.error("Error Occured while Processing Student Details,Enter Valid Id");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Processing Student Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
+	
 	static Logger logger = Logger.getLogger("StudentController.class");
 	@Autowired 
 	private StudentService studentService;
 	@PostMapping("/{roomNo}")
-	public ResponseEntity<Response> addStudent(@PathVariable("roomNo")Long roomNo,@RequestBody Student student){
+	public ResponseEntity<Response> addStudent(@PathVariable("roomNo")Long roomNo,@Valid @RequestBody Student student){
 		logger.debug("In Adding Student details...");
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
-		Long studentId;
+		Long studentId = 0l;
 		try {
 			studentId = studentService.addStudent(roomNo,student);
 			response.setData(studentId);
 			response.setStatusCode(200);
 			response.setStatusText("Student Details Saved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Student Details Saved Successfully",studentId);
+		} catch (ServiceException  e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentId);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentId);
 		}
 		return responseBody;
 	}
@@ -75,17 +62,15 @@ public class StudentController {
 	{
 		logger.debug("In Retrieving All Student details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
 		List<StudentEntity> studentList = new ArrayList<>();
 		try {
 			studentList=studentService.getAllStudent(roomNo);
-			response.setData(studentList);
-			response.setStatusCode(200);
-			response.setStatusText("Student Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = ResponseUtil.getResponse(200,"Student Details Retrieved Successfully",studentList);
 		} 
-		catch (ServiceException | NotFoundException e) {
-				responseBody = errorStatement(e);
+		catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentList);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentList);
 		}
 		return responseBody;
 	}
@@ -95,35 +80,31 @@ public class StudentController {
      {
 		logger.debug("In Retrieving Student details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
 		StudentEntity student = new StudentEntity();
 		try {
 			student = studentService.getParticularStudent(roomNo,rollNo);
-			response.setData(student);
-			response.setStatusCode(200);
-			response.setStatusText("Particular Student Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = ResponseUtil.getResponse(200,"Particular Student Details Retrieved Successfully",student);
 		} 
-		catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+		catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),student);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),student);
 		}
 		return responseBody;
 	 }
 	
 	@PutMapping("/{roomNo}/{rollNo}")
-	public ResponseEntity<Response> updateStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo,@RequestBody Student student){
+	public ResponseEntity<Response> updateStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo,@Valid @RequestBody Student student){
 		logger.debug("In Updating Student details...");
 		ResponseEntity<Response> responseBody=null;
-		Response response = new Response();
 		StudentEntity studentDetail = new StudentEntity();
 		try {
 			studentDetail=studentService.updateStudent(roomNo,rollNo,student);
-			response.setData(studentDetail);
-			response.setStatusCode(200);
-			response.setStatusText("Student Details Updated Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Student Details Updated Successfully",studentDetail);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentDetail);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentDetail);
 		}
 		return responseBody;
 	}
@@ -132,18 +113,27 @@ public class StudentController {
 	public ResponseEntity<Response> deleteStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo) {
 		logger.debug("In Deleting Student details...");
 		ResponseEntity<Response> responseBody=null;
-		Response response = new Response();
 		StudentEntity studentDetail = new StudentEntity();
 		try {
 			studentDetail=studentService.deleteStudent(roomNo,rollNo);
-			response.setData(studentDetail);
-			response.setStatusCode(200);
-			response.setStatusText("Student Details Deleted Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = ResponseUtil.getResponse(200,"Student Details Deleted Successfully",studentDetail);
 		}
-		catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+		catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentDetail);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentDetail);
 		}
 		return responseBody;
 	}
+	
+	 @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
+	 }
 }

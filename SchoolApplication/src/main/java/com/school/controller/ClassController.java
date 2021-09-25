@@ -1,13 +1,19 @@
 package com.school.controller;
 import com.school.service.ClassService;
 
+
 import java.util.List;
+
+import javax.validation.Valid;
+import com.school.util.ResponseUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,51 +24,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.school.dto.Class;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.ClassNotFoundException;
 import com.school.entity.ClassEntity;
 
 @RestController
 @RequestMapping("/api/class")
 @CrossOrigin("http://localhost:4200")
 public class ClassController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if(e instanceof ClassNotFoundException)
-		{
-			logger.error("Error Occured while Processing Class Details,Enter Valid Id");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Processing Class Login Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
 	 static Logger logger = Logger.getLogger("ClassController.class");
 	 @Autowired
 	 private ClassService classService;
      
 	 @PostMapping
-     public ResponseEntity<Response> addClass(@RequestBody Class classDetail){
+     public ResponseEntity<Response> addClass(@Valid @RequestBody Class classDetail){
 		logger.debug("In Add Class Details Method");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		Long roomNo=null;
+		Long roomNo=0l;
 		try {
 			roomNo = classService.addClass(classDetail);
-			response.setData(roomNo);
-			response.setStatusText("Class Details Added");
-			response.setStatusCode(200);
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = ResponseUtil.getResponse(200,"Class Details Added Successfully",roomNo);
 		} catch (ServiceException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
 		}
 		
 		return responseBody;
@@ -72,16 +53,12 @@ public class ClassController {
 	 {
 		 logger.debug("In Get All Class Details Method");
 		 ResponseEntity<Response> responseBody = null;
-		 Response response = new Response();
-		 List<ClassEntity> classList;
+		 List<ClassEntity> classList=null;
 		try {
 			classList = classService.getAllClass();
-			response.setData(classList);
-			response.setStatusText("All Class Details Retrieved");
-			response.setStatusCode(200);
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = ResponseUtil.getResponse(200,"Class Details Retrieved Successfully",classList);
 		} catch (ServiceException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),classList);
 		}
 		
 		 return responseBody;
@@ -91,35 +68,44 @@ public class ClassController {
 	 public ResponseEntity<Response> getParticularClass(@PathVariable("roomNo") Long roomNo){
 		 logger.debug("In Get Class Details Method");
 		 ResponseEntity<Response> responseBody=null;
-		 Response response =new Response();
+		 ClassEntity classDetail = null;
 		 try {
-			  ClassEntity classDetail= classService.getParticularClass(roomNo);
-			 response.setData(classDetail);
-			 response.setStatusText("Particular Class Details Retrieved");
-			 response.setStatusCode(200);
-			 responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			 classDetail= classService.getParticularClass(roomNo);
+			 responseBody = ResponseUtil.getResponse(200,"Particular Class Details Retrieved",classDetail);
+		} catch (ServiceException  e) {
+			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),classDetail);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),classDetail);
 		}
 		return responseBody; 
 	 }
 	 @PutMapping("/{roomNo}")
-	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@RequestBody Class classDetail) 
+	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@Valid @RequestBody Class classDetail) 
 	 {
 		 logger.debug("In Update Class Details Method");
 		 ResponseEntity<Response> responseBody=null;
-		 Response response = new Response();
+		 ClassEntity classDetails = null;
 		 try {
-			 	ClassEntity classDetails = classService.updateClass(roomNo,classDetail);
-			 	response.setData(classDetails);
-			 	response.setStatusText("Class Details Updated Successfully");
-				response.setStatusCode(200);
-			 	responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			 	classDetails = classService.updateClass(roomNo,classDetail);
+			 	responseBody = ResponseUtil.getResponse(200,"Class Details Updated",classDetails);
 			} 
-		 catch (ServiceException | NotFoundException e) 
+		 catch (ServiceException  e) 
 		    {
-			 responseBody = errorStatement(e);
-			}
+			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),classDetails);
+			} catch (NotFoundException e) {
+				responseBody = ResponseUtil.getResponse(404,e.getMessage(),classDetails);
+		}
 	    return responseBody; 
+	 }
+	 
+	 @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
 	 }
 }

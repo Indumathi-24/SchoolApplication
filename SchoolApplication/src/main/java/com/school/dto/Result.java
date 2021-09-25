@@ -1,12 +1,17 @@
 package com.school.dto;
+import javax.validation.constraints.NotNull;
+
 import lombok.NoArgsConstructor;
 
 
 @NoArgsConstructor
 public class Result {
 	private Long resultId;
+	@NotNull
 	private Long term1;
+	@NotNull
 	private Long term2;
+	@NotNull
 	private Long term3;
 	private String result;
 	public Long getResultId() {

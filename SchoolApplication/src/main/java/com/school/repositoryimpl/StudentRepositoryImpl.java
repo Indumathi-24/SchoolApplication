@@ -54,7 +54,7 @@ public class StudentRepositoryImpl implements StudentRepository{
   public Long addStudent(Long roomNo, Student student) throws DatabaseException{ 
 	     logger.debug("In Adding Student Details");
 		 Session session=null;
-		 Long studentId = null;
+		 Long studentId = 0l;
 		 try
 		 {
 			 logger.info("Adding Student Details...");

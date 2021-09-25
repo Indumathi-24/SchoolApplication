@@ -13,9 +13,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.school.dto.TeacherLogin;
+import com.school.entity.StudentLoginEntity;
 import com.school.entity.TeacherEntity;
 import com.school.entity.TeacherLoginEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
+import com.school.exception.StudentLoginNotFoundException;
+import com.school.exception.TeacherLoginNotFoundException;
 import com.school.exception.TeacherNotFoundException;
 import com.school.repository.TeacherLoginRepository;
 import com.school.repository.TeacherRepository;
@@ -103,6 +107,40 @@ public class TeacherLoginRepositoryImpl implements TeacherLoginRepository{
 			
 	}
 	
-
+	@Override
+	public Long getParticularLoginDetails(Long autoId) throws DatabaseException, NotFoundException {
+		logger.debug("In Retrieving Teacher Login Id...");
+		Session session=null;
+		Long teacherId =0l;
+		try {
+			logger.info("Retrieving Teacher Login Id...");
+			checkTeacherLogin(autoId);
+			session=sessionFactory.getCurrentSession();
+			Query query=session.createQuery("Select userId.id from TeacherLoginEntity where autoId=:staffId");
+			query.setParameter("staffId", autoId);
+			teacherId= (Long) query.uniqueResult();
+			if(teacherId!=null)
+			{
+				logger.info("Retrieving HeadMaster Login Id is Completed");
+			}
+		}
+		catch(HibernateException e)
+		{
+			logger.error("Error Occured while Retrieving headMaster Login Id");
+			throw new DatabaseException(e.getMessage());
+		}
+		return teacherId;
+	}
+	public void checkTeacherLogin(Long autoId) throws NotFoundException {
+		logger.debug("In Checking Student Login Id...");
+		Session session = sessionFactory.getCurrentSession();
+		Query<TeacherLoginEntity> query = session.createQuery("FROM TeacherLoginEntity WHERE autoId=:teacherId");
+		query.setParameter("teacherId", autoId);
+		TeacherLoginEntity teacherLoginDetail = query.uniqueResultOptional().orElse(null);
+		if (teacherLoginDetail==null) {
+			throw new TeacherLoginNotFoundException("Teacher Login Not Found with"+" "+autoId+"!");
+		}	
+		
+	}
 	
 }

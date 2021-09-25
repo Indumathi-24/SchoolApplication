@@ -1,16 +1,13 @@
 package com.school.serviceimpl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.school.dto.TeacherSubject;
-import com.school.entity.TeacherSubjectEntity;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.SubjectNotFoundException;
-import com.school.exception.TeacherNotFoundException;
 import com.school.repository.TeacherSubjectRepository;
 import com.school.repositoryimpl.SubjectRepositoryImpl;
 import com.school.repositoryimpl.TeacherRepositoryImpl;
@@ -18,6 +15,9 @@ import com.school.service.TeacherSubjectService;
 
 @Service
 public class TeacherSubjectServiceImpl implements TeacherSubjectService{
+	
+	static Logger logger = Logger.getLogger("TeacherSubjectServiceImpl.class");
+	
 	@Autowired
 	private TeacherSubjectRepository teacherSubjectRepositoryImpl;
 	@Autowired
@@ -29,7 +29,7 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 	@Override
 	public Long assignTeacherSubject(Long teacherId, String subjectCode,
 			TeacherSubject teacherSubjectDetails) throws ServiceException, NotFoundException {
-		
+		logger.debug("In Adding TeacherSubject Details");
 		try {
 			teacherRepositoryImpl.checkTeacher(teacherId);
 			subjectRepositoryImpl.checkSubjectCode(subjectCode);
@@ -39,9 +39,9 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 		}
 	}
 	@Override
-	public Long updateTeacherSubjectAssign(Long teacherId, String subjectCode,
+	public Integer updateTeacherSubjectAssign(Long teacherId, String subjectCode,
 			TeacherSubject teacherSubjectDetails) throws ServiceException, NotFoundException  {
-	
+		logger.debug("In Updating TeacherSubject Details");
 		try {
 			teacherRepositoryImpl.checkTeacher(teacherId);
 			subjectRepositoryImpl.checkSubjectCode(subjectCode);
@@ -51,8 +51,8 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 		}
 	}
 	@Override
-	public Long deleteTeacherSubjectAssign(Long teacherId, String subjectCode) throws ServiceException, NotFoundException {
-		
+	public Integer deleteTeacherSubjectAssign(Long teacherId, String subjectCode) throws ServiceException, NotFoundException {
+		logger.debug("In Deleting TeacherSubject Details");
 		try {
 			teacherRepositoryImpl.checkTeacher(teacherId);
 			subjectRepositoryImpl.checkSubjectCode(subjectCode);
@@ -61,5 +61,7 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 			throw new ServiceException(e.getMessage());
 		}
 	}
+	
+	
 
 }

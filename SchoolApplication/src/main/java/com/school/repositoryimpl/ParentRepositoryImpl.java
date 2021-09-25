@@ -50,7 +50,7 @@ public class ParentRepositoryImpl implements ParentRepository{
        public Long addParent(Long rollNo,Parent parent) throws DatabaseException{
     	   logger.debug("In Adding Parent details...");
     	   Session session = null;
-    	   Long parentId = null;
+    	   Long parentId = 0l;
     	   try
     	   {
     		   logger.info("Adding Parent Details...");

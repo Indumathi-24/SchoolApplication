@@ -24,7 +24,7 @@ import lombok.Setter;
 @Table(name="StudentLogin")
 public class StudentLoginEntity {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long autoId;
 	@NotNull
 	@Column(nullable=false)

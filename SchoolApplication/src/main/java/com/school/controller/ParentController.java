@@ -1,11 +1,16 @@
 package com.school.controller;
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,33 +22,12 @@ import com.school.dto.Parent;
 import com.school.entity.ParentEntity;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.StudentNotFoundException;
-import com.school.exception.ParentNotFoundException;
 import com.school.service.ParentService;
+import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/parent")
 public class ParentController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if(e instanceof StudentNotFoundException | e instanceof ParentNotFoundException)
-		{
-			logger.error("Error Occured while Processing Parent Details,Enter Valid Id");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Processing Parent Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
 	
 	  static Logger logger = Logger.getLogger("ParentController.class");
 	  
@@ -51,20 +35,19 @@ public class ParentController {
       private ParentService parentService;
       
       @PostMapping("/{rollNo}")
-      public ResponseEntity<Response> addParent(@PathVariable Long rollNo,@RequestBody Parent parent) {
+      public ResponseEntity<Response> addParent(@PathVariable Long rollNo,@Valid @RequestBody Parent parent) {
     	  logger.debug("In Adding Parent details...");
     	  ResponseEntity<Response> responseBody=null;
-    	  Response response = new Response();
+    	  Long parentId = null;
     	  try {
-    		  Long parentId= parentService.addParent(rollNo,parent);
-    		  response.setData(parentId);
-  			  response.setStatusCode(200);
-  			  response.setStatusText("Parent Details Added Successfully");
-  			  responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+    		  parentId= parentService.addParent(rollNo,parent);
+  			  responseBody = ResponseUtil.getResponse(200,"Parent Details Added Successfully",parentId);
     	  } 
-    	  catch (ServiceException | NotFoundException e) {
-    		  responseBody = errorStatement(e);
-    	  }
+    	  catch (ServiceException e) {
+    		  responseBody = ResponseUtil.getResponse(500,e.getMessage(), parentId);
+    	  } catch (NotFoundException e) {
+    		  responseBody = ResponseUtil.getResponse(404,e.getMessage(), parentId);
+		}
     	  return responseBody;
       	}
       
@@ -72,35 +55,34 @@ public class ParentController {
       public ResponseEntity<Response> getParent(@PathVariable Long rollNo)  {
     	  logger.debug("In Retrieving Parent details...");
     	  ResponseEntity<Response> responseBody=null;
-    	  Response response = new Response();
+    	  List<ParentEntity> parent = null;
     	  try {
-			List<ParentEntity> parent = parentService.getParent(rollNo);
-			response.setData(parent);
-			response.setStatusCode(200);
-			response.setStatusText("Parent Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			parent = parentService.getParent(rollNo);
+			responseBody = ResponseUtil.getResponse(200,"Parent Details Retrieved Successfully", parent);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), parent);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(), parent);
 		}
     	  return responseBody;
       }
       
       @PutMapping("/{id}")
-      public ResponseEntity<Response> updateParent(@PathVariable Long id,@RequestBody Parent parent)  
+      public ResponseEntity<Response> updateParent(@PathVariable Long id,@Valid @RequestBody Parent parent)  
       {
     	  logger.debug("In Updating Parent details...");
     	  ResponseEntity<Response> responseBody = null;
-    	  Response response = new Response();
+    	  ParentEntity parentDetail = null;
     	  try {
-			ParentEntity parentDetail = parentService.updateParent(id,parent);
-			response.setData(parentDetail);
-			response.setStatusCode(200);
-			response.setStatusText("Parent Details Updated Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+			parentDetail = parentService.updateParent(id,parent);
+			responseBody = ResponseUtil.getResponse(200,"Parent Details Updated Successfully", parentDetail);
     	  	}
-    	  catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
-    	  	}
+    	  catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), parentDetail);
+    	  	} 
+    	  catch (NotFoundException e) {
+    	  	responseBody = ResponseUtil.getResponse(404,e.getMessage(), parentDetail);
+		}
     	  return responseBody;
       }
       
@@ -109,18 +91,29 @@ public class ParentController {
       {
     	  logger.debug("In Deleting Parent details...");
     	  ResponseEntity<Response> responseBody=null;
-    	  Response response = new Response();
+    	  ParentEntity parent = null;
     	  try {
-    		  ParentEntity parent = parentService.deleteParent(id);
-    		  response.setData(parent);
-    		  response.setStatusCode(200);
-    		  response.setStatusText("Parent Details Deleted Successfully");
-    		  responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+    		  parent = parentService.deleteParent(id);
+    		  responseBody = ResponseUtil.getResponse(200,"Parent Details Deleted Successfully", parent);
     	  	} 
-    	  catch (ServiceException | NotFoundException e) {
-    		  responseBody = errorStatement(e);
+    	  catch (ServiceException e) {
+    		  responseBody = ResponseUtil.getResponse(500,e.getMessage(), parent);  
     	  	}
+    	  catch (NotFoundException e) {
+    	  		responseBody = ResponseUtil.getResponse(404,e.getMessage(), parent);
+		}
     	  return responseBody;
       }
+      
+      @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
+	 }
       
 }

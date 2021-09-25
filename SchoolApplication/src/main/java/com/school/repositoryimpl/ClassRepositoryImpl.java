@@ -40,7 +40,7 @@ public class ClassRepositoryImpl implements ClassRepository {
 	public Long addClass(Class classDetail) throws DatabaseException {
 		logger.debug("In Add Class Details Method");
 		Session session=null;
-		Long roomNo=null;
+		Long roomNo = 0l;
 		try
 		{
 			logger.info("In Add Class Details Method");

@@ -4,19 +4,14 @@ import java.util.ArrayList;
 
 
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.school.dto.Teacher;
 import com.school.entity.TeacherEntity;
 import com.school.exception.DatabaseException;
@@ -24,6 +19,7 @@ import com.school.exception.NotFoundException;
 import com.school.exception.TeacherNotFoundException;
 import com.school.repository.TeacherRepository;
 import com.school.util.TeacherMapper;
+
 @Repository
 @Transactional
 public class TeacherRepositoryImpl implements TeacherRepository{

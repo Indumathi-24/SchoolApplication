@@ -9,5 +9,5 @@ public interface HeadMasterLoginService {
 	Long createLogin( Long id,HeadMasterLogin login) throws ServiceException, NotFoundException;
     HeadMasterLoginEntity getLoginDetails(Long id) throws ServiceException, NotFoundException;
 	Integer updateLoginDetails(Long userName,HeadMasterLogin login) throws ServiceException, NotFoundException;
-	Long getParticularLoginDetails(Long autoId) throws ServiceException;
+	Long getParticularLoginDetails(Long autoId) throws ServiceException, NotFoundException;
 }

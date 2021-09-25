@@ -57,7 +57,7 @@ public class HeadMasterLoginServiceImpl implements HeadMasterLoginService{
 		}
 	}
 	@Override
-	public Long getParticularLoginDetails(Long autoId) throws ServiceException {
+	public Long getParticularLoginDetails(Long autoId) throws ServiceException, NotFoundException {
 		logger.debug("In Retrieving HeadMaster Login Id...");
 		try {
 			return headMasterLoginRepository.getParticularLoginDetails(autoId);

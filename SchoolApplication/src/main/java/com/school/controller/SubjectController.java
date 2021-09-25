@@ -1,14 +1,11 @@
 package com.school.controller;
-import com.school.exception.ClassNotFoundException;
+
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.SubjectNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,30 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.school.dto.Subject;
 import com.school.entity.SubjectEntity;
 import com.school.service.SubjectService;
+import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/subject")
 public class SubjectController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if(e instanceof ClassNotFoundException | e instanceof SubjectNotFoundException)
-		{
-			logger.error("Error Occured while Processing Subject Details,Enter Valid Code");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Processing Subject Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
 	
 	@Autowired 
     private SubjectService subjectService;
@@ -56,16 +34,14 @@ public class SubjectController {
 	{
 		logger.debug("In Adding Subject Details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
 		String subjectCode = null;
 		try {
 			 subjectCode = subjectService.addSubject(roomNo,subject);
-			 response.setData(subjectCode);
-			 response.setStatusCode(200);
-			 response.setStatusText("Subject Details Added Successfully");
-			 responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-		     responseBody = errorStatement(e);
+			 responseBody = ResponseUtil.getResponse(200,"Subject Details Added Successfully",subjectCode);
+		} catch (ServiceException e) {
+		     responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectCode);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectCode);
 		}
 		return responseBody;
 	}
@@ -74,16 +50,14 @@ public class SubjectController {
 	{
 		logger.debug("In Retrieving All Subject Details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
 		List<SubjectEntity> subjectEntity = new ArrayList<SubjectEntity>();
 		try {
 			subjectEntity = subjectService.getAllSubject(roomNo);
-			response.setData(subjectEntity);
-			response.setStatusCode(200);
-			response.setStatusText("Subject Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
 		return responseBody;
 	}
@@ -92,16 +66,14 @@ public class SubjectController {
      {
 		logger.debug("In Retrieving Subject Details...");
 		ResponseEntity<Response> responseBody=null;
-		Response response = new Response();
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
 			subjectEntity = subjectService.getParticularSubject(roomNo,code);
-			response.setData(subjectEntity);
-			response.setStatusCode(200);
-			response.setStatusText("Subject Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
+		} catch (ServiceException  e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
 		return responseBody;
 	 }
@@ -110,16 +82,14 @@ public class SubjectController {
 	public ResponseEntity<Response> updateSubject(@PathVariable("roomNo") Long roomNo,@PathVariable("code") String code,@RequestBody Subject subject) {
 		logger.debug("In Updating Subject Details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
 			subjectEntity = subjectService.updateSubject(roomNo,code,subject);
-			response.setData(subjectEntity);
-			response.setStatusCode(200);
-			response.setStatusText("Subject Details Updated Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Subject Details Updated Successfully",subjectEntity);
+		} catch (ServiceException  e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
 		return responseBody;
 	}
@@ -128,16 +98,14 @@ public class SubjectController {
 	public ResponseEntity<Response> deleteSubject(@PathVariable("roomNo") Long roomNo,@PathVariable("code") String code)  {
 		logger.debug("In Deleting Subject Details...");
 		ResponseEntity<Response> responseBody=null;
-		Response response = new Response();
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
 			subjectEntity= subjectService.deleteSubject(roomNo,code);
-			response.setData(subjectEntity);
-			response.setStatusCode(200);
-			response.setStatusText("Subject Details Deleted Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Subject Details Deleted Successfully",subjectEntity);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
 		return responseBody;
 	}

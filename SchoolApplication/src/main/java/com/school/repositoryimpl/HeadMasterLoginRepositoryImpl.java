@@ -2,6 +2,7 @@ package com.school.repositoryimpl;
 
 import org.apache.log4j.Logger;
 
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.school.dto.HeadMasterLogin;
 import com.school.entity.HeadMasterLoginEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.HeadMasterLoginNotFoundException;
+import com.school.exception.NotFoundException;
 import com.school.repository.HeadMasterLoginRepository;
 import com.school.util.HeadMasterLoginMapper;
 
@@ -22,10 +25,21 @@ public class HeadMasterLoginRepositoryImpl implements HeadMasterLoginRepository{
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	public void checkHeadMasterLogin(Long id) throws HeadMasterLoginNotFoundException  {
+		logger.debug("In Checking HeadMaster Id...");
+		Session session = sessionFactory.getCurrentSession();
+		Query<HeadMasterLoginEntity> query = session.createQuery("FROM HeadMasterLoginEntity WHERE autoId=:headMasterId");
+		query.setParameter("headMasterId", id);
+		HeadMasterLoginEntity headMasterLoginDetail = query.uniqueResultOptional().orElse(null);
+		if (headMasterLoginDetail==null) {
+			throw new HeadMasterLoginNotFoundException("HeadMaster Login Not Found with"+" "+id+"!");
+		}	
+	}
+	
 	public Long createLogin(Long id,HeadMasterLogin loginDetail) throws DatabaseException {
 		logger.debug("In Adding HeadMaster Login Details...");
 		Session session=null;
-		Long headMasterLogin = null;
+		Long headMasterLogin = 0l;
 		try {
 			logger.info("Adding HeadMaster Login Details...");
 			session=sessionFactory.getCurrentSession();
@@ -72,15 +86,15 @@ public class HeadMasterLoginRepositoryImpl implements HeadMasterLoginRepository{
 	public Integer updateLoginDetails(Long id,HeadMasterLogin login) throws DatabaseException{
 		logger.debug("In Updating HeadMaster Login Details...");
 		Session session=null;
-		int result=0;
+		int count=0;
 		try {
 			logger.info("Updating HeadMaster Login Details...");
 			session=sessionFactory.getCurrentSession();
-			Query<HeadMasterLogin> query = session.createQuery("Update HeadMasterLoginEntity t set t.password=:password where t.headMaster.id=:hMId");
+			Query<HeadMasterLoginEntity> query = session.createQuery("Update HeadMasterLoginEntity t set t.password=:password where t.headMaster.id=:hMId");
 			query.setParameter("hMId", id);
 			query.setParameter("password", login.getPassword());
-			result=query.executeUpdate();
-			if(result==1)
+			count = query.executeUpdate();
+			if(count==1)
 			{
 				logger.info("Updating HeadMaster Login Details is Completed");
 			}
@@ -92,16 +106,17 @@ public class HeadMasterLoginRepositoryImpl implements HeadMasterLoginRepository{
 				throw new DatabaseException(e.getMessage());
 			}
 	
-			return result;
+			return count;
 			
 	}
 	@Override
-	public Long getParticularLoginDetails(Long autoId) throws DatabaseException {
+	public Long getParticularLoginDetails(Long autoId) throws DatabaseException, NotFoundException {
 		logger.debug("In Retrieving HeadMaster Login Id...");
 		Session session=null;
-		Long headMasterId;
+		Long headMasterId =0l;
 		try {
 			logger.info("Retrieving HeadMaster Login Id...");
+			checkHeadMasterLogin(autoId);
 			session=sessionFactory.getCurrentSession();
 			Query query=session.createQuery("Select headMaster.id from HeadMasterLoginEntity  where autoId=:staffId");
 			query.setParameter("staffId", autoId);

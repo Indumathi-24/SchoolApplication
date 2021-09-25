@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name="HeadMasterLogin")
 public class HeadMasterLoginEntity {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long autoId;
 	@NotNull
 	@Column(nullable=false)

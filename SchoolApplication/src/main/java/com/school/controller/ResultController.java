@@ -1,10 +1,14 @@
 package com.school.controller;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,53 +20,32 @@ import com.school.dto.Result;
 import com.school.entity.ResultEntity;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.StudentNotFoundException;
 import com.school.service.ResultService;
+import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/result")
 public class ResultController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if(e instanceof StudentNotFoundException)
-		{
-			logger.error("Error Occured while Processing Student's Result Details,Enter Valid Id");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Processing Student's Result Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
+	
       @Autowired
       private ResultService resultService;
       
       static Logger logger = Logger.getLogger("ResultController.class");
       
       @PostMapping("/{rollNo}")
-      public ResponseEntity<Response> addResult(@PathVariable Long rollNo,@RequestBody Result result)
+      public ResponseEntity<Response> addResult(@PathVariable Long rollNo,@Valid @RequestBody Result result)
       {
     	  logger.debug("In Adding Student's Result...");
     	  ResponseEntity<Response> responseBody = null;
-    	  Response response = new Response();
     	  Long resultId = null;
     	  try {
 			resultId = resultService.addResult(rollNo,result);
-			response.setData(resultId);
-			response.setStatusCode(200);
-			response.setStatusText("Result Details For Student Saved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);		
-			}
+			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Saved Successfully",resultId);
+		} catch (ServiceException e) {
+		    responseBody = ResponseUtil.getResponse(500,e.getMessage(),resultId);
+			} catch (NotFoundException e) {
+		   responseBody = ResponseUtil.getResponse(404,e.getMessage(),resultId);
+		}
     	  return responseBody;
       }
       
@@ -71,36 +54,43 @@ public class ResultController {
       {
     	  logger.debug("In Retrieving Student's Result...");
     	  ResponseEntity<Response> responseBody = null;
-    	  Response response = new Response();
     	  ResultEntity result = new ResultEntity();
     	  try {
 			result = resultService.getResult(rollNo);
-			response.setData(result);
-			response.setStatusCode(200);
-			response.setStatusText("Result Details For Student Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);	
+			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Retrieved Successfully",result);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);	
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
 		}
     	  return responseBody;
       }
       @PutMapping("/{rollNo}/{resultId}")
-      public ResponseEntity<Response> updateResult(@PathVariable("rollNo") Long rollNo,@PathVariable("resultId") Long resultId,@RequestBody Result resultDetail)
+      public ResponseEntity<Response> updateResult(@PathVariable("rollNo") Long rollNo,@PathVariable("resultId") Long resultId,@Valid @RequestBody Result resultDetail)
       {
     	  logger.debug("In Updating Student's Result...");
     	  ResponseEntity<Response> responseBody = null;
-    	  Response response = new Response();
     	  ResultEntity result = new ResultEntity();  
     	  try 
     	  {
     		  result = resultService.updateResult(rollNo,resultId,resultDetail);
-    		  response.setData(result);
-  			  response.setStatusCode(200);
-  			  response.setStatusText("Result Details For Student Updated Successfully");
-  			  responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-    	  } catch (ServiceException | NotFoundException e) {
-    		  responseBody = errorStatement(e);	
-  		}
+  			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Updated Successfully",result);
+    	  } catch (ServiceException e) {
+    		  responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);	
+  		} catch (NotFoundException e) {
+  			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
+		}
     	  return responseBody;
       }
+      
+      @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
+	 }
 }

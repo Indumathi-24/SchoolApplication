@@ -1,11 +1,15 @@
 package com.school.controller;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,50 +21,30 @@ import com.school.dto.StudentLogin;
 import com.school.entity.StudentLoginEntity;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.StudentNotFoundException;
 import com.school.service.StudentLoginService;
+import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/studentLogin")
 public class StudentLoginController {
-	public ResponseEntity<Response> errorStatement(Exception e)
-	{
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
-		if( e instanceof StudentNotFoundException)
-		{
-			logger.error("Error Occured while Saving Student Login Details,Enter Valid Id");
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
-		}
-		else if (e instanceof ServiceException)
-		{
-			logger.error("Error Occured while Saving Student Login Details");
-			response.setStatusCode(500);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return responseBody;
-	}
+	
 	static Logger logger = Logger.getLogger("StudentLoginController.class");
 	@Autowired
 	private StudentLoginService studentLoginService;
 	
 	@PostMapping("/{rollNo}")
-	public ResponseEntity<Response> createLogin(@PathVariable("rollNo") Long rollNo,@RequestBody StudentLogin login)
+	public ResponseEntity<Response> createLogin(@PathVariable("rollNo") Long rollNo,@Valid @RequestBody StudentLogin login)
 	{
 		logger.debug("In Adding Student Login details...");
 		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		Long loginId = 0l;
 		try {
-			Long loginId = studentLoginService.createLogin(rollNo,login);
-			response.setData(loginId);
-			response.setStatusCode(200);
-			response.setStatusText("Student Login Details Saved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			loginId = studentLoginService.createLogin(rollNo,login);
+			responseBody = ResponseUtil.getResponse(200,"Student Login Details Saved Successfully",loginId);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),loginId);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),loginId);
 		}
 		return responseBody;
 	}
@@ -70,36 +54,61 @@ public class StudentLoginController {
 	{
 		logger.debug("In Retrieving Student Login details...");
 		ResponseEntity<Response> responseBody =null;
-		Response response = new Response();
 		StudentLoginEntity login = new StudentLoginEntity();
 		try {
 			login = studentLoginService.getLoginDetails(rollNo);
-			response.setData(login);
-			response.setStatusCode(200);
-			response.setStatusText("Student Login Details Retrieved Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Student Login Details Retrieved Successfully",login);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),login);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),login);
 		}
 	  return responseBody;
 	}
 	
 	@PutMapping("/{rollNo}")
-	public ResponseEntity<Response> updateLoginDetails(@PathVariable("rollNo") Long rollNo,@RequestBody StudentLogin login)
+	public ResponseEntity<Response> updateLoginDetails(@PathVariable("rollNo") Long rollNo,@Valid @RequestBody StudentLogin login)
 	{
 		logger.debug("In Updating Student Login details...");
 		ResponseEntity<Response> responseBody =null;
-		Response response = new Response();
-		int result;
+		int result = 0;
 		try {
 			result = studentLoginService.updateLoginDetails(rollNo,login);
-			response.setData(result);
-			response.setStatusCode(200);
-			response.setStatusText("Student Login Details Updated Successfully");
-			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException | NotFoundException e) {
-			responseBody = errorStatement(e);
+			responseBody = ResponseUtil.getResponse(200,"Student Login Details Updated Successfully",result);
+		} catch (ServiceException  e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
 		}
 		return responseBody;
 	}
+	
+	@GetMapping("/studentLoginId/{autoId}")
+	public ResponseEntity<Response> getParticularLoginDetails(@PathVariable("autoId") Long autoId)
+	{
+		logger.debug("In Retrieving Student Login Id...");
+		ResponseEntity<Response> responseBody=null;
+		Long id = 0l;
+		try {
+			id = studentLoginService.getParticularLoginDetails(autoId);
+			responseBody = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
+		}catch(ServiceException e)
+		{
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(), id);
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(), id);
+		}
+		return responseBody;
+	}
+	
+	 @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
+	 }
 }

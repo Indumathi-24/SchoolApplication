@@ -13,13 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.school.entity.Parent;
-import com.school.entity.Student;
+import com.school.dto.Parent;
+import com.school.entity.ParentEntity;
+import com.school.entity.StudentEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
 import com.school.exception.ParentNotFoundException;
 import com.school.exception.StudentNotFoundException;
 import com.school.repository.ParentRepository;
 import com.school.repository.StudentRepository;
+import com.school.util.ParentMapper;
 
 @Repository
 @Transactional
@@ -30,21 +33,20 @@ public class ParentRepositoryImpl implements ParentRepository{
 	   
 	   @Autowired
 	   private StudentRepository studentRepository;
-	   public boolean checkParentById(Long id) throws ParentNotFoundException {
+	   
+	   public void checkParentById(Long id) throws ParentNotFoundException {
 		      logger.debug("In Checking Parent Id...");
-			  Parent parent = new Parent();
-			  boolean status = false;
+			  ParentEntity parent = new ParentEntity();
 			  Session session=sessionFactory.getCurrentSession();
-			  Query query=session.createQuery("from Parent where id=:id");
+			  Query<ParentEntity> query=session.createQuery("from ParentEntity where id=:id");
 		      query.setParameter("id",id);
-		      parent= (Parent) query.uniqueResultOptional().orElse(null);
-		      status=(parent!=null);
-		      if(!status)
+		      parent= query.uniqueResultOptional().orElse(null);
+		      if(parent==null)
 		      {
 		    	  throw new ParentNotFoundException("Parent Not Found,Enter Valid Id!");  
 		      }
-		      return status;
 		  }
+	   
        public Long addParent(Long rollNo,Parent parent) throws DatabaseException{
     	   logger.debug("In Adding Parent details...");
     	   Session session = null;
@@ -52,28 +54,20 @@ public class ParentRepositoryImpl implements ParentRepository{
     	   try
     	   {
     		   logger.info("Adding Parent Details...");
-    		   boolean status = studentRepository.checkStudentRollNo(rollNo);
-    		   if(status) 
-    		   {
-    			   session = sessionFactory.getCurrentSession();
-    			   Student studentEntity= new Student();
-    			   studentEntity =studentRepository.getStudent(rollNo);
-    			   Set<Student> student=new HashSet<>();
-    			   student.add(studentEntity);
-    			   Parent parentEntity =new Parent();
-    			   parentEntity.setId(parent.getId());
-    			   parentEntity.setFatherName(parent.getFatherName());
-    			   parentEntity.setMotherName(parent.getMotherName());
-    			   parentEntity.setContactNo(parent.getContactNo());
-    			   parentEntity.setStudentEntity(student);
-    			   parentId = (Long) session.save(parentEntity);
-    		   }
+    		   session = sessionFactory.getCurrentSession();
+    		   StudentEntity studentEntity= new StudentEntity();
+    		   studentEntity =studentRepository.getStudent(rollNo);
+    		   Set<StudentEntity> student=new HashSet<>();
+    		   student.add(studentEntity);
+    		   ParentEntity parentEntity = ParentMapper.mapParent(parent);
+    		   parentEntity.setStudentEntity(student);
+    		   parentId = (Long) session.save(parentEntity);
     		   if(parentId!=null)
     		   {
     			   logger.info("Adding Parent Details is Completed");
     		   }
     	   }
-    	   catch(HibernateException | StudentNotFoundException e)
+    	   catch(HibernateException e)
     	   {
     		    logger.error("Error Occurred while Saving Parent details");
     	        throw new DatabaseException(e.getMessage());
@@ -81,37 +75,34 @@ public class ParentRepositoryImpl implements ParentRepository{
     	   return parentId;
        }
        
-      public List<Parent> getParent(Long rollNo) throws DatabaseException
+      public List<ParentEntity> getParent(Long rollNo) throws DatabaseException
        {
     	   logger.debug("In Retrieving Parent Details...");
-    	   List<Parent> parent =new ArrayList<Parent>();
+    	   List<ParentEntity> parent =new ArrayList<>();
     	   Session session=null;
     	   try
     	   {
     		   logger.info("Adding Parent Details");
-    		   boolean response=studentRepository.checkStudentRollNo(rollNo);
-    		   if(response){
-    			   session=sessionFactory.getCurrentSession();
+    		   session=sessionFactory.getCurrentSession();
     			   // Query query=session.createNativeQuery("Select p from Parent p join fetch p.rollNo where p.rollNo.rollNo=:rollNo");
-    			   Query query = session.createSQLQuery("Select p.id,p.fatherName,p.motherName,p.contactNo from Parent p join rollNo r on p.id=r.Parent_id where r.studentEntity_rollNo=:rollNo");
-    			   query.setParameter("rollNo",rollNo);
-    			   List<Object[]> parentDetail=  query.list();
-    			   for(Object[] data:parentDetail)
-    			   {
-    				   Parent p = new Parent();
-    				   p.setId(Long.parseLong(data[0].toString()));
-    				   p.setFatherName(data[1].toString());
-    				   p.setMotherName(data[2].toString());
-    				   p.setContactNo(Long.parseLong(data[3].toString()));
-    				   parent.add(p);
-    			   }
-    		      if(!parent.isEmpty())
-    		      {
-    		    	  logger.info("Adding Parent Details is Completed");
-    		      }
-    		   }
+    		   Query query = session.createSQLQuery("Select p.id,p.fatherName,p.motherName,p.contactNo from Parent p join rollNo r on p.id=r.ParentEntity_id where r.studentEntity_rollNo=:rollNo");
+    		   query.setParameter("rollNo",rollNo);
+    		   List<Object[]> parentDetail =  query.list();
+    		   for(Object[] data:parentDetail)
+    		   {
+    				ParentEntity p = new ParentEntity();
+    				p.setId(Long.parseLong(data[0].toString()));
+    				p.setFatherName(data[1].toString());
+    				p.setMotherName(data[2].toString());
+    				p.setContactNo(Long.parseLong(data[3].toString()));
+    				parent.add(p);
+    			}
+    		    if(!parent.isEmpty())
+    		    {
+    		    	logger.info("Adding Parent Details is Completed");
+    		     }
     	   }
-    	   catch(HibernateException | StudentNotFoundException e )
+    	   catch(HibernateException  e )
     	   {
     		   logger.error("Error Occurred while Saving Parent details");
     		   throw new DatabaseException(e.getMessage());
@@ -137,57 +128,53 @@ public class ParentRepositoryImpl implements ParentRepository{
     	   return parent;
        }*/
        
-       public  Parent updateParent(Long id,Parent parent) throws DatabaseException{
+       public  ParentEntity updateParent(Long id,Parent parent) throws DatabaseException, NotFoundException{
     	   logger.debug("In Updating Parent Details...");
     	   Session session=null;
-    	   Parent parentDetails = null;
+    	   ParentEntity parentDetails = null;
     	   try
     	   {
     		   logger.info("Updating Parent Details");  
-    		   boolean status=checkParentById(id);
-    		   if(status) {
-    			   session = sessionFactory.getCurrentSession();
-    			   session.find(Parent.class, id);
-    			   Parent parentDetail =session.load(Parent.class, id);
-    			   parentDetail.setFatherName(parent.getFatherName());
-    			   parentDetail.setMotherName(parent.getMotherName());
-    			   parentDetail.setContactNo(parent.getContactNo());
-    			   parentDetails = (Parent) session.merge(parentDetail);
-    			   if(parentDetails!=null)
-    			   {
-    				   logger.info("Updating Parent Details is Completed");  
-    			   }
-    	       }
+    		   checkParentById(id);
+    		   ParentEntity parentEntity = ParentMapper.mapParent(parent);
+    		   session = sessionFactory.getCurrentSession();
+    		   session.find(ParentEntity.class, id);
+    		   ParentEntity parentDetail =session.load(ParentEntity.class, id);
+    		   parentDetail.setFatherName(parentEntity.getFatherName());
+    		   parentDetail.setMotherName(parentEntity.getMotherName());
+    		   parentDetail.setContactNo(parentEntity.getContactNo());
+    		   parentDetails = (ParentEntity) session.merge(parentDetail);
+    		   if(parentDetails!=null)
+    		   {
+    		       logger.info("Updating Parent Details is Completed");  
+    		   }
     	   }
-    	   catch(HibernateException | ParentNotFoundException e)
+    	   catch(HibernateException e)
     	   {
     		   logger.error("Error Occurred while Updating Parent details");
     		   throw new DatabaseException(e.getMessage());
     	   }
     	   return parentDetails;
        }
-      public Parent deleteParent(Long id) throws DatabaseException
+      public ParentEntity deleteParent(Long id) throws DatabaseException, NotFoundException
       {
-       Parent parent = null; 
-   	   Session session=null;
+       ParentEntity parent = null; 
+   	   Session session = null;
        try
        {
     	   logger.info("Deleting Parent Details");
-    	   boolean status=checkParentById(id);
-    	   if(status) {
-    		   session = sessionFactory.openSession();
-    		   session.beginTransaction();
-    		   session.find(Parent.class, id);
-    		   Parent parentDetail =session.load(Parent.class, id);
-    		   session.delete(parentDetail);
-    		   parent =session.load(Parent.class, id);
-    		   if(parent==null)
-    		   {
-    			   logger.info("Deleting Parent Details is Completed"); 
-    		   }
+    	   checkParentById(id);
+    	   session = sessionFactory.getCurrentSession();
+    	   session.find(ParentEntity.class, id);
+    	   ParentEntity parentDetail =session.load(ParentEntity.class, id);
+    	   session.delete(parentDetail);
+    	   parent =session.load(ParentEntity.class, id);
+    	   if(parent==null)
+    	   {
+    		   logger.info("Deleting Parent Details is Completed"); 
     	   }
        }
-       catch(HibernateException | ParentNotFoundException e)
+       catch(HibernateException e)
        {
     	   logger.error("Error Occurred while Deleting Parent details");
     	   throw new DatabaseException(e.getMessage());

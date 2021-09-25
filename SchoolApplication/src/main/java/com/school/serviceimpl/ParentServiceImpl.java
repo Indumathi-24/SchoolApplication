@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.school.entity.Parent;
+import com.school.dto.Parent;
+import com.school.entity.ParentEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
 import com.school.exception.ParentNotFoundException;
 import com.school.exception.ServiceException;
 import com.school.exception.StudentNotFoundException;
 import com.school.repository.ParentRepository;
+import com.school.repository.StudentRepository;
 import com.school.service.ParentService;
 
 @Service
@@ -21,10 +24,15 @@ public class ParentServiceImpl implements ParentService {
 	
 	@Autowired
 	private ParentRepository parentRepository;
+	
+	@Autowired
+	private StudentRepository studentRepository;
+	
 	@Override
-	public Long addParent(Long rollNo,Parent parent) throws ServiceException
+	public Long addParent(Long rollNo,Parent parent) throws ServiceException, NotFoundException
 	{
 		try {
+			studentRepository.checkStudentRollNo(rollNo);
 			return parentRepository.addParent(rollNo,parent);
 		} 
 		catch (DatabaseException e) {
@@ -33,22 +41,18 @@ public class ParentServiceImpl implements ParentService {
 	}
 	
 	@Override
-	public List<Parent> getParent(Long rollNo) throws ServiceException
+	public List<ParentEntity> getParent(Long rollNo) throws ServiceException, NotFoundException
 	{
 		try {
+			studentRepository.checkStudentRollNo(rollNo);
 			return parentRepository.getParent(rollNo);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
      
-    /*@Override
-	public Parent getParent(Long id) throws ParentNotFoundException
-	{
-		return parentRepository.getParent(id);
-	}*/
     @Override
-	public Parent updateParent(Long id,Parent parent) throws ServiceException
+	public ParentEntity updateParent(Long id,Parent parent) throws ServiceException, NotFoundException
 	{
 		try {
 			return parentRepository.updateParent(id,parent);
@@ -58,7 +62,7 @@ public class ParentServiceImpl implements ParentService {
 	}
     
     @Override
-    public Parent deleteParent(Long id) throws ServiceException
+    public ParentEntity deleteParent(Long id) throws ServiceException, NotFoundException
     {
     	try {
 			return parentRepository.deleteParent(id);

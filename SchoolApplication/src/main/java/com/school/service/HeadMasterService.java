@@ -1,17 +1,16 @@
 package com.school.service;
 
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-
-import com.school.entity.HeadMaster;
-import com.school.exception.HeadMasterNotFoundException;
+import com.school.dto.HeadMaster;
+import com.school.entity.HeadMasterEntity;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 
 public interface HeadMasterService {
-	Long addHeadMasterDetails(HeadMaster headMasterDetails) throws ServiceException;
-	List<HeadMaster> getAllHeadMasterDetails() throws ServiceException;
-	HeadMaster updateHeadMasterDetails(Long id,HeadMaster headMasterDetails) throws  ServiceException;
-	String deleteHeadMasterDetails(Long id) throws ServiceException;
-	HeadMaster getParticularHeadMasterDetails(Long id) throws ServiceException;
+	
+	Long addHeadMasterDetails(HeadMaster headMaster) throws ServiceException;
+	List<HeadMasterEntity> getAllHeadMasterDetails() throws ServiceException;
+	HeadMasterEntity updateHeadMasterDetails(Long id,HeadMaster headMaster) throws  ServiceException, NotFoundException;
+	HeadMasterEntity deleteHeadMasterDetails(Long id) throws ServiceException, NotFoundException;
+	HeadMasterEntity getParticularHeadMasterDetails(Long id) throws ServiceException, NotFoundException;
 }

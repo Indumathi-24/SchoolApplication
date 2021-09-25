@@ -1,5 +1,4 @@
 package com.school.controller;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,8 +12,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.school.entity.HeadMasterLogin;
+import com.school.dto.HeadMasterLogin;
+import com.school.entity.HeadMasterLoginEntity;
+import com.school.exception.HeadMasterNotFoundException;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.HeadMasterLoginService;
 
@@ -22,6 +23,26 @@ import com.school.service.HeadMasterLoginService;
 @RequestMapping("/api/headMasterLogin")
 @CrossOrigin("http://localhost:4200")
 public class HeadMasterLoginController {
+	public ResponseEntity<Response> errorStatement(Exception e)
+	{
+		ResponseEntity<Response> responseBody = null;
+		Response response = new Response();
+		if(e instanceof HeadMasterNotFoundException)
+		{
+			logger.error("Error Occured while Processing HeadMaster Login Details,Enter Valid Id");
+			response.setStatusCode(404);
+			response.setStatusText(e.getMessage());
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+		}
+		else if (e instanceof ServiceException)
+		{
+			logger.error("Error Occured while Processing HeadMaster Login Details");
+			response.setStatusCode(500);
+			response.setStatusText(e.getMessage());
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return responseBody;
+	}
 	static Logger logger = Logger.getLogger("HeadMasterLoginController.class");
 	@Autowired
 	private HeadMasterLoginService headMasterLoginService;
@@ -33,15 +54,14 @@ public class HeadMasterLoginController {
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
 		try {
-			Long headMasterLogin = headMasterLoginService.createLogin(id,login);
-			response.setData(headMasterLogin);
+			Long headMasterLoginId = headMasterLoginService.createLogin(id,login);
+			response.setData(headMasterLoginId);
 			response.setStatusCode(200);
 			response.setStatusText("Login Details Added Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+		} catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
+			
 		}
 		return responseBody;
 	}
@@ -53,15 +73,13 @@ public class HeadMasterLoginController {
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
 		try {
-			HeadMasterLogin headMasterLogin = headMasterLoginService.getLoginDetails(id);
+			HeadMasterLoginEntity headMasterLogin = headMasterLoginService.getLoginDetails(id);
 			response.setData(headMasterLogin);
 			response.setStatusCode(200);
 			response.setStatusText("Login Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+		} catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
 		}
 	  return responseBody;
 	}
@@ -77,11 +95,9 @@ public class HeadMasterLoginController {
 			response.setData(count);
 			response.setStatusCode(200);
 			response.setStatusText("Login Details Updated Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+		} catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
 		}
 		return responseBody;
 	}
@@ -96,12 +112,10 @@ public class HeadMasterLoginController {
 			response.setData(id);
 			response.setStatusCode(200);
 			response.setStatusText("Login Id Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		}catch(ServiceException e)
 		{
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = errorStatement(e);
 		}
 		return responseBody;
 	}

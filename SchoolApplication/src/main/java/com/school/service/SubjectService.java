@@ -1,13 +1,16 @@
 package com.school.service;
 
-import org.springframework.http.ResponseEntity;
+import java.util.List;
+
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.entity.Subject;
+import com.school.dto.Subject;
+import com.school.entity.SubjectEntity;
 
 public interface SubjectService {
-	ResponseEntity<String> addSubject(Long roomNo,Subject subject) throws ServiceException;
-	ResponseEntity<?> getAllSubject(Long roomNo) throws ServiceException;
-	ResponseEntity<?> getParticularSubject(Long roomNo,String code) throws ServiceException;
-	ResponseEntity<String> updateSubject(Long roomNo,String code,Subject subject) throws ServiceException;
-	ResponseEntity<String> deleteSubject(Long roomNo, String code) throws ServiceException;
+	String addSubject(Long roomNo,Subject subject) throws ServiceException, NotFoundException;
+	List<SubjectEntity> getAllSubject(Long roomNo) throws ServiceException, NotFoundException;
+	SubjectEntity getParticularSubject(Long roomNo,String code) throws ServiceException, NotFoundException;
+	SubjectEntity updateSubject(Long roomNo,String code,Subject subject) throws ServiceException, NotFoundException;
+	SubjectEntity deleteSubject(Long roomNo, String code) throws ServiceException, NotFoundException;
 }

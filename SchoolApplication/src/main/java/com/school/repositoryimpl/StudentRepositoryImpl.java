@@ -2,95 +2,71 @@ package com.school.repositoryimpl;
 
 
 import java.util.ArrayList;
-
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session; 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired; 
-import org.springframework.http.HttpHeaders; 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity; 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.school.entity.Class;
-import com.school.entity.Student;
-import com.school.entity.Teacher;
-import com.school.exception.ClassNotFoundException;
+import com.school.dto.Student;
+import com.school.entity.StudentEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
 import com.school.exception.StudentNotFoundException;
-import com.school.repository.ClassRepository;
 import com.school.repository.StudentRepository;
+import com.school.util.StudentMapper;
   
-  @Repository
-  @Transactional
-  public class StudentRepositoryImpl implements StudentRepository{
+@Repository
+@Transactional
+public class StudentRepositoryImpl implements StudentRepository{
   
   static Logger logger = Logger.getLogger("StudentRepositoryImpl.class");
   @Autowired 
   private SessionFactory sessionFactory;
   
-  @Autowired
-  private ClassRepository classRepository;
 
-  public boolean checkStudentRollNo(Long rollNo) throws StudentNotFoundException {
+  public void checkStudentRollNo(Long rollNo) throws StudentNotFoundException {
 	  logger.debug("In Checking Student Roll No...");
-	  Student studentDetail = new Student();
-	  boolean status = false;
+	  StudentEntity studentDetail = new StudentEntity();
       Session session=sessionFactory.getCurrentSession();
-	  Query query=session.createQuery("from Student where rollNo=:rNo");
+	  Query<StudentEntity> query = session.createQuery("from StudentEntity where rollNo=:rNo");
 	  query.setParameter("rNo",rollNo);
-	  studentDetail = (Student) query.uniqueResultOptional().orElse(null);
-	  status = (studentDetail!=null);
-	  if(!status)
+	  studentDetail =  query.uniqueResultOptional().orElse(null);
+	  if(studentDetail==null)
 	  {
 		  throw new StudentNotFoundException("Student Not Found,Enter Valid Roll No");
 	  }
-      return status;
   }
   
-  public Student getStudent(Long rollNo) {
+  public StudentEntity getStudent(Long rollNo) {
 	  logger.debug("In Retrieving Particular Student Detail");
-	  Student student=new Student();
+	  StudentEntity student=new StudentEntity();
 	  Session session=sessionFactory.getCurrentSession();
-	  Query query=session.createQuery("from Student where rollNo=:rNo");
+	  Query<StudentEntity> query = session.createQuery("from StudentEntity where rollNo=:rNo");
 	  query.setParameter("rNo",rollNo);
-	  student=(Student) query.getSingleResult();
+	  student = query.getSingleResult();
 	  return student;
 	  
   }
-  public Long addStudent(Long roomNo,Student student) throws DatabaseException{ 
+  public Long addStudent(Long roomNo, Student student) throws DatabaseException{ 
 	     logger.debug("In Adding Student Details");
 		 Session session=null;
 		 Long studentId = null;
 		 try
 		 {
 			 logger.info("Adding Student Details...");
-			 boolean status = classRepository.checkClassRoomNo(roomNo);
-			 if(status)
-			 {
-				 session=sessionFactory.getCurrentSession();
-				 Class classEntity=new Class();
-				 classEntity.setRoomNo(roomNo);
-				 Student studentEntity=new Student();
-				 studentEntity.setName(student.getName());
-				 studentEntity.setRollNo(student.getRollNo());
-				 studentEntity.setDateOfBirth(student.getDateOfBirth());
-				 studentEntity.setGender(student.getGender());
-				 studentEntity.setAddress(student.getAddress());
-				 studentEntity.setClassEntity(classEntity);
-				 studentId = (Long) session.save(studentEntity);
-			 }
+			 session=sessionFactory.getCurrentSession();
+			 StudentEntity studentEntity = StudentMapper.mapStudent(student, roomNo);
+			 studentId = (Long) session.save(studentEntity);
 			 if(studentId!=null)
 			 {
 				 logger.info("Adding Parent Details is Completed");
 			 }
 		 }
-		 catch(HibernateException | ClassNotFoundException e)
+		 catch(HibernateException e)
 		 {
 			 logger.error("Error Occurred While Saving Student Details");
 			 throw new DatabaseException(e.getMessage()); 
@@ -98,28 +74,23 @@ import com.school.repository.StudentRepository;
 		 return studentId;
   }
   
-  public List<Student> getAllStudent(Long roomNo) throws DatabaseException{
+  public List<StudentEntity> getAllStudent(Long roomNo) throws DatabaseException{
 	  logger.debug("In Retrieving All Particular Student Detail");
-	  List<Student> studentList = new ArrayList<Student>();
+	  List<StudentEntity> studentList = new ArrayList<>();
 	  Session session=null;
-	 
 	  try
 	  {
 		    logger.info("Retrieving All Particular Student Detail");
-		    boolean status = classRepository.checkClassRoomNo(roomNo);
-		    if(status)
-		    {
-		    	session=sessionFactory.getCurrentSession();
-		    	Query query =session.createQuery("from Student s where roomNo=:rNo");
-		    	query.setParameter("rNo",roomNo);
-		    	studentList=query.list();
-		    }
+		    session=sessionFactory.getCurrentSession();
+		    Query<StudentEntity> query = session.createQuery("from StudentEntity s where roomNo=:rNo");
+		    query.setParameter("rNo",roomNo);
+		    studentList=query.list();
 		    if(!studentList.isEmpty())
 		    {
 		    	logger.info("Retrieving All Particular Student Detail is Completed");
 		    }
 	  }
-		catch(HibernateException | ClassNotFoundException e)
+		catch(HibernateException e)
 		{
 			logger.error("Error Occurred While Retrieving Student Details");
 			throw new DatabaseException(e.getMessage());
@@ -129,28 +100,25 @@ import com.school.repository.StudentRepository;
 		
   
   
-  public Student getParticularStudent(Long roomNo,Long rollNo) throws DatabaseException{
+  public StudentEntity getParticularStudent(Long roomNo,Long rollNo) throws DatabaseException, NotFoundException{
 	  logger.debug("In Retrieving Particular Student Detail");
-	  Student student = new Student();
+	  StudentEntity student = new StudentEntity();
 	  Session session=null;
 	  try
 	  {
 		  logger.info("Retrieving Particular Student Detail");
-		  boolean response = checkStudentRollNo(rollNo);
-		  boolean status = classRepository.checkClassRoomNo(roomNo);
-		  if(response && status) {
-			  session=sessionFactory.getCurrentSession();
-			  Query query=session.createQuery("from Student where roomNo=:rNo and rollNo=:roNo");
-			  query.setParameter("rNo", roomNo);
-			  query.setParameter("roNo", rollNo);
-			  student=(Student) query.getSingleResult();
-		  }
+		  checkStudentRollNo(rollNo);
+		  session=sessionFactory.getCurrentSession();
+		  Query<StudentEntity> query=session.createQuery("from StudentEntity  where roomNo=:rNo and rollNo=:roNo");
+		  query.setParameter("rNo", roomNo);
+		  query.setParameter("roNo", rollNo);
+		  student = query.getSingleResult();
 		  if(student!=null)
 		  {
 			  logger.info("Retrieving Particular Student Detail is Completed");
 		  }
 	  }
-	  catch(HibernateException | ClassNotFoundException | StudentNotFoundException e)
+	  catch(HibernateException e)
 	  {
 		  logger.error("Error Occurred While Retrieving Student Details");
 		  throw new DatabaseException(e.getMessage());
@@ -158,61 +126,55 @@ import com.school.repository.StudentRepository;
 		return student;
   }
   
-  public Student updateStudent(Long roomNo,Long rollNo,Student student) throws DatabaseException{
+  public StudentEntity updateStudent(Long roomNo,Long rollNo,Student student) throws DatabaseException, NotFoundException{
 	  logger.debug("In Updating Student Detail");
 	  Session session=null;
-	  Student studentDetail = new Student();
+	  StudentEntity studentDetail = new StudentEntity();
 	  try
 	  {
 		logger.info("Updating Student Detail");
-		boolean response=checkStudentRollNo(rollNo);
-		boolean status =classRepository.checkClassRoomNo(roomNo);
-		if(response && status) {
-		    session=sessionFactory.getCurrentSession();
-			session.find(Student.class,rollNo);
-			Student studentDetails=session.load(Student.class, rollNo);
-			studentDetails.setName(student.getName());
-			studentDetails.setDateOfBirth(student.getDateOfBirth());
-			studentDetails.setGender(student.getGender());
-			studentDetails.setAddress(student.getAddress());
-			studentDetail = (Student) session.merge(studentDetails);
-		}
+		checkStudentRollNo(rollNo);
+		session=sessionFactory.getCurrentSession();
+		StudentEntity studentEntity = StudentMapper.mapStudent(student, roomNo);
+		session.find(StudentEntity.class,rollNo);
+		StudentEntity studentDetails=session.load(StudentEntity.class, rollNo);
+		studentDetails.setName(studentEntity.getName());
+		studentDetails.setDateOfBirth(studentEntity.getDateOfBirth());
+		studentDetails.setGender(studentEntity.getGender());
+		studentDetails.setAddress(studentEntity.getAddress());
+		studentDetail = (StudentEntity) session.merge(studentDetails);
 		if(studentDetail!=null)
 		{
 			logger.info("Updating Student Detail is Completed");
 		}
 	  }
-	  catch(HibernateException | ClassNotFoundException | StudentNotFoundException e) {
+	  catch(HibernateException e) {
 		    logger.error("Error Occurred While Updating Student Details");
 		    throw new DatabaseException(e.getMessage());
 	  }
 	  return studentDetail;
   }
   
-  public Student deleteStudent(Long roomNo,Long rollNo) throws DatabaseException
+  public StudentEntity deleteStudent(Long roomNo,Long rollNo) throws DatabaseException, NotFoundException
   {
 	  logger.debug("In Deleting Student Detail");
 	  Session session=null;
-	  Student studentDetail = new Student();
+	  StudentEntity studentDetail = new StudentEntity();
 	  try
 	  {
-		  logger.info("Deleting Student Detail");
-		  boolean response = checkStudentRollNo(rollNo);
-		  boolean status = classRepository.checkClassRoomNo(roomNo);
-		  if(response && status) 
-		  {
-		    session=sessionFactory.getCurrentSession();
-			session.find(Student.class,rollNo);
-			Student studentEntity=session.load(Student.class, rollNo);
-			session.delete(studentEntity);
-			studentDetail = session.load(Student.class, rollNo);
-		  }
-		  if(studentDetail!=null)
-		  {
-			  logger.info("Deleting Student Detail is Completed");
-		  }
+		logger.info("Deleting Student Detail");
+		checkStudentRollNo(rollNo);
+	    session=sessionFactory.getCurrentSession();
+		session.find(StudentEntity.class,rollNo);
+		StudentEntity studentEntity=session.load(StudentEntity.class, rollNo);
+		session.delete(studentEntity);
+		studentDetail = session.load(StudentEntity.class, rollNo);
+	    if(studentDetail!=null)
+		{
+			logger.info("Deleting Student Detail is Completed");
+		}
 	  }
-	  catch(HibernateException | ClassNotFoundException | StudentNotFoundException e)
+	  catch(HibernateException e)
 	  {
 		logger.error("Error Occurred While Deleting Student Details");
 		throw new DatabaseException(e.getMessage());

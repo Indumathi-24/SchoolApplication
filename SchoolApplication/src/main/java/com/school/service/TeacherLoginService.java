@@ -1,14 +1,16 @@
 package com.school.service;
-import org.springframework.http.ResponseEntity;
-import com.school.entity.TeacherLogin;
+
+import com.school.dto.TeacherLogin;
+import com.school.entity.TeacherLoginEntity;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 
 
 public interface TeacherLoginService {
 
-	ResponseEntity<String> createLogin( Long id,TeacherLogin login);
-	ResponseEntity<?> getLoginDetails(Long id) throws ServiceException ;
-	ResponseEntity<String> updateLoginDetails(Long userName,TeacherLogin login) throws ServiceException;
+	Long createLogin( Long id,TeacherLogin login) throws NotFoundException, ServiceException;
+	TeacherLoginEntity getLoginDetails(Long id) throws ServiceException, NotFoundException ;
+	Integer updateLoginDetails(Long userName,TeacherLogin login) throws ServiceException, NotFoundException;
 	
 	
 

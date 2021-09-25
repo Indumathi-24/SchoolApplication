@@ -22,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name="Subject")
-public class Subject {
+public class SubjectEntity {
   
    @Id
    @Size(max=7)
@@ -30,11 +30,11 @@ public class Subject {
    @NotNull
    @Size(max=15)
    private String name;
-   @ManyToOne(targetEntity=Class.class,fetch=FetchType.LAZY)
+   @ManyToOne(targetEntity=ClassEntity.class,fetch=FetchType.LAZY)
    @JoinColumn(name="roomNo",nullable=false)
    @JsonIgnore
-   private Class classEntity;
-   public Subject(@Size(max = 7) String code, @NotNull @Size(max = 15) String name, Class classEntity) {
+   private ClassEntity classEntity;
+   public SubjectEntity(@Size(max = 7) String code, @NotNull @Size(max = 15) String name, ClassEntity classEntity) {
 		super();
 		this.code = code;
 		this.name = name;

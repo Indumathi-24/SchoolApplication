@@ -1,7 +1,9 @@
 package com.school.controller;
 import java.util.ArrayList;
-import java.util.List;
 
+
+import java.util.List;
+import com.school.exception.StudentNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.school.entity.Student;
+import com.school.exception.ClassNotFoundException;
+import com.school.dto.Student;
+import com.school.entity.StudentEntity;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.StudentService;
 
@@ -24,6 +29,26 @@ import com.school.service.StudentService;
 @RequestMapping("/api/student")
 @CrossOrigin("http://localhost:4200")
 public class StudentController {
+	public ResponseEntity<Response> errorStatement(Exception e)
+	{
+		ResponseEntity<Response> responseBody = null;
+		Response response = new Response();
+		if(e instanceof ClassNotFoundException | e instanceof StudentNotFoundException)
+		{
+			logger.error("Error Occured while Processing Student Details,Enter Valid Id");
+			response.setStatusCode(404);
+			response.setStatusText(e.getMessage());
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+		}
+		else if (e instanceof ServiceException)
+		{
+			logger.error("Error Occured while Processing Student Details");
+			response.setStatusCode(500);
+			response.setStatusText(e.getMessage());
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return responseBody;
+	}
 	static Logger logger = Logger.getLogger("StudentController.class");
 	@Autowired 
 	private StudentService studentService;
@@ -38,11 +63,9 @@ public class StudentController {
 			response.setData(studentId);
 			response.setStatusCode(200);
 			response.setStatusText("Student Details Saved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+		} catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
 		}
 		return responseBody;
 	}
@@ -53,18 +76,16 @@ public class StudentController {
 		logger.debug("In Retrieving All Student details...");
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
-		List<Student> studentList = new ArrayList<Student>();
+		List<StudentEntity> studentList = new ArrayList<>();
 		try {
 			studentList=studentService.getAllStudent(roomNo);
 			response.setData(studentList);
 			response.setStatusCode(200);
 			response.setStatusText("Student Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} 
-		catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+		catch (ServiceException | NotFoundException e) {
+				responseBody = errorStatement(e);
 		}
 		return responseBody;
 	}
@@ -75,18 +96,16 @@ public class StudentController {
 		logger.debug("In Retrieving Student details...");
 		ResponseEntity<Response> responseBody = null;
 		Response response = new Response();
-		Student student = new Student();
+		StudentEntity student = new StudentEntity();
 		try {
 			student = studentService.getParticularStudent(roomNo,rollNo);
 			response.setData(student);
 			response.setStatusCode(200);
-			response.setStatusText("Student Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			response.setStatusText("Particular Student Details Retrieved Successfully");
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		} 
-		catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+		catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
 		}
 		return responseBody;
 	 }
@@ -96,17 +115,15 @@ public class StudentController {
 		logger.debug("In Updating Student details...");
 		ResponseEntity<Response> responseBody=null;
 		Response response = new Response();
-		Student studentDetail = new Student();
+		StudentEntity studentDetail = new StudentEntity();
 		try {
 			studentDetail=studentService.updateStudent(roomNo,rollNo,student);
 			response.setData(studentDetail);
 			response.setStatusCode(200);
-			response.setStatusText("Student Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
-		} catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+			response.setStatusText("Student Details Updated Successfully");
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
+		} catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
 		}
 		return responseBody;
 	}
@@ -116,18 +133,16 @@ public class StudentController {
 		logger.debug("In Deleting Student details...");
 		ResponseEntity<Response> responseBody=null;
 		Response response = new Response();
-		Student studentDetail = new Student();
+		StudentEntity studentDetail = new StudentEntity();
 		try {
 			studentDetail=studentService.deleteStudent(roomNo,rollNo);
 			response.setData(studentDetail);
 			response.setStatusCode(200);
-			response.setStatusText("Student Details Retrieved Successfully");
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.OK);
+			response.setStatusText("Student Details Deleted Successfully");
+			responseBody = new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
 		}
-		catch (ServiceException e) {
-			response.setStatusCode(404);
-			response.setStatusText(e.getMessage());
-			responseBody = new ResponseEntity<Response>(response,new HttpHeaders(),HttpStatus.NOT_FOUND);
+		catch (ServiceException | NotFoundException e) {
+			responseBody = errorStatement(e);
 		}
 		return responseBody;
 	}

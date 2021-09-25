@@ -1,15 +1,16 @@
 package com.school.service;
 
-import org.springframework.http.ResponseEntity;
+import java.util.List;
 
-import com.school.entity.Teacher;
+import com.school.dto.Teacher;
+import com.school.entity.TeacherEntity;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.TeacherNotFoundException;
 
 public interface TeacherService {
-	ResponseEntity<String> addTeacherDetails(Teacher teacherDetails);
-	ResponseEntity<?> getAllTeacherDetails();
-	ResponseEntity<String> updateTeacherDetails(Long id,Teacher teacherDetails) throws ServiceException ;
-	ResponseEntity<String> deleteTeacherDetails(Long id) throws ServiceException;
-	ResponseEntity<?> getParticularTeacherDetails(Long id) throws ServiceException;
+	Long addTeacherDetails(Teacher teacherDetails) throws ServiceException;
+	List<TeacherEntity> getAllTeacherDetails() throws ServiceException;
+	TeacherEntity updateTeacherDetails(Long id,Teacher teacherDetails) throws ServiceException, NotFoundException ;
+	TeacherEntity deleteTeacherDetails(Long id) throws ServiceException, NotFoundException;
+	TeacherEntity getParticularTeacherDetails(Long id) throws ServiceException, NotFoundException;
 }

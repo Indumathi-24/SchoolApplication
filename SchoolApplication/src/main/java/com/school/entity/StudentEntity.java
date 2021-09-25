@@ -24,18 +24,17 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name="Student")
-public class Student implements Serializable{
+public class StudentEntity implements Serializable{
 	@Id
 	private Long rollNo;
 	@Column(nullable=false)
@@ -47,21 +46,21 @@ public class Student implements Serializable{
     private String gender;
     @Column(nullable=false)
     private String address;
-    @ManyToOne(targetEntity=Class.class,fetch=FetchType.LAZY)
+    @ManyToOne(targetEntity=ClassEntity.class,fetch=FetchType.LAZY)
     @JoinColumn(name="roomNo",nullable=false)
     @JsonIgnore
-    private Class classEntity;
+    private ClassEntity classEntity;
     @OneToOne(mappedBy="student")
     @JsonIgnore
-	private StudentLogin studentLogin;
+	private StudentLoginEntity studentLogin;
     @OneToMany(mappedBy="student",fetch=FetchType.LAZY)
     @JsonIgnore
-    private Set<Result> result;
+    private Set<ResultEntity> result;
     //@ManyToOne(targetEntity=Parent.class,fetch=FetchType.LAZY,cascade=CascadeType.ALL)
     //@JoinColumn(name="id")
     //@JsonIgnore
     //private Parent parentEntity;
-	public Student(Long rollNo, String name, Date dateOfBirth, String gender, String address, Class classEntity
+	public StudentEntity(Long rollNo, String name, Date dateOfBirth, String gender, String address, ClassEntity classEntity
 			) {
 		super();
 		this.rollNo = rollNo;

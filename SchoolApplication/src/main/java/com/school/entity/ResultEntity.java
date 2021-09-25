@@ -24,10 +24,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity
 @Table(name="Result")
-public class Result {
+public class ResultEntity {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long resultId;
 	@NotNull
 	private Long term1;
@@ -37,12 +37,12 @@ public class Result {
 	private Long term3;
 	@NotNull
 	private String result;
-	@ManyToOne(targetEntity=Student.class,fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=StudentEntity.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="rollNo",nullable=false)
 	@JsonIgnore
-	private Student student;
+	private StudentEntity student;
 	
-	public Result(Long resultId, @NotNull Long term1, @NotNull Long term2, @NotNull Long term3,
+	public ResultEntity(Long resultId, @NotNull Long term1, @NotNull Long term2, @NotNull Long term3,
 			@NotNull String result) {
 		super();
 		this.resultId = resultId;
@@ -100,11 +100,11 @@ public class Result {
 		this.result = result;
 	}
 
-	public Student getStudent() {
+	public StudentEntity getStudent() {
 		return student;
 	}
 
-	public void setStudent(Student student) {
+	public void setStudent(StudentEntity student) {
 		this.student = student;
 	}
 	

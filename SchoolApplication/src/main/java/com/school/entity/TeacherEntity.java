@@ -1,7 +1,6 @@
 package com.school.entity;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,15 +15,13 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
-@Table(name="HeadMaster")
-public class HeadMaster {
+@Table(name="Teacher")
+public class TeacherEntity {
 	@Id
 	private Long id;
 	@NotNull
@@ -47,14 +44,15 @@ public class HeadMaster {
 	private Long contactNo;
 	@NotNull
 	private String address;
-	@OneToOne(mappedBy="headMaster")
-	private HeadMasterLogin headMasterLogin;
-	public HeadMaster(Long id, @NotNull @Size(max = 20) String name, @NotNull Date dateOfBirth,
-			@NotNull @Size(max = 7) String gender, @NotNull @Size(max = 20) String qualification,
-			@Email @NotNull String email, @NotNull Long contactNo, @NotNull String address) {
+	@OneToOne(mappedBy="userId")
+	private TeacherLoginEntity teacherLogin;
+	public TeacherEntity(Long id, @NotNull @Size(max = 20) String name, 
+			@NotNull Date dateOfBirth, @NotNull @Size(max = 7) String gender,
+			@NotNull @Size(max = 20) String qualification, @Email @NotNull String email, @NotNull Long contactNo,
+			@NotNull String address) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.name =name;
 		this.dateOfBirth = dateOfBirth;
 		this.gender = gender;
 		this.qualification = qualification;
@@ -62,4 +60,5 @@ public class HeadMaster {
 		this.contactNo = contactNo;
 		this.address = address;
 	}
+	
 }

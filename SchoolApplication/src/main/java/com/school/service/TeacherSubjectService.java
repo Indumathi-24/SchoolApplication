@@ -1,14 +1,12 @@
 package com.school.service;
 
-import org.springframework.http.ResponseEntity;
-
-
-import com.school.entity.TeacherSubject;
+import com.school.dto.TeacherSubject;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 
 
 public interface TeacherSubjectService {
-	ResponseEntity<String> assignTeacherSubject(Long teacherId,String subjectCode,TeacherSubject teacherSubjectDetails) throws  ServiceException;
-	ResponseEntity<String> updateTeacherSubjectAssign(Long teacherId,String subjectCode,TeacherSubject teacherSubjectDetails) throws  ServiceException;
-	ResponseEntity<String> deleteTeacherSubjectAssign(Long teacherId,String subjectCode) throws ServiceException;
+	Long assignTeacherSubject(Long teacherId,String subjectCode,TeacherSubject teacherSubjectDetails) throws  ServiceException, NotFoundException;
+	Long updateTeacherSubjectAssign(Long teacherId,String subjectCode,TeacherSubject teacherSubjectDetails) throws  ServiceException, NotFoundException;
+	Long deleteTeacherSubjectAssign(Long teacherId,String subjectCode) throws ServiceException, NotFoundException;
 }

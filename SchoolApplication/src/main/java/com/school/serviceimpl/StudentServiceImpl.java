@@ -5,9 +5,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.school.entity.Student;
+
+import com.school.dto.Student;
+import com.school.entity.StudentEntity;
+import com.school.exception.ClassNotFoundException;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
+import com.school.repository.ClassRepository;
 import com.school.repository.StudentRepository;
 import com.school.service.StudentService;
 
@@ -16,11 +21,14 @@ public class StudentServiceImpl implements StudentService{
 	static Logger logger = Logger.getLogger("StudentServiceImpl.class");
 	@Autowired
 	private StudentRepository studentRepository;
-
+    
+	@Autowired
+	private ClassRepository classRepository;
 	@Override
-	public Long addStudent(Long roomNo,Student student) throws ServiceException{
+	public Long addStudent(Long roomNo,Student student) throws ServiceException,NotFoundException{
 		logger.debug("In Adding Student Details");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.addStudent(roomNo,student);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
@@ -29,9 +37,10 @@ public class StudentServiceImpl implements StudentService{
 	}
 	
 	@Override
-	public List<Student> getAllStudent(Long roomNo) throws ServiceException{
+	public List<StudentEntity> getAllStudent(Long roomNo) throws ServiceException, NotFoundException{
 		logger.debug("In Retrieving all Student Details");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.getAllStudent(roomNo);
 		}
 		catch(DatabaseException e)
@@ -41,9 +50,10 @@ public class StudentServiceImpl implements StudentService{
 	}
 	
 	@Override
-	public Student getParticularStudent(Long roomNo,Long rollNo) throws ServiceException{
+	public StudentEntity getParticularStudent(Long roomNo,Long rollNo) throws ServiceException, NotFoundException{
 		logger.debug("In Retrieving Student Details");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.getParticularStudent(roomNo,rollNo);
 		}
 		catch(DatabaseException e)
@@ -53,9 +63,10 @@ public class StudentServiceImpl implements StudentService{
 	}
 	
 	@Override
-	public Student updateStudent(Long roomNo,Long rollNo,Student student) throws ServiceException{
+	public StudentEntity updateStudent(Long roomNo,Long rollNo,Student student) throws ServiceException, NotFoundException{
 		logger.debug("In Updating Student Details");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.updateStudent(roomNo,rollNo,student);
 		}
 		catch(DatabaseException e)
@@ -65,9 +76,10 @@ public class StudentServiceImpl implements StudentService{
 	}
 	
 	@Override
-	public Student deleteStudent(Long roomNo,Long rollNo) throws ServiceException{
+	public StudentEntity deleteStudent(Long roomNo,Long rollNo) throws ServiceException, NotFoundException{
 		logger.debug("In Deleting Student Details");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.deleteStudent(roomNo,rollNo);
 		}
 		catch(DatabaseException e)

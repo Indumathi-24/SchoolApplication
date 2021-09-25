@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.school.entity.TeacherSubject;
+import com.school.entity.TeacherSubjectEntity;
 import com.school.exception.ServiceException;
 import com.school.service.TeacherSubjectService;
 
@@ -20,7 +20,7 @@ public class TeacherSubjectController {
 	@Autowired
 	private TeacherSubjectService teacherSubjectServiceImpl;
 	@PostMapping("/{id}/{code}")
-	public ResponseEntity<String> assignTeacherSubject(@PathVariable("id") Long teacherId,@PathVariable("code") String subjectCode,@RequestBody TeacherSubject teacherSubjectDetails) 
+	public ResponseEntity<String> assignTeacherSubject(@PathVariable("id") Long teacherId,@PathVariable("code") String subjectCode,@RequestBody TeacherSubjectEntity teacherSubjectDetails) 
 	{
 		ResponseEntity<String> response = null;
 		try {
@@ -31,7 +31,7 @@ public class TeacherSubjectController {
 		return response;
 	}
 	@PutMapping("/{id}/{code}")
-	public ResponseEntity<String> updateTeacherSubjectAssign(@PathVariable("id") Long teacherId,@PathVariable("code") String subjectCode,@RequestBody TeacherSubject teacherSubjectDetails) 
+	public ResponseEntity<String> updateTeacherSubjectAssign(@PathVariable("id") Long teacherId,@PathVariable("code") String subjectCode,@RequestBody TeacherSubjectEntity teacherSubjectDetails) 
 	{
 		ResponseEntity<String> response = null;
 		try {

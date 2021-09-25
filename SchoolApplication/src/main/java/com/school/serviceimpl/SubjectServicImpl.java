@@ -1,49 +1,55 @@
 package com.school.serviceimpl;
-
 import java.util.List;
-
-
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.school.exception.ClassNotFoundException;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
-import com.school.exception.SubjectNotFoundException;
-import com.school.entity.Subject;
+import com.school.dto.Subject;
+import com.school.entity.SubjectEntity;
+import com.school.repository.ClassRepository;
 import com.school.repository.SubjectRepository;
 import com.school.service.SubjectService;
 
 @Service
 public class SubjectServicImpl implements SubjectService{
 
+	static Logger logger = Logger.getLogger("SubjectServiceImpl.class");
 	@Autowired
 	private SubjectRepository subjectRepository;
 	
+	@Autowired
+	private ClassRepository classRepository;
+	
 	@Override
-	public ResponseEntity<String> addSubject(Long roomNo,Subject subject) throws ServiceException 
+	public String addSubject(Long roomNo,Subject subject) throws ServiceException, NotFoundException 
 	{
+		logger.debug("In Adding Subject Details...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return subjectRepository.addSubject(roomNo,subject);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	@Override
-	public ResponseEntity<?> getAllSubject(Long roomNo) throws  ServiceException
+	public 	List<SubjectEntity> getAllSubject(Long roomNo) throws  ServiceException, NotFoundException
 	{
+		logger.debug("In Retrieving All Subject Details...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return subjectRepository.getAllSubject(roomNo);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	@Override
-	public 	ResponseEntity<?> getParticularSubject(Long roomNo,String code) throws ServiceException 
+	public 	SubjectEntity getParticularSubject(Long roomNo,String code) throws ServiceException, NotFoundException 
 	{
+		logger.debug("In Retrieving Subject Details...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return subjectRepository.getParticularSubject(roomNo,code);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
@@ -51,9 +57,11 @@ public class SubjectServicImpl implements SubjectService{
 	}
 	
 	@Override
-	public ResponseEntity<String> updateSubject(Long roomNo,String code,Subject subject) throws ServiceException
+	public SubjectEntity updateSubject(Long roomNo,String code,Subject subject) throws ServiceException, NotFoundException
 	{
+		logger.debug("In Updating Subject Details...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return subjectRepository.updateSubject(roomNo, code, subject);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
@@ -61,9 +69,11 @@ public class SubjectServicImpl implements SubjectService{
 	}
 	
 	@Override
-	public ResponseEntity<String> deleteSubject(Long roomNo, String code) throws ServiceException 
+	public SubjectEntity deleteSubject(Long roomNo, String code) throws ServiceException, NotFoundException 
 	{
+		logger.debug("In Deleting Subject Details...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return subjectRepository.deleteSubject(roomNo, code);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());

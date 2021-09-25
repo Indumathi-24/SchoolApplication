@@ -1,188 +1,170 @@
 package com.school.repositoryimpl;
 
 import java.util.ArrayList;
-
-
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import com.school.entity.Subject;
-import com.school.exception.ClassNotFoundException;
+import com.school.entity.SubjectEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
 import com.school.exception.SubjectNotFoundException;
-import com.school.repository.ClassRepository;
 import com.school.repository.SubjectRepository;
-import com.school.entity.Class;
-import com.school.entity.Student;
-import com.school.entity.Subject;
+import com.school.util.SubjectMapper;
+import com.school.dto.Subject;
 
 @Repository
+@Transactional
 public class SubjectRepositoryImpl implements SubjectRepository{
 	
+	static Logger logger = Logger.getLogger("SubjectRepositoryImpl.class");
 	@Autowired
 	private SessionFactory sessionFactory;
-	@Autowired
-	private ClassRepository classRepository;
 	
-	 public boolean checkSubjectCode(String code) {
-		  List<Subject> subjectList = new ArrayList<Subject>();
-		  boolean status = false;
-		  Session session=sessionFactory.openSession();
-		  Query query=session.createQuery("from Subject where code=:code");
+	 public void checkSubjectCode(String code) throws SubjectNotFoundException {
+		  logger.debug("In Checking Subject Code...");
+		  SubjectEntity subject = new SubjectEntity();
+		  Session session=sessionFactory.getCurrentSession();
+		  Query<SubjectEntity> query=session.createQuery("from SubjectEntity where code=:code");
 	      query.setParameter("code",code);
-	      subjectList=query.list();
-	      status=(!subjectList.isEmpty());
-	      session.close();
-	      return status;
+	      subject = query.uniqueResultOptional().orElse(null);
+	      if(subject==null)
+	      {
+	    	  throw new SubjectNotFoundException("Subject Not Found ,Enter Valid Code");
+	      }
+	      
 	  }
-	public ResponseEntity<String> addSubject(Long roomNo,Subject subject) throws DatabaseException
+	public String addSubject(Long roomNo,Subject subject) throws DatabaseException
 	{
-		ResponseEntity<String> response=null;
+		logger.debug("In Adding Subject Details...");
 		Session session=null;
-		
+		String subjectCode = null;
 		try {
-			    classRepository.checkClassRoomNo(roomNo);
-				session=sessionFactory.openSession();
-				session.beginTransaction();
-				Class classDetail =new Class();
-				classDetail.setRoomNo(roomNo);
-				Subject subjectDetail=new Subject();
-				subjectDetail.setCode(subject.getCode());
-				subjectDetail.setName(subject.getName());
-				subjectDetail.setClassEntity(classDetail);
-				session.save(subjectDetail);
-				session.getTransaction().commit();
-				session.close();
-				response=new ResponseEntity<String>("Subject Details Added Successfully",new HttpHeaders(),HttpStatus.OK);
-			
+			logger.info("Adding Subject Details...");
+			session=sessionFactory.getCurrentSession();
+			SubjectEntity subjectDetail = SubjectMapper.mapSubject(subject, roomNo);
+			subjectCode = (String) session.save(subjectDetail);
+			if(subjectCode!=null)
+			{
+				logger.info("Adding Subject Details is Completed");
+			}
 		}
-		catch(HibernateException | ClassNotFoundException e)
+		catch(HibernateException e)
 		{
+			logger.error("Error Occured while Saving Subject Details");
 			throw new DatabaseException(e.getMessage());
 		}
 		
-		return response;
+		return subjectCode;
 	}
-    public ResponseEntity<?> getAllSubject(Long roomNo) throws DatabaseException
+    public List<SubjectEntity> getAllSubject(Long roomNo) throws DatabaseException
     {
-      List<Subject> subjectList = new ArrayList<Subject>();
-  	  
-  	  ResponseEntity<?> response=null;
+      logger.debug("In Retrieving Subject All Details...");
+      List<SubjectEntity> subjectList = new ArrayList<>();
   	  Session session=null;
   	  try
-  	  {         classRepository.checkClassRoomNo(roomNo);
-  			  	session=sessionFactory.openSession();
-  			  	Query query =session.createQuery("from Subject s where roomNo=:rNo");
-  			  	query.setParameter("rNo",roomNo);
-  			  	subjectList=query.list();
-  			  	session.close();
-  			    response=new ResponseEntity<>(subjectList,new HttpHeaders(),HttpStatus.OK);
-  		  
+  	  {   
+  		  logger.info("Retrieving Subject Details...");
+  		  session=sessionFactory.getCurrentSession();
+  		  Query<SubjectEntity> query =session.createQuery("from SubjectEntity s where roomNo=:rNo");
+  		  query.setParameter("rNo",roomNo);
+  		  subjectList=query.list();
+  		  if(!subjectList.isEmpty())
+  		  {
+  			logger.info("Retrieving Subject Details is Completed...");
+  		  }
   	  }
-  	  catch(HibernateException | ClassNotFoundException e)
+  	  catch(HibernateException e)
   	  {
+  		logger.error("Error Occured while Retrieving Subject Details");
   		throw new DatabaseException(e.getMessage());
   	  }
-  	  return response;
+  	  return subjectList;
     }
     
-    public  ResponseEntity<?> getParticularSubject(Long roomNo,String code) throws DatabaseException{
-  	  List<Subject> subjectList = new ArrayList<Subject>();
-  	  boolean response=checkSubjectCode(code);
-  	  ResponseEntity<?> responseBody=null;
+    public SubjectEntity getParticularSubject(Long roomNo,String code) throws DatabaseException, NotFoundException{
+      logger.debug("In Retrieving Subject Details...");
+  	  SubjectEntity subject = new SubjectEntity();
  	  Session session=null;
  	  try
  	  {
- 		 classRepository.checkClassRoomNo(roomNo);
- 		  if(!response) {
-  			throw new SubjectNotFoundException("Subject Not Found");
- 		  }
- 		  else 
+ 		  logger.info("Retrieving Subject Details...");
+ 		  checkSubjectCode(code);
+ 		  session=sessionFactory.getCurrentSession();
+ 		  Query<SubjectEntity> query = session.createQuery("from SubjectEntity where roomNo=:rNo and code=:code");
+ 		  query.setParameter("rNo", roomNo);
+ 		  query.setParameter("code", code);
+ 		  subject = query.getSingleResult();
+ 		  if(subject!=null)
  		  {
- 			  session=sessionFactory.openSession();
- 			  Query query=session.createQuery("from Subject where roomNo=:rNo and code=:code");
- 			  query.setParameter("rNo", roomNo);
- 			  query.setParameter("code", code);
- 			  subjectList=query.list();
- 			  session.close();
- 			  responseBody=new ResponseEntity<>(subjectList,new HttpHeaders(),HttpStatus.OK);
-
+ 			 logger.info("Retrieving Subject Details is Completed");
  		  }
  	  }
- 	  catch(HibernateException | ClassNotFoundException | SubjectNotFoundException e )
+ 	  catch(HibernateException e )
  	  {
- 		  throw new DatabaseException(e.getMessage());
+ 		 logger.error("Error Occured while Retrieving Subject Details");
+ 		 throw new DatabaseException(e.getMessage());
  	  }
-  		return responseBody;
+  		return subject;
     }
     
-    public ResponseEntity<String> updateSubject(Long roomNo,String code,Subject subject) throws DatabaseException{
-  	  
-  	  boolean response=checkSubjectCode(code);
-  	  ResponseEntity<String> responseBody=null;
+    public SubjectEntity updateSubject(Long roomNo,String code,Subject subject) throws DatabaseException, NotFoundException{
+      logger.debug("In Updating Subject Details...");
 	  Session session=null;
+	  SubjectEntity subjectDetail;
 	  try
 	  {
-		    classRepository.checkClassRoomNo(roomNo);
-  			if(!response) {
-  				throw new SubjectNotFoundException("Subject Not Found,Enter Valid Room No!");
-  			}
-  			else {
-  				session=sessionFactory.openSession();
-  				session.beginTransaction();
-  				session.find(Subject.class,code);
-  				Subject subjectDetails=session.load(Subject.class,code);
-  				subjectDetails.setName(subject.getName());
-  				session.merge(subjectDetails);
-  				session.flush();
-  				session.getTransaction().commit();
-  				session.close();
-  				responseBody = new ResponseEntity<String>("Subject Details Updated Successfully",new HttpHeaders(),HttpStatus.OK);
-  		    }
+		  logger.info("Updating Subject Details...");
+		  checkSubjectCode(code);
+		  session=sessionFactory.getCurrentSession();
+		  SubjectEntity subjectEntity = SubjectMapper.mapSubject(subject, roomNo);
+  		  session.find(SubjectEntity.class,code);
+  		  SubjectEntity subjectDetails=session.load(SubjectEntity.class,code);
+  		  subjectDetails.setName(subjectEntity.getName());
+  		  subjectDetail = (SubjectEntity) session.merge(subjectDetails);
+  		  if(subjectDetail!=null)
+  		  {
+  			logger.info("Updating Subject Details is Completed");
+  		  }
 	  }
-	  catch(HibernateException | ClassNotFoundException | SubjectNotFoundException e)
+	  catch(HibernateException e)
 	  {
+		  logger.info("Error Occured while Updating Subject Details");
 		  throw new DatabaseException(e.getMessage());
 	  }
-	  return responseBody;
+	  return subjectDetail;
     }
     
-    public ResponseEntity<String> deleteSubject(Long roomNo,String code) throws DatabaseException
+    public SubjectEntity deleteSubject(Long roomNo,String code) throws DatabaseException, NotFoundException
     {
-  	 
-  	  boolean response=checkSubjectCode(code);
-  	  ResponseEntity<String> responseBody=null;
+      logger.debug("In Deleting Subject Details...");
+  	  SubjectEntity subjectDetail;
 	  Session session=null;
 	  try
 	  {
-		classRepository.checkClassRoomNo(roomNo);
-  		if(!response) {
-  			throw new SubjectNotFoundException("Subject Not Found,Enter valid Roll No");
-  		}
-  		else {
-  				session=sessionFactory.openSession();
-  				session.beginTransaction();
-  				session.find(Subject.class,code);
-  				Subject subjectEntity=session.load(Subject.class,code);
-  				session.delete(subjectEntity);
-  				session.getTransaction().commit();
-  				session.close();
-  				responseBody=new ResponseEntity<String>("Subject Details Deleted Successfully",new HttpHeaders(),HttpStatus.OK);
-  			}
+		logger.info("Deleting Subject Details...");
+		checkSubjectCode(code);
+		session=sessionFactory.getCurrentSession();
+  	    session.find(SubjectEntity.class,code);
+  		SubjectEntity subjectEntity=session.load(SubjectEntity.class,code);
+  		session.delete(subjectEntity);
+  	    subjectDetail = session.load(SubjectEntity.class,code);
+  	    if(subjectDetail==null)
+  	    {
+  	    	logger.info("Deleting Subject Details is Completed");
+  	    }
 	  }
-	  catch(HibernateException | ClassNotFoundException | SubjectNotFoundException e)
+	  catch(HibernateException e)
 	  {
+		logger.info("Error Occured while Deleting Subject Details");
   		throw new DatabaseException(e.getMessage());
 	  }
-	  return responseBody;
+	  return subjectDetail;
     }
     
 }

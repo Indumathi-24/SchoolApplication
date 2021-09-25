@@ -1,5 +1,8 @@
 package com.school.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +24,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="HeadMasterLogin")
-public class HeadMasterLogin {
+@Table(name="login")
+public class TeacherLoginEntity implements Serializable{
+
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long autoId;
@@ -30,8 +35,10 @@ public class HeadMasterLogin {
 	@Column(nullable=false)
 	@Size(min=8)
 	private String password;
-	@OneToOne(targetEntity=HeadMaster.class)
+	@OneToOne(targetEntity=TeacherEntity.class)
 	@JoinColumn(name="id",nullable=false)
 	@JsonIgnore
-	private HeadMaster headMaster;
+	private TeacherEntity userId;
+	
+	
 }

@@ -1,37 +1,37 @@
 package com.school.entity;
 
-import java.io.Serializable;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
-@Table(name="TeacherSubject")
-public class TeacherSubject implements Serializable{
+@Table(name="StudentLogin")
+public class StudentLoginEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;
-	@ManyToOne(targetEntity=Teacher.class)
-	@JoinColumn(name="teacherId",nullable=false)
+	private Long autoId;
+	@NotNull
+	@Column(nullable=false)
+	@Size(min=8)
+	private String password;
+	@OneToOne(targetEntity=StudentEntity.class)
+	@JoinColumn(name="rollNo",nullable=false)
 	@JsonIgnore
-	private Teacher teacher;
-	@ManyToOne(targetEntity=Subject.class)
-	@JoinColumn(name="subjectCode",nullable=false)
-	@JsonIgnore
-	private Subject subject;
+	private StudentEntity student;
 }

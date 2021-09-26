@@ -28,9 +28,12 @@ public class ClassEntity implements Serializable{
 	@OneToMany(mappedBy="classEntity",fetch=FetchType.LAZY)
 	@JsonIgnore
     private Set<StudentEntity> studentEntity;
-	@OneToMany(mappedBy="classEntity",fetch=FetchType.LAZY)
-	@JsonIgnore
-	private Set<SubjectEntity> subjectEntity;
+	@OneToMany(mappedBy="classEntity",fetch=FetchType.EAGER)
+    @JsonIgnore
+    private Set<SubjectClassEntity> subjectClass;
+//	@OneToMany(mappedBy="classEntity",fetch=FetchType.EAGER)
+//	@JsonIgnore
+//	private Set<SubjectEntity> subjectEntity;
 	public ClassEntity() {
 		
 	}

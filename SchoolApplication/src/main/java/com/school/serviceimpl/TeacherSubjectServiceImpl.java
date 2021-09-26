@@ -8,6 +8,9 @@ import com.school.dto.TeacherSubject;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
+import com.school.repository.ClassRepository;
+import com.school.repository.SubjectRepository;
+import com.school.repository.TeacherRepository;
 import com.school.repository.TeacherSubjectRepository;
 import com.school.repositoryimpl.SubjectRepositoryImpl;
 import com.school.repositoryimpl.TeacherRepositoryImpl;
@@ -19,21 +22,27 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 	static Logger logger = Logger.getLogger("TeacherSubjectServiceImpl.class");
 	
 	@Autowired
-	private TeacherSubjectRepository teacherSubjectRepositoryImpl;
+	private TeacherSubjectRepository teacherSubjectRepository;
 	@Autowired
-	private TeacherRepositoryImpl teacherRepositoryImpl;
+	private TeacherRepository teacherRepository;
 	@Autowired
-	private SubjectRepositoryImpl subjectRepositoryImpl;
+	private SubjectRepository subjectRepository;
+	
+	@Autowired
+	private ClassRepository classRepository;
 	
 	
 	@Override
-	public Long assignTeacherSubject(Long teacherId, String subjectCode,
-			TeacherSubject teacherSubjectDetails) throws ServiceException, NotFoundException {
+	public Long assignTeacherSubject(TeacherSubject teacherSubjectDetails) throws ServiceException, NotFoundException {
 		logger.debug("In Adding TeacherSubject Details");
 		try {
-			teacherRepositoryImpl.checkTeacher(teacherId);
-			subjectRepositoryImpl.checkSubjectCode(subjectCode);
-			return teacherSubjectRepositoryImpl.assignTeacherSubject(teacherId,subjectCode,teacherSubjectDetails);
+			System.out.println(teacherSubjectDetails.getTeacherDetail().getId());
+			teacherRepository.checkTeacher(teacherSubjectDetails.getTeacherDetail().getId());
+			System.out.println(teacherSubjectDetails.getSubjectClassDetail().getId());
+			System.out.println(teacherSubjectDetails.getSubjectClassDetail().getClassDetail());
+			subjectRepository.checkSubjectCode(teacherSubjectDetails.getSubjectClassDetail().getSubject().getCode());
+			classRepository.checkClassRoomNo(teacherSubjectDetails.getSubjectClassDetail().getClassDetail().getRoomNo());
+			return teacherSubjectRepository.assignTeacherSubject(teacherSubjectDetails);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -43,9 +52,9 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 			TeacherSubject teacherSubjectDetails) throws ServiceException, NotFoundException  {
 		logger.debug("In Updating TeacherSubject Details");
 		try {
-			teacherRepositoryImpl.checkTeacher(teacherId);
-			subjectRepositoryImpl.checkSubjectCode(subjectCode);
-			return teacherSubjectRepositoryImpl.updateTeacherSubjectAssign(teacherId,subjectCode,teacherSubjectDetails);
+			teacherRepository.checkTeacher(teacherId);
+			subjectRepository.checkSubjectCode(subjectCode);
+			return teacherSubjectRepository.updateTeacherSubjectAssign(teacherId,subjectCode,teacherSubjectDetails);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
@@ -54,9 +63,9 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 	public Integer deleteTeacherSubjectAssign(Long teacherId, String subjectCode) throws ServiceException, NotFoundException {
 		logger.debug("In Deleting TeacherSubject Details");
 		try {
-			teacherRepositoryImpl.checkTeacher(teacherId);
-			subjectRepositoryImpl.checkSubjectCode(subjectCode);
-			return teacherSubjectRepositoryImpl.deleteTeacherSubjectAssign(teacherId,subjectCode);
+			teacherRepository.checkTeacher(teacherId);
+			subjectRepository.checkSubjectCode(subjectCode);
+			return teacherSubjectRepository.deleteTeacherSubjectAssign(teacherId,subjectCode);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}

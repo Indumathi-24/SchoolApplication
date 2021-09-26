@@ -1,14 +1,12 @@
 package com.school.dto;
 
-
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class TeacherSubject {
+public class SubjectClass {
      private Long id;
-     private Teacher teacherDetail;
-     private SubjectClass subjectClassDetail;
+     private Class classDetail;
+     private Subject subject;
 }

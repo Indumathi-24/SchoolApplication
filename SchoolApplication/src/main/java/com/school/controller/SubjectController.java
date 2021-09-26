@@ -1,13 +1,19 @@
 package com.school.controller;
 
 import com.school.exception.NotFoundException;
+
 import com.school.exception.ServiceException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,46 +35,42 @@ public class SubjectController {
 	
 	static Logger logger = Logger.getLogger("SubjectController.class");
 	
-	@PostMapping("/{roomNo}")
-	public ResponseEntity<Response> addSubject(@PathVariable Long roomNo,@RequestBody Subject subject) 
+	@PostMapping
+	public ResponseEntity<Response> addSubject(@Valid @RequestBody Subject subject) 
 	{
 		logger.debug("In Adding Subject Details...");
 		ResponseEntity<Response> responseBody = null;
 		String subjectCode = null;
 		try {
-			 subjectCode = subjectService.addSubject(roomNo,subject);
+			 subjectCode = subjectService.addSubject(subject);
 			 responseBody = ResponseUtil.getResponse(200,"Subject Details Added Successfully",subjectCode);
 		} catch (ServiceException e) {
 		     responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectCode);
-		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectCode);
-		}
+		} 
 		return responseBody;
 	}
-	@GetMapping("/{roomNo}")
-	public ResponseEntity<Response> getAllSubject(@PathVariable("roomNo") Long roomNo) 
+	@GetMapping
+	public ResponseEntity<Response> getAllSubject() 
 	{
 		logger.debug("In Retrieving All Subject Details...");
 		ResponseEntity<Response> responseBody = null;
-		List<SubjectEntity> subjectEntity = new ArrayList<SubjectEntity>();
+		List<SubjectEntity> subjectEntity = new ArrayList<>();
 		try {
-			subjectEntity = subjectService.getAllSubject(roomNo);
+			subjectEntity = subjectService.getAllSubject();
 			responseBody = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
 		} catch (ServiceException e) {
 			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
-		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
-		}
+		} 
 		return responseBody;
 	}
-	@GetMapping("/{roomNo}/{code}")
-	public ResponseEntity<Response> getParticularSubject(@PathVariable("roomNo") Long roomNo,@PathVariable("code") String code)  
+	@GetMapping("/{code}")
+	public ResponseEntity<Response> getParticularSubject(@PathVariable("code") String code)  
      {
 		logger.debug("In Retrieving Subject Details...");
 		ResponseEntity<Response> responseBody=null;
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
-			subjectEntity = subjectService.getParticularSubject(roomNo,code);
+			subjectEntity = subjectService.getParticularSubject(code);
 			responseBody = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
 		} catch (ServiceException  e) {
 			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
@@ -78,13 +80,13 @@ public class SubjectController {
 		return responseBody;
 	 }
 	
-	@PutMapping("/{roomNo}/{code}")
-	public ResponseEntity<Response> updateSubject(@PathVariable("roomNo") Long roomNo,@PathVariable("code") String code,@RequestBody Subject subject) {
+	@PutMapping("/{code}")
+	public ResponseEntity<Response> updateSubject(@PathVariable("code") String code,@Valid @RequestBody Subject subject) {
 		logger.debug("In Updating Subject Details...");
 		ResponseEntity<Response> responseBody = null;
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
-			subjectEntity = subjectService.updateSubject(roomNo,code,subject);
+			subjectEntity = subjectService.updateSubject(code,subject);
 			responseBody = ResponseUtil.getResponse(200,"Subject Details Updated Successfully",subjectEntity);
 		} catch (ServiceException  e) {
 			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
@@ -94,13 +96,13 @@ public class SubjectController {
 		return responseBody;
 	}
 	
-	@DeleteMapping("/{roomNo}/{code}")
-	public ResponseEntity<Response> deleteSubject(@PathVariable("roomNo") Long roomNo,@PathVariable("code") String code)  {
+	@DeleteMapping("/{code}")
+	public ResponseEntity<Response> deleteSubject(@PathVariable("code") String code)  {
 		logger.debug("In Deleting Subject Details...");
 		ResponseEntity<Response> responseBody=null;
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
-			subjectEntity= subjectService.deleteSubject(roomNo,code);
+			subjectEntity= subjectService.deleteSubject(code);
 			responseBody = ResponseUtil.getResponse(200,"Subject Details Deleted Successfully",subjectEntity);
 		} catch (ServiceException e) {
 			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
@@ -109,4 +111,15 @@ public class SubjectController {
 		}
 		return responseBody;
 	}
+	
+	 @ExceptionHandler(MethodArgumentNotValidException.class)
+	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
+	        logger.error("Validation fails, Check your input!");
+	        Response response = new Response();
+	        ResponseEntity<Response> responseEntity = null;
+	        response.setStatusCode(422);
+	        response.setStatusText("Validation fails!");
+	        responseEntity = new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+	        return responseEntity;
+	 }
 }

@@ -8,9 +8,9 @@ import com.school.dto.Subject;
 import com.school.entity.SubjectEntity;
 
 public interface SubjectService {
-	String addSubject(Long roomNo,Subject subject) throws ServiceException, NotFoundException;
-	List<SubjectEntity> getAllSubject(Long roomNo) throws ServiceException, NotFoundException;
-	SubjectEntity getParticularSubject(Long roomNo,String code) throws ServiceException, NotFoundException;
-	SubjectEntity updateSubject(Long roomNo,String code,Subject subject) throws ServiceException, NotFoundException;
-	SubjectEntity deleteSubject(Long roomNo, String code) throws ServiceException, NotFoundException;
+	String addSubject(Subject subject) throws ServiceException;
+	List<SubjectEntity> getAllSubject() throws ServiceException;
+	SubjectEntity getParticularSubject(String code) throws ServiceException, NotFoundException;
+	SubjectEntity updateSubject(String code,Subject subject) throws ServiceException, NotFoundException;
+	SubjectEntity deleteSubject(String code) throws ServiceException, NotFoundException;
 }

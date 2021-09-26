@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,13 +24,13 @@ import lombok.NoArgsConstructor;
 public class TeacherSubjectEntity implements Serializable{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
-	@ManyToOne(targetEntity=TeacherEntity.class)
+	private Long autoId;
+	@ManyToOne(targetEntity=TeacherEntity.class,fetch=FetchType.EAGER)
 	@JoinColumn(name="teacherId",nullable=false)
 	@JsonIgnore
 	private TeacherEntity teacher;
-	@ManyToOne(targetEntity=SubjectEntity.class)
-	@JoinColumn(name="subjectCode",nullable=false)
+	@ManyToOne(targetEntity=SubjectClassEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="id",nullable=false)
 	@JsonIgnore
-	private SubjectEntity subject;
+	private SubjectClassEntity subjectClassEntity;
 }

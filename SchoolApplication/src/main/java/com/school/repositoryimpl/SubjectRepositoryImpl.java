@@ -39,7 +39,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
 	      }
 	      
 	  }
-	public String addSubject(Long roomNo,Subject subject) throws DatabaseException
+	public String addSubject(Subject subject) throws DatabaseException
 	{
 		logger.debug("In Adding Subject Details...");
 		Session session=null;
@@ -47,7 +47,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
 		try {
 			logger.info("Adding Subject Details...");
 			session=sessionFactory.getCurrentSession();
-			SubjectEntity subjectDetail = SubjectMapper.mapSubject(subject, roomNo);
+			SubjectEntity subjectDetail = SubjectMapper.mapSubject(subject);
 			subjectCode = (String) session.save(subjectDetail);
 			if(subjectCode!=null)
 			{
@@ -62,7 +62,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
 		
 		return subjectCode;
 	}
-    public List<SubjectEntity> getAllSubject(Long roomNo) throws DatabaseException
+    public List<SubjectEntity> getAllSubject() throws DatabaseException
     {
       logger.debug("In Retrieving Subject All Details...");
       List<SubjectEntity> subjectList = new ArrayList<>();
@@ -71,8 +71,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
   	  {   
   		  logger.info("Retrieving Subject Details...");
   		  session=sessionFactory.getCurrentSession();
-  		  Query<SubjectEntity> query =session.createQuery("from SubjectEntity s where roomNo=:rNo");
-  		  query.setParameter("rNo",roomNo);
+  		  Query<SubjectEntity> query =session.createQuery("from SubjectEntity s ");
   		  subjectList=query.list();
   		  if(!subjectList.isEmpty())
   		  {
@@ -87,7 +86,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
   	  return subjectList;
     }
     
-    public SubjectEntity getParticularSubject(Long roomNo,String code) throws DatabaseException, NotFoundException{
+    public SubjectEntity getParticularSubject(String code) throws DatabaseException, NotFoundException{
       logger.debug("In Retrieving Subject Details...");
   	  SubjectEntity subject = new SubjectEntity();
  	  Session session=null;
@@ -96,8 +95,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
  		  logger.info("Retrieving Subject Details...");
  		  checkSubjectCode(code);
  		  session=sessionFactory.getCurrentSession();
- 		  Query<SubjectEntity> query = session.createQuery("from SubjectEntity where roomNo=:rNo and code=:code");
- 		  query.setParameter("rNo", roomNo);
+ 		  Query<SubjectEntity> query = session.createQuery("from SubjectEntity where code=:code");
  		  query.setParameter("code", code);
  		  subject = query.getSingleResult();
  		  if(subject!=null)
@@ -113,7 +111,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
   		return subject;
     }
     
-    public SubjectEntity updateSubject(Long roomNo,String code,Subject subject) throws DatabaseException, NotFoundException{
+    public SubjectEntity updateSubject(String code,Subject subject) throws DatabaseException, NotFoundException{
       logger.debug("In Updating Subject Details...");
 	  Session session=null;
 	  SubjectEntity subjectDetail;
@@ -122,9 +120,9 @@ public class SubjectRepositoryImpl implements SubjectRepository{
 		  logger.info("Updating Subject Details...");
 		  checkSubjectCode(code);
 		  session=sessionFactory.getCurrentSession();
-		  SubjectEntity subjectEntity = SubjectMapper.mapSubject(subject, roomNo);
+		  SubjectEntity subjectEntity = SubjectMapper.mapSubject(subject);
   		  session.find(SubjectEntity.class,code);
-  		  SubjectEntity subjectDetails=session.load(SubjectEntity.class,code);
+  		  SubjectEntity subjectDetails = session.load(SubjectEntity.class,code);
   		  subjectDetails.setName(subjectEntity.getName());
   		  subjectDetail = (SubjectEntity) session.merge(subjectDetails);
   		  if(subjectDetail!=null)
@@ -140,7 +138,7 @@ public class SubjectRepositoryImpl implements SubjectRepository{
 	  return subjectDetail;
     }
     
-    public SubjectEntity deleteSubject(Long roomNo,String code) throws DatabaseException, NotFoundException
+    public SubjectEntity deleteSubject(String code) throws DatabaseException, NotFoundException
     {
       logger.debug("In Deleting Subject Details...");
   	  SubjectEntity subjectDetail;

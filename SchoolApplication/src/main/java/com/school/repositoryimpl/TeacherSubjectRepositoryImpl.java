@@ -23,8 +23,7 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public Long assignTeacherSubject(Long teacherId, String subjectCode,
-			TeacherSubject teacherSubjectDetails) throws DatabaseException  {
+	public Long assignTeacherSubject(TeacherSubject teacherSubjectDetails) throws DatabaseException  {
 		logger.debug("In Adding Teacher Subject Details");
 		Session session=null;
 		Long id;
@@ -32,7 +31,7 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
 		{
 			logger.info("Adding Teacher Subject Details");
 			session=sessionFactory.getCurrentSession();
-			TeacherSubjectEntity teacherSubjectAssignDetails = TeacherSubjectMapper.mapTeacherSubject(teacherId, subjectCode,teacherSubjectDetails);
+			TeacherSubjectEntity teacherSubjectAssignDetails = TeacherSubjectMapper.mapTeacherSubject(teacherSubjectDetails);
 			id = (Long) session.save(teacherSubjectAssignDetails);
 			if(id!=null)
 			{

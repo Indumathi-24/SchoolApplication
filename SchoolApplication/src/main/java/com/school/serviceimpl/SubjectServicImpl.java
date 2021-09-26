@@ -1,5 +1,6 @@
 package com.school.serviceimpl;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.dto.Subject;
 import com.school.entity.SubjectEntity;
-import com.school.repository.ClassRepository;
 import com.school.repository.SubjectRepository;
 import com.school.service.SubjectService;
 
@@ -19,62 +19,55 @@ public class SubjectServicImpl implements SubjectService{
 	@Autowired
 	private SubjectRepository subjectRepository;
 	
-	@Autowired
-	private ClassRepository classRepository;
 	
 	@Override
-	public String addSubject(Long roomNo,Subject subject) throws ServiceException, NotFoundException 
+	public String addSubject(Subject subject) throws ServiceException 
 	{
 		logger.debug("In Adding Subject Details...");
 		try {
-			classRepository.checkClassRoomNo(roomNo);
-			return subjectRepository.addSubject(roomNo,subject);
+			return subjectRepository.addSubject(subject);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	@Override
-	public 	List<SubjectEntity> getAllSubject(Long roomNo) throws  ServiceException, NotFoundException
+	public 	List<SubjectEntity> getAllSubject() throws  ServiceException
 	{
 		logger.debug("In Retrieving All Subject Details...");
 		try {
-			classRepository.checkClassRoomNo(roomNo);
-			return subjectRepository.getAllSubject(roomNo);
+			return subjectRepository.getAllSubject();
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	@Override
-	public 	SubjectEntity getParticularSubject(Long roomNo,String code) throws ServiceException, NotFoundException 
+	public 	SubjectEntity getParticularSubject(String code) throws ServiceException, NotFoundException 
 	{
 		logger.debug("In Retrieving Subject Details...");
 		try {
-			classRepository.checkClassRoomNo(roomNo);
-			return subjectRepository.getParticularSubject(roomNo,code);
+			return subjectRepository.getParticularSubject(code);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	
 	@Override
-	public SubjectEntity updateSubject(Long roomNo,String code,Subject subject) throws ServiceException, NotFoundException
+	public SubjectEntity updateSubject(String code,Subject subject) throws ServiceException, NotFoundException
 	{
 		logger.debug("In Updating Subject Details...");
 		try {
-			classRepository.checkClassRoomNo(roomNo);
-			return subjectRepository.updateSubject(roomNo, code, subject);
+			return subjectRepository.updateSubject(code, subject);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	
 	@Override
-	public SubjectEntity deleteSubject(Long roomNo, String code) throws ServiceException, NotFoundException 
+	public SubjectEntity deleteSubject(String code) throws ServiceException, NotFoundException 
 	{
 		logger.debug("In Deleting Subject Details...");
 		try {
-			classRepository.checkClassRoomNo(roomNo);
-			return subjectRepository.deleteSubject(roomNo, code);
+			return subjectRepository.deleteSubject(code);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}

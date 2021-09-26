@@ -1,20 +1,20 @@
 package com.school.util;
 
 import com.school.dto.TeacherSubject;
-import com.school.entity.SubjectEntity;
+import com.school.entity.SubjectClassEntity;
 import com.school.entity.TeacherEntity;
 import com.school.entity.TeacherSubjectEntity;
 
 public class TeacherSubjectMapper {
-       public static TeacherSubjectEntity mapTeacherSubject(Long id,String subjectCode,TeacherSubject teacherSubject)
+       public static TeacherSubjectEntity mapTeacherSubject(TeacherSubject teacherSubject)
        {
     	   TeacherEntity  teacherEntity = new TeacherEntity();
-    	   SubjectEntity subjectEntity = new SubjectEntity();
+    	   SubjectClassEntity subjectClassEntity = new SubjectClassEntity();
     	   TeacherSubjectEntity teacherSubjectEntity = new TeacherSubjectEntity();
-    	   teacherEntity.setId(id);
-    	   subjectEntity.setCode(subjectCode);
+    	   teacherEntity.setId(teacherSubject.getTeacherDetail().getId());
+    	   subjectClassEntity.setId(teacherSubject.getSubjectClassDetail().getId());
     	   teacherSubjectEntity.setTeacher(teacherEntity);
-    	   teacherSubjectEntity.setSubject(subjectEntity);
+    	   teacherSubjectEntity.setSubjectClassEntity(subjectClassEntity);
     	   return teacherSubjectEntity;
        }
 }

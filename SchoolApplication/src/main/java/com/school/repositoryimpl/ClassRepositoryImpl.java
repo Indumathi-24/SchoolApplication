@@ -86,9 +86,10 @@ public class ClassRepositoryImpl implements ClassRepository {
     }
     
     public ClassEntity getParticularClass(Long roomNo) throws DatabaseException,NotFoundException {
+    	logger.debug("In Get Class Details Method");
     	ClassEntity classEntity = new ClassEntity();
     	Session session=null;
-    	logger.debug("In Get Class Details Method");
+    	
 		try
 		{
 			logger.info("Retriving Class Details Method");
@@ -111,10 +112,10 @@ public class ClassRepositoryImpl implements ClassRepository {
     }
 
     public ClassEntity updateClass(Long roomNo,Class classDetail) throws DatabaseException, NotFoundException{
-    	
+    	logger.debug("In Updating Class Details Method");
     	Session session=null;
     	ClassEntity updatedClass = null;
-    	logger.debug("In Updating Class Details Method");
+    	
 		try {
 			logger.info("Updating Class Details Method");
 			checkClassRoomNo(roomNo);
@@ -135,4 +136,28 @@ public class ClassRepositoryImpl implements ClassRepository {
 		}
 		return updatedClass;
     }
-}
+    
+     public List<Long> getRoomNo() throws DatabaseException
+     {
+    	 logger.debug("In Retrieving Class Room No's Method");
+    	 Session session = null;
+    	 List<Long> roomNoList = null;
+    	 try {
+    		 logger.info("Retrieving Class Room No's ");
+    		 session = sessionFactory.getCurrentSession();
+    		 Query query = session.createQuery("Select roomNo from ClassEntity");
+    		 roomNoList = query.list();
+    		 if(!roomNoList.isEmpty())
+    		 {
+    			 logger.info("Retrieving Class Room No's is Completed ");
+    		 }
+    	 }
+    	 catch(HibernateException e)
+    	 {
+    		 logger.info("Error Occured while Retrieving Class Room No's ");
+    		 throw new DatabaseException(e.getMessage());
+    	 }
+    	 return roomNoList;
+     }
+    	 
+     }

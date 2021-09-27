@@ -2,16 +2,23 @@ package com.school.repositoryimpl;
 
 import org.hibernate.Session;
 
+
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.Query;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import com.school.dto.Result;
+import com.school.entity.ClassEntity;
 import com.school.entity.ResultEntity;
+import com.school.entity.StudentEntity;
 import com.school.exception.DatabaseException;
 import com.school.repository.ResultRepository;
 import com.school.util.ResultMapper;
@@ -57,9 +64,9 @@ public class ResultRepositoryImpl implements ResultRepository {
 	        {
 	        	logger.info("Retrieving Student Results");
 			    session=sessionFactory.getCurrentSession();
-				Query query =session.createQuery("from ResultEntity r where r.student.rollNo=:rollNo");
+				Query<ResultEntity> query =session.createQuery("from ResultEntity r where r.student.rollNo=:rollNo");
 				query.setParameter("rollNo", rollNo);
-				result=(ResultEntity) query.getSingleResult();
+				result= query.getSingleResult();
 			    if(result!=null)
 			    {
 			    	logger.info("Retrieving Student Results is Completed");
@@ -100,5 +107,45 @@ public class ResultRepositoryImpl implements ResultRepository {
 	        	throw new DatabaseException(e.getMessage());
 	        }
 	        return resultDetail;
+	 }
+	 
+	 public List<ResultEntity> getResultByClass(Long roomNo) throws DatabaseException
+	 {
+		    logger.debug("In Retrieving Student Results By Class");
+	        List<ResultEntity> resultList=new ArrayList<ResultEntity>();
+		    Session session=null;
+	        try
+	        {
+	        	logger.info("Retrieving Student Results By Class");
+	        	session=sessionFactory.getCurrentSession();
+ 			   // Query query=session.createNativeQuery("Select p from Parent p join fetch p.rollNo where p.rollNo.rollNo=:rollNo");
+	        	Query query = session.createSQLQuery("Select r.rollNo,r.term1,r.term2,r.term3,r.result,s.roomNo from Result r join Student s on s.rollNo=r.rollNo where roomNo=:roomNo");
+ 		   		query.setParameter("roomNo",roomNo);
+ 		   		List<Object[]> resultDetail =  query.list();
+ 		   		for(Object[] data:resultDetail)
+ 		   		{
+ 		   			ResultEntity result = new ResultEntity();
+ 		   			StudentEntity student = new StudentEntity();
+ 		   			ClassEntity classEntity = new ClassEntity();
+ 		   			classEntity.setRoomNo(Long.parseLong(data[5].toString()));
+ 		   			student.setRollNo(Long.parseLong(data[0].toString()));
+ 		   			student.setClassEntity(classEntity);
+ 		   		    result.setStudent(student);
+ 		   		    result.setTerm1(Long.parseLong(data[1].toString()));
+ 		   		    result.setTerm2(Long.parseLong(data[2].toString()));
+ 		   		    result.setTerm3(Long.parseLong(data[3].toString()));
+ 		   		    result.setResult(data[4].toString());
+ 		   			resultList.add(result);
+ 		   		}
+ 		    if(!resultList.isEmpty())
+ 		    {
+ 		    	logger.info("Retrieving  Student Results By Class is Completed");
+ 		    }
+	      }
+	        catch(HibernateException e)
+	        {
+	        	throw new DatabaseException(e.getMessage());
+	        }
+	    return resultList;
 	 }
 }

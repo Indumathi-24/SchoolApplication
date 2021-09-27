@@ -82,7 +82,7 @@ public class ParentRepositoryImpl implements ParentRepository{
     	   Session session=null;
     	   try
     	   {
-    		   logger.info("Adding Parent Details");
+    		   logger.info("Retrieving Parent Details");
     		   session=sessionFactory.getCurrentSession();
     			   // Query query=session.createNativeQuery("Select p from Parent p join fetch p.rollNo where p.rollNo.rollNo=:rollNo");
     		   Query query = session.createSQLQuery("Select p.id,p.fatherName,p.motherName,p.contactNo from Parent p join rollNo r on p.id=r.ParentEntity_id where r.studentEntity_rollNo=:rollNo");
@@ -99,7 +99,7 @@ public class ParentRepositoryImpl implements ParentRepository{
     			}
     		    if(!parent.isEmpty())
     		    {
-    		    	logger.info("Adding Parent Details is Completed");
+    		    	logger.info("Retrieving Parent Details is Completed");
     		     }
     	   }
     	   catch(HibernateException  e )

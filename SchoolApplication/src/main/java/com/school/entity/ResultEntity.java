@@ -1,8 +1,5 @@
 package com.school.entity;
 
-import java.util.Set;
-
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,7 +36,7 @@ public class ResultEntity {
 	private String result;
 	@ManyToOne(targetEntity=StudentEntity.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="rollNo",nullable=false)
-	@JsonIgnore
+    @JsonIgnore
 	private StudentEntity student;
 	
 	public ResultEntity(Long resultId, @NotNull Long term1, @NotNull Long term2, @NotNull Long term3,
@@ -85,14 +82,17 @@ public class ResultEntity {
 	}
 
 	public String getResult() {
-		if(term1+term2+term3 >=525)
-		{
-			result="PASS";
-		}
-		else
-		{
-			result="FAIL";
-		}
+//		if(student.getClassEntity().getStandard()=="I" || student.getClassEntity().getStandard()=="II" ||  student.getClassEntity().getStandard()=="III" || student.getClassEntity().getStandard()=="IV" || student.getClassEntity().getStandard()=="V")
+//		{
+			if(term1+term2+term3 >=525)
+			{
+				result="PASS";
+			}
+			else
+			{
+				result="FAIL";
+			}
+//		}
 		return result;
 	}
 

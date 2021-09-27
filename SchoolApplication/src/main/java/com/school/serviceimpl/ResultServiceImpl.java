@@ -1,5 +1,7 @@
 package com.school.serviceimpl;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import com.school.entity.ResultEntity;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
+import com.school.repository.ClassRepository;
 import com.school.repository.ResultRepository;
 import com.school.repository.StudentRepository;
 import com.school.service.ResultService;
@@ -19,6 +22,9 @@ public class ResultServiceImpl implements ResultService{
 	
 	@Autowired
 	private StudentRepository studentRepository;
+	
+	@Autowired
+	private ClassRepository classRepository;
 	
 	static Logger logger = Logger.getLogger("ResultServiceImpl.class");
 	@Override
@@ -52,6 +58,17 @@ public class ResultServiceImpl implements ResultService{
 		try {
 			studentRepository.checkStudentRollNo(rollNo);
 			return resultRepository.updateResult(rollNo,resultId,result);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
+	@Override
+	public List<ResultEntity> getResultByClass(Long roomNo) throws ServiceException, NotFoundException
+	{
+		logger.debug("In Retrieving Student's Result...");
+		try {
+			classRepository.checkClassRoomNo(roomNo);
+			return resultRepository.getResultByClass(roomNo);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}

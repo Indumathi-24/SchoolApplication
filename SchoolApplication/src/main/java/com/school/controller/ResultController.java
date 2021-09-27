@@ -1,5 +1,8 @@
 package com.school.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -8,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +29,7 @@ import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/result")
+@CrossOrigin("http://localhost:4200")
 public class ResultController {
 	
       @Autowired
@@ -62,6 +67,23 @@ public class ResultController {
 			responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);	
 		} catch (NotFoundException e) {
 			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
+		}
+    	  return responseBody;
+      }
+      
+      @GetMapping("/class/{roomNo}")
+      public ResponseEntity<Response> getResultByClass(@PathVariable("roomNo") Long roomNo)
+      {
+    	  logger.debug("In Retrieving Student's Result by Class");
+    	  ResponseEntity<Response> responseBody = null;
+    	  List<ResultEntity> resultList = new ArrayList<ResultEntity>();
+    	  try {
+			resultList = resultService.getResultByClass(roomNo);
+			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Retrieved Successfully",resultList);
+		} catch (ServiceException e) {
+			responseBody = ResponseUtil.getResponse(500,e.getMessage(),resultList);	
+		} catch (NotFoundException e) {
+			responseBody = ResponseUtil.getResponse(404,e.getMessage(),resultList);
 		}
     	  return responseBody;
       }

@@ -29,10 +29,6 @@ public class SubjectEntity {
    @NotNull
    @Size(max=15)
    private String name;
-//   @ManyToOne(targetEntity=ClassEntity.class,fetch=FetchType.LAZY)
-//   @JoinColumn(name="roomNo",nullable=false)
-//   @JsonIgnore
-//   private ClassEntity classEntity;
    @OneToMany(mappedBy="subjectEntity",fetch=FetchType.EAGER)
    @JsonIgnore
    private Set<SubjectClassEntity> subjectClass;

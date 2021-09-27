@@ -29,8 +29,6 @@ public class ParentEntity {
 	private String motherName;
 	@Column(length=10,nullable=false,unique=true)
 	private Long contactNo;
-	//@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,mappedBy="parentEntity")
-	//private Set<Student> studentEntity;
 	
 	@OneToMany(targetEntity=StudentEntity.class,cascade=CascadeType.ALL)
 	@JoinTable(name="rollNo")

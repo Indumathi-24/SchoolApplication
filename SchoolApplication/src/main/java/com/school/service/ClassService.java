@@ -11,4 +11,5 @@ public interface ClassService {
 	List<ClassEntity> getAllClass() throws ServiceException;
     ClassEntity getParticularClass(Long roomNo) throws ServiceException, NotFoundException;
     ClassEntity updateClass(Long roomNo,Class classDetail) throws ServiceException, NotFoundException;
+    List<Long> getRoomNo() throws ServiceException;
 }

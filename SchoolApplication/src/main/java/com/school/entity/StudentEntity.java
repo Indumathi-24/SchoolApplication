@@ -53,13 +53,9 @@ public class StudentEntity implements Serializable{
     @OneToOne(mappedBy="student")
     @JsonIgnore
 	private StudentLoginEntity studentLogin;
-    @OneToMany(mappedBy="student",fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="student",fetch=FetchType.EAGER)
     @JsonIgnore
     private Set<ResultEntity> result;
-    //@ManyToOne(targetEntity=Parent.class,fetch=FetchType.LAZY,cascade=CascadeType.ALL)
-    //@JoinColumn(name="id")
-    //@JsonIgnore
-    //private Parent parentEntity;
 	public StudentEntity(Long rollNo, String name, Date dateOfBirth, String gender, String address, ClassEntity classEntity
 			) {
 		super();

@@ -79,6 +79,19 @@ public class ClassController {
 		}
 		return responseBody; 
 	 }
+	 @GetMapping("/roomNo")
+	 public ResponseEntity<Response> getRoomNo(){
+		 logger.debug("In Get Class Room No Method");
+		 ResponseEntity<Response> responseBody=null;
+		 List<Long> roomNoList = null;
+		 try {
+			 roomNoList = classService.getRoomNo();
+			 responseBody = ResponseUtil.getResponse(200,"Room No's Retrieved",roomNoList);
+		} catch (ServiceException  e) {
+			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),roomNoList);
+		}
+		return responseBody; 
+	 }
 	 @PutMapping("/{roomNo}")
 	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@Valid @RequestBody Class classDetail) 
 	 {

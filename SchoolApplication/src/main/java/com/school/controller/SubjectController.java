@@ -39,77 +39,77 @@ public class SubjectController {
 	public ResponseEntity<Response> addSubject(@Valid @RequestBody Subject subject) 
 	{
 		logger.debug("In Adding Subject Details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		String subjectCode = null;
 		try {
 			 subjectCode = subjectService.addSubject(subject);
-			 responseBody = ResponseUtil.getResponse(200,"Subject Details Added Successfully",subjectCode);
+			 response = ResponseUtil.getResponse(200,"Subject Details Added Successfully",subjectCode);
 		} catch (ServiceException e) {
-		     responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectCode);
+		     response = ResponseUtil.getResponse(500,e.getMessage(),subjectCode);
 		} 
-		return responseBody;
+		return response;
 	}
 	@GetMapping
 	public ResponseEntity<Response> getAllSubject() 
 	{
 		logger.debug("In Retrieving All Subject Details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		List<SubjectEntity> subjectEntity = new ArrayList<>();
 		try {
 			subjectEntity = subjectService.getAllSubject();
-			responseBody = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
+			response = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
 		} 
-		return responseBody;
+		return response;
 	}
 	@GetMapping("/{code}")
 	public ResponseEntity<Response> getParticularSubject(@PathVariable("code") String code)  
      {
 		logger.debug("In Retrieving Subject Details...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
 			subjectEntity = subjectService.getParticularSubject(code);
-			responseBody = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
+			response = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntity);
 		} catch (ServiceException  e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
-		return responseBody;
+		return response;
 	 }
 	
 	@PutMapping("/{code}")
 	public ResponseEntity<Response> updateSubject(@PathVariable("code") String code,@Valid @RequestBody Subject subject) {
 		logger.debug("In Updating Subject Details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
 			subjectEntity = subjectService.updateSubject(code,subject);
-			responseBody = ResponseUtil.getResponse(200,"Subject Details Updated Successfully",subjectEntity);
+			response = ResponseUtil.getResponse(200,"Subject Details Updated Successfully",subjectEntity);
 		} catch (ServiceException  e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@DeleteMapping("/{code}")
 	public ResponseEntity<Response> deleteSubject(@PathVariable("code") String code)  {
 		logger.debug("In Deleting Subject Details...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		SubjectEntity subjectEntity = new SubjectEntity();
 		try {
 			subjectEntity= subjectService.deleteSubject(code);
-			responseBody = ResponseUtil.getResponse(200,"Subject Details Deleted Successfully",subjectEntity);
+			response = ResponseUtil.getResponse(200,"Subject Details Deleted Successfully",subjectEntity);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
+			response = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	 @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -37,72 +37,72 @@ public class ResultController {
       
       static Logger logger = Logger.getLogger("ResultController.class");
       
-      @PostMapping("/{rollNo}")
-      public ResponseEntity<Response> addResult(@PathVariable Long rollNo,@Valid @RequestBody Result result)
+      @PostMapping("/{roomNo}/{rollNo}")
+      public ResponseEntity<Response> addResult(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo,@Valid @RequestBody Result result)
       {
     	  logger.debug("In Adding Student's Result...");
-    	  ResponseEntity<Response> responseBody = null;
+    	  ResponseEntity<Response> response = null;
     	  Long resultId = null;
     	  try {
-			resultId = resultService.addResult(rollNo,result);
-			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Saved Successfully",resultId);
+			resultId = resultService.addResult(roomNo,rollNo,result);
+			response = ResponseUtil.getResponse(200,"Result Details For Student Saved Successfully",resultId);
 		} catch (ServiceException e) {
-		    responseBody = ResponseUtil.getResponse(500,e.getMessage(),resultId);
+		    response = ResponseUtil.getResponse(500,e.getMessage(),resultId);
 			} catch (NotFoundException e) {
-		   responseBody = ResponseUtil.getResponse(404,e.getMessage(),resultId);
+		   response = ResponseUtil.getResponse(404,e.getMessage(),resultId);
 		}
-    	  return responseBody;
+    	  return response;
       }
       
-      @GetMapping("/{rollNo}")
-      public ResponseEntity<Response> getResult(@PathVariable Long rollNo)
+      @GetMapping("/{roomNo}/{rollNo}")
+      public ResponseEntity<Response> getResult(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo)
       {
     	  logger.debug("In Retrieving Student's Result...");
-    	  ResponseEntity<Response> responseBody = null;
+    	  ResponseEntity<Response> response = null;
     	  ResultEntity result = new ResultEntity();
     	  try {
-			result = resultService.getResult(rollNo);
-			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Retrieved Successfully",result);
+			result = resultService.getResult(roomNo,rollNo);
+			response = ResponseUtil.getResponse(200,"Result Details For Student Retrieved Successfully",result);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);	
+			response = ResponseUtil.getResponse(500,e.getMessage(),result);	
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
+			response = ResponseUtil.getResponse(404,e.getMessage(),result);
 		}
-    	  return responseBody;
+    	  return response;
       }
       
       @GetMapping("/class/{roomNo}")
       public ResponseEntity<Response> getResultByClass(@PathVariable("roomNo") Long roomNo)
       {
     	  logger.debug("In Retrieving Student's Result by Class");
-    	  ResponseEntity<Response> responseBody = null;
+    	  ResponseEntity<Response> response = null;
     	  List<ResultEntity> resultList = new ArrayList<ResultEntity>();
     	  try {
 			resultList = resultService.getResultByClass(roomNo);
-			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Retrieved Successfully",resultList);
+			response = ResponseUtil.getResponse(200,"Result Details For Student Retrieved Successfully",resultList);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),resultList);	
+			response = ResponseUtil.getResponse(500,e.getMessage(),resultList);	
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),resultList);
+			response = ResponseUtil.getResponse(404,e.getMessage(),resultList);
 		}
-    	  return responseBody;
+    	  return response;
       }
-      @PutMapping("/{rollNo}/{resultId}")
-      public ResponseEntity<Response> updateResult(@PathVariable("rollNo") Long rollNo,@PathVariable("resultId") Long resultId,@Valid @RequestBody Result resultDetail)
+      @PutMapping("/{roomNo}/{rollNo}/{resultId}")
+      public ResponseEntity<Response> updateResult(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo,@PathVariable("resultId") Long resultId,@Valid @RequestBody Result resultDetail)
       {
     	  logger.debug("In Updating Student's Result...");
-    	  ResponseEntity<Response> responseBody = null;
+    	  ResponseEntity<Response> response = null;
     	  ResultEntity result = new ResultEntity();  
     	  try 
     	  {
-    		  result = resultService.updateResult(rollNo,resultId,resultDetail);
-  			responseBody = ResponseUtil.getResponse(200,"Result Details For Student Updated Successfully",result);
+    		  result = resultService.updateResult(roomNo,rollNo,resultId,resultDetail);
+  			response = ResponseUtil.getResponse(200,"Result Details For Student Updated Successfully",result);
     	  } catch (ServiceException e) {
-    		  responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);	
+    		  response = ResponseUtil.getResponse(500,e.getMessage(),result);	
   		} catch (NotFoundException e) {
-  			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
+  			response = ResponseUtil.getResponse(404,e.getMessage(),result);
 		}
-    	  return responseBody;
+    	  return response;
       }
       
       @ExceptionHandler(MethodArgumentNotValidException.class)

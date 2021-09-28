@@ -38,81 +38,81 @@ public class HeadMasterController {
 	public ResponseEntity<Response> addHeadMasterDetails(@Valid @RequestBody HeadMaster headMaster)
 	{
 		logger.debug("In Adding HeadMaster details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Long headMasterId =0l;
 		try {
 			headMasterId = headMasterServiceImpl.addHeadMasterDetails(headMaster);
-			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Added Succesfully", headMasterId);
+			response = ResponseUtil.getResponse(200, "HeadMaster Details Added Succesfully", headMasterId);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMasterId);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMasterId);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping
 	public ResponseEntity<Response> getAllHeadMasterDetails()
 	{
 		logger.debug("In Retrieving All HeadMaster details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		List<HeadMasterEntity> headMasterList = null;
 		try {
 		    headMasterList = headMasterServiceImpl.getAllHeadMasterDetails();
-			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Retrieved Succesfully", headMasterList);
+			response = ResponseUtil.getResponse(200, "HeadMaster Details Retrieved Succesfully", headMasterList);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMasterList);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMasterList);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Response> updateHeadMasterDetails(@PathVariable("id") Long id,@Valid @RequestBody HeadMaster headMasterDetails)
 	{
 		logger.debug("In Updating HeadMaster details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		HeadMasterEntity headMaster =null;
 		try {
 			headMaster = headMasterServiceImpl.updateHeadMasterDetails(id,headMasterDetails);
-			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Updated Succesfully", headMaster);
+			response = ResponseUtil.getResponse(200, "HeadMaster Details Updated Succesfully", headMaster);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
+			response = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Response> deleteHeadMasterDetails(@PathVariable("id") Long id)
 	{
 		logger.debug("In Deleting HeadMaster details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		HeadMasterEntity headMaster = null;
 		try {
 			headMaster =  headMasterServiceImpl.deleteHeadMasterDetails(id);
-			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Deleted Succesfully", headMaster);
+			response = ResponseUtil.getResponse(200, "HeadMaster Details Deleted Succesfully", headMaster);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
+			response = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Response> getParticularHeadMasterDetails(@PathVariable("id") Long id)
 	{
 		logger.debug("In Retrieving HeadMaster details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		HeadMasterEntity headMaster = null;
 		try {
 			headMaster = headMasterServiceImpl.getParticularHeadMasterDetails(id);
-			responseBody = ResponseUtil.getResponse(200, "HeadMaster Details Retrieved Succesfully", headMaster);
+			response = ResponseUtil.getResponse(200, "HeadMaster Details Retrieved Succesfully", headMaster);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMaster);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
+			response = ResponseUtil.getResponse(404,e.getMessage(), headMaster);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	 @ExceptionHandler(MethodArgumentNotValidException.class)

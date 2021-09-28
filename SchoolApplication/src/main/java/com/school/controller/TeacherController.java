@@ -38,78 +38,78 @@ public class TeacherController {
 	public ResponseEntity<Response> addTeacherDetails(@RequestBody Teacher teacherDetails)
 	{
 		logger.debug("In Adding Teacher details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Long teacherId = null;
 		try {
 			teacherId = teacherService.addTeacherDetails(teacherDetails);
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Details Added Successfully",teacherId);
+			response =  ResponseUtil.getResponse(200,"Teacher Details Added Successfully",teacherId);
 		} catch (ServiceException e) {
-		    responseBody = ResponseUtil.getResponse(500,e.getMessage(),teacherId);
+		    response = ResponseUtil.getResponse(500,e.getMessage(),teacherId);
 		}
-		return responseBody;
+		return response;
 	}
 	@GetMapping
 	public ResponseEntity<Response> getAllTeacherDetails()
 	{
 		logger.debug("In Retrieving All Teacher details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		List<TeacherEntity> teacherEntityList = new ArrayList<>();
 		 try {
 			teacherEntityList = teacherService.getAllTeacherDetails();
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Details Retrieved Successfully",teacherEntityList);
+			response=  ResponseUtil.getResponse(200,"Teacher Details Retrieved Successfully",teacherEntityList);
 		} catch (ServiceException e) {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),teacherEntityList);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),teacherEntityList);
 		}
-		 return responseBody;
+		 return response;
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<Response> updateTeacherDetails(@PathVariable("id") Long id,@RequestBody Teacher teacherDetails) 
 	{
 		logger.debug("In Updating Teacher details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		TeacherEntity teacherEntity = new TeacherEntity();
 		try {
 			teacherEntity = teacherService.updateTeacherDetails(id,teacherDetails);
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Details Updated Successfully",teacherEntity);
+			response =  ResponseUtil.getResponse(200,"Teacher Details Updated Successfully",teacherEntity);
 		} catch (ServiceException e) {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);		
+			 response = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);		
 		} 
 		catch (NotFoundException e) {
-			 responseBody = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);		
+			 response = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);		
 		}
-		return responseBody;
+		return response;
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Response> deleteTeacherDetails(@PathVariable("id") Long id)
 	{
 		logger.debug("In Deleting Teacher details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		TeacherEntity teacherEntity = new TeacherEntity();
 		try {
 			teacherEntity = teacherService.deleteTeacherDetails(id);
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Details Deleted Successfully",teacherEntity);
+			response =  ResponseUtil.getResponse(200,"Teacher Details Deleted Successfully",teacherEntity);
 		} catch (ServiceException e) {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);
+			response = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);
 		}
-		return responseBody;
+		return response;
 	}
 	@GetMapping("/{id}")
 	public ResponseEntity<Response> getParticularTeacherDetails(@PathVariable("id") Long id)
 	{
 		logger.debug("In Retrieving Teacher details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		TeacherEntity teacherEntity = new TeacherEntity();
 		try {
 			teacherEntity = teacherService.getParticularTeacherDetails(id);
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Details Retrieved Successfully",teacherEntity);
+			response =  ResponseUtil.getResponse(200,"Teacher Details Retrieved Successfully",teacherEntity);
 		} catch (ServiceException e) {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);
+			response = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

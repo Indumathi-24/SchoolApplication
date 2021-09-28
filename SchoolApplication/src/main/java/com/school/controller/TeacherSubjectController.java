@@ -29,49 +29,49 @@ public class TeacherSubjectController {
 	public ResponseEntity<Response> assignTeacherSubject(@RequestBody TeacherSubject teacherSubjectDetails) 
 	{
 		logger.debug("In Adding Teacher Subject details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Long id = 0l;
 		try {
 			 id = teacherSubjectServiceImpl.assignTeacherSubject(teacherSubjectDetails);
-			 responseBody = ResponseUtil.getResponse(200,"Teacher is Assigned to Subject Successfully", id);
+			 response = ResponseUtil.getResponse(200,"Teacher is Assigned to Subject Successfully", id);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),id);
+			response = ResponseUtil.getResponse(500,e.getMessage(),id);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),id);
+			response = ResponseUtil.getResponse(404,e.getMessage(),id);
 		}
-		return responseBody;
+		return response;
 	}
 	@PutMapping("/{id}/{code}")
 	public ResponseEntity<Response> updateTeacherSubjectAssign(@PathVariable("id") Long teacherId,@PathVariable("code") String subjectCode, @RequestBody TeacherSubject teacherSubjectDetails) 
 	{
 		logger.debug("In Updating Teacher Subject details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 
 		Integer count = null;
 		try {
 			count = teacherSubjectServiceImpl.updateTeacherSubjectAssign(teacherId,subjectCode,teacherSubjectDetails);
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Subject Details Updated Successfully",count);
+			response =  ResponseUtil.getResponse(200,"Teacher Subject Details Updated Successfully",count);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),count);
+			response = ResponseUtil.getResponse(500,e.getMessage(),count);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),count);
+			response = ResponseUtil.getResponse(404,e.getMessage(),count);
 		}
-		return responseBody;
+		return response;
 	}
 	@DeleteMapping("/{id}/{code}")
 	public ResponseEntity<Response> deleteTeacherSubjectAssign(@PathVariable("id") Long teacherId,@PathVariable("code") String subjectCode)
 	{
 		logger.debug("In Deleting Teacher Subject details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Integer count = null;
 		try {
 			count = teacherSubjectServiceImpl.deleteTeacherSubjectAssign(teacherId,subjectCode);
-			responseBody = ResponseUtil.getResponse(200,"Teacher Subject Details Deleted Successfully",count);
+			response = ResponseUtil.getResponse(200,"Teacher Subject Details Deleted Successfully",count);
 		} catch (ServiceException  e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),count);
+			response = ResponseUtil.getResponse(500,e.getMessage(),count);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),count);
+			response = ResponseUtil.getResponse(404,e.getMessage(),count);
 		}
-		return responseBody;
+		return response;
 	}
 }

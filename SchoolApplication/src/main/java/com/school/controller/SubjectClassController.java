@@ -26,16 +26,16 @@ public class SubjectClassController {
       public ResponseEntity<Response> assignSubjectClass(@RequestBody SubjectClass subjectClass)
       {
     	  logger.debug("In Adding SubjectClass Details");
-    	  ResponseEntity<Response> responseBody = null;
+    	  ResponseEntity<Response> response = null;
     	  Long assignId=0l;
     	  try {
 			assignId = subjectClassService.assignSubjectClass(subjectClass);
-			responseBody = ResponseUtil.getResponse(200,"Subject is Assigned to Class Successfully",assignId);
+			response = ResponseUtil.getResponse(200,"Subject is Assigned to Class Successfully",assignId);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),assignId);
+			response = ResponseUtil.getResponse(404,e.getMessage(),assignId);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),assignId);
+			response = ResponseUtil.getResponse(500,e.getMessage(),assignId);
 		}
-    	  return responseBody;
+    	  return response;
       }
 }

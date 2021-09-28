@@ -40,90 +40,86 @@ public class StudentController {
 	@PostMapping("/{roomNo}")
 	public ResponseEntity<Response> addStudent(@PathVariable("roomNo")Long roomNo,@Valid @RequestBody Student student){
 		logger.debug("In Adding Student details...");
-		ResponseEntity<Response> responseBody = null;
-		Response response = new Response();
+		ResponseEntity<Response> response = null;
 		Long studentId = 0l;
 		try {
 			studentId = studentService.addStudent(roomNo,student);
-			response.setData(studentId);
-			response.setStatusCode(200);
-			response.setStatusText("Student Details Saved Successfully");
-			responseBody = ResponseUtil.getResponse(200,"Student Details Saved Successfully",studentId);
+			response = ResponseUtil.getResponse(200,"Student Details Saved Successfully",studentId);
 		} catch (ServiceException  e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentId);
+			response = ResponseUtil.getResponse(500,e.getMessage(),studentId);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentId);
+			response = ResponseUtil.getResponse(404,e.getMessage(),studentId);
 		}
-		return responseBody;
+		return response;
 	}
 
 	@GetMapping("/{roomNo}")
 	public ResponseEntity<Response> getAllStudent(@PathVariable("roomNo") Long roomNo) 
 	{
 		logger.debug("In Retrieving All Student details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		List<StudentEntity> studentList = new ArrayList<>();
 		try {
 			studentList=studentService.getAllStudent(roomNo);
-			responseBody = ResponseUtil.getResponse(200,"Student Details Retrieved Successfully",studentList);
+			response = ResponseUtil.getResponse(200,"Student Details Retrieved Successfully",studentList);
 		} 
 		catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentList);
+			response = ResponseUtil.getResponse(500,e.getMessage(),studentList);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentList);
+			response = ResponseUtil.getResponse(404,e.getMessage(),studentList);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/{roomNo}/{rollNo}")
 	public ResponseEntity<Response> getParticularStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo) 
      {
 		logger.debug("In Retrieving Student details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		StudentEntity student = new StudentEntity();
 		try {
 			student = studentService.getParticularStudent(roomNo,rollNo);
-			responseBody = ResponseUtil.getResponse(200,"Particular Student Details Retrieved Successfully",student);
+			response = ResponseUtil.getResponse(200,"Particular Student Details Retrieved Successfully",student);
 		} 
 		catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),student);
+			response = ResponseUtil.getResponse(500,e.getMessage(),student);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),student);
+			response = ResponseUtil.getResponse(404,e.getMessage(),student);
 		}
-		return responseBody;
+		return response;
 	 }
 	
 	@PutMapping("/{roomNo}/{rollNo}")
 	public ResponseEntity<Response> updateStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo,@Valid @RequestBody Student student){
 		logger.debug("In Updating Student details...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		StudentEntity studentDetail = new StudentEntity();
 		try {
 			studentDetail=studentService.updateStudent(roomNo,rollNo,student);
-			responseBody = ResponseUtil.getResponse(200,"Student Details Updated Successfully",studentDetail);
+			response = ResponseUtil.getResponse(200,"Student Details Updated Successfully",studentDetail);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentDetail);
+			response = ResponseUtil.getResponse(500,e.getMessage(),studentDetail);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentDetail);
+			response = ResponseUtil.getResponse(404,e.getMessage(),studentDetail);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@DeleteMapping("/{roomNo}/{rollNo}")
 	public ResponseEntity<Response> deleteStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo) {
 		logger.debug("In Deleting Student details...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		StudentEntity studentDetail = new StudentEntity();
 		try {
 			studentDetail=studentService.deleteStudent(roomNo,rollNo);
-			responseBody = ResponseUtil.getResponse(200,"Student Details Deleted Successfully",studentDetail);
+			response = ResponseUtil.getResponse(200,"Student Details Deleted Successfully",studentDetail);
 		}
 		catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),studentDetail);
+			response = ResponseUtil.getResponse(500,e.getMessage(),studentDetail);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),studentDetail);
+			response = ResponseUtil.getResponse(404,e.getMessage(),studentDetail);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	 @ExceptionHandler(MethodArgumentNotValidException.class)

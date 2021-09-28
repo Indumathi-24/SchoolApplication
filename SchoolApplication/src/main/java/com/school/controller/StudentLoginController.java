@@ -36,69 +36,69 @@ public class StudentLoginController {
 	public ResponseEntity<Response> createLogin(@PathVariable("rollNo") Long rollNo,@Valid @RequestBody StudentLogin login)
 	{
 		logger.debug("In Adding Student Login details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Long loginId = 0l;
 		try {
 			loginId = studentLoginService.createLogin(rollNo,login);
-			responseBody = ResponseUtil.getResponse(200,"Student Login Details Saved Successfully",loginId);
+			response = ResponseUtil.getResponse(200,"Student Login Details Saved Successfully",loginId);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),loginId);
+			response = ResponseUtil.getResponse(500,e.getMessage(),loginId);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),loginId);
+			response = ResponseUtil.getResponse(404,e.getMessage(),loginId);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/{rollNo}")
 	public ResponseEntity<Response> getLoginDetails(@PathVariable("rollNo") Long rollNo) 
 	{
 		logger.debug("In Retrieving Student Login details...");
-		ResponseEntity<Response> responseBody =null;
+		ResponseEntity<Response> response =null;
 		StudentLoginEntity login = new StudentLoginEntity();
 		try {
 			login = studentLoginService.getLoginDetails(rollNo);
-			responseBody = ResponseUtil.getResponse(200,"Student Login Details Retrieved Successfully",login);
+			response = ResponseUtil.getResponse(200,"Student Login Details Retrieved Successfully",login);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),login);
+			response = ResponseUtil.getResponse(500,e.getMessage(),login);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),login);
+			response = ResponseUtil.getResponse(404,e.getMessage(),login);
 		}
-	  return responseBody;
+	  return response;
 	}
 	
 	@PutMapping("/{rollNo}")
 	public ResponseEntity<Response> updateLoginDetails(@PathVariable("rollNo") Long rollNo,@Valid @RequestBody StudentLogin login)
 	{
 		logger.debug("In Updating Student Login details...");
-		ResponseEntity<Response> responseBody =null;
+		ResponseEntity<Response> response =null;
 		int result = 0;
 		try {
 			result = studentLoginService.updateLoginDetails(rollNo,login);
-			responseBody = ResponseUtil.getResponse(200,"Student Login Details Updated Successfully",result);
+			response = ResponseUtil.getResponse(200,"Student Login Details Updated Successfully",result);
 		} catch (ServiceException  e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);
+			response = ResponseUtil.getResponse(500,e.getMessage(),result);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),result);
+			response = ResponseUtil.getResponse(404,e.getMessage(),result);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/studentLoginId/{autoId}")
 	public ResponseEntity<Response> getParticularLoginDetails(@PathVariable("autoId") Long autoId)
 	{
 		logger.debug("In Retrieving Student Login Id...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		Long id = 0l;
 		try {
 			id = studentLoginService.getParticularLoginDetails(autoId);
-			responseBody = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
+			response = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
 		}catch(ServiceException e)
 		{
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), id);
+			response = ResponseUtil.getResponse(500,e.getMessage(), id);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), id);
+			response = ResponseUtil.getResponse(404,e.getMessage(), id);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	 @ExceptionHandler(MethodArgumentNotValidException.class)

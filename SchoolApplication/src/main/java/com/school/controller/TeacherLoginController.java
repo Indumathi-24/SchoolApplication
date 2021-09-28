@@ -39,79 +39,71 @@ public class TeacherLoginController {
 	public ResponseEntity<Response> createLogin(@PathVariable("id") Long id,@Valid @RequestBody TeacherLogin login)
 	{
 		logger.debug("In Adding Teacher Login details...");
-		ResponseEntity<Response> responseBody =null;
-		Response response = new Response();
+		ResponseEntity<Response> response =null;
 		Long loginId = null;
 		try {
 			loginId = teacherLoginService.createLogin(id,login);
-			response.setData(loginId);
-			response.setStatusCode(200);
-			response.setStatusText("Teacher Login Details Added Successfully");
-			responseBody =  ResponseUtil.getResponse(200,"Teacher Login Details Added Successfully",loginId);
+			response =  ResponseUtil.getResponse(200,"Teacher Login Details Added Successfully",loginId);
 		} catch (ServiceException  e) {
-			responseBody =  ResponseUtil.getResponse(500,e.getMessage(),loginId);
+			response =  ResponseUtil.getResponse(500,e.getMessage(),loginId);
 		} catch (NotFoundException e) {
-			responseBody =  ResponseUtil.getResponse(404,e.getMessage(),loginId);
+			response =  ResponseUtil.getResponse(404,e.getMessage(),loginId);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Response> getLoginDetails(@PathVariable("id") Long id)
 	{
 		logger.debug("In Retrieving Teacher Login details...");
-		ResponseEntity<Response> responseBody =null;
-		Response response = new Response();
+		ResponseEntity<Response> response =null;
 		TeacherLoginEntity teacherLoginEntity = new TeacherLoginEntity();
 		try {
 			teacherLoginEntity = teacherLoginService.getLoginDetails(id);
-			response.setData(teacherLoginEntity);
-			response.setStatusCode(200);
-			response.setStatusText("Teacher Login Details Retrieved Successfully");
-			responseBody = ResponseUtil.getResponse(200,"Teacher Login Details Retrieved Successfully",teacherLoginEntity);
+			response = ResponseUtil.getResponse(200,"Teacher Login Details Retrieved Successfully",teacherLoginEntity);
 		} catch (ServiceException e) {
-			responseBody =  ResponseUtil.getResponse(500,e.getMessage(),teacherLoginEntity);
+			response =  ResponseUtil.getResponse(500,e.getMessage(),teacherLoginEntity);
 		} catch (NotFoundException e) {
-			responseBody =  ResponseUtil.getResponse(404,e.getMessage(),teacherLoginEntity);
+			response =  ResponseUtil.getResponse(404,e.getMessage(),teacherLoginEntity);
 		}
-	   return responseBody;
+	   return response;
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Response> updateLoginDetails(@PathVariable("id") Long id,@Valid @RequestBody TeacherLogin login)
 	{
 		logger.debug("In Updating Teacher Login details...");
-		ResponseEntity<Response> responseBody =null;
+		ResponseEntity<Response> response =null;
 		Integer result = null;
 		try {
 			 result = teacherLoginService.updateLoginDetails(id,login);
-			 responseBody =  ResponseUtil.getResponse(200,"Teacher Login Details Updated Successfully",result);
+			 response =  ResponseUtil.getResponse(200,"Teacher Login Details Updated Successfully",result);
 		}
 		catch(ServiceException  e)
 		{
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),result);
+			response = ResponseUtil.getResponse(500,e.getMessage(),result);
 		} catch (NotFoundException e) {
-			responseBody =  ResponseUtil.getResponse(404,e.getMessage(),result);
+			response =  ResponseUtil.getResponse(404,e.getMessage(),result);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/teacherLoginId/{autoId}")
 	public ResponseEntity<Response> getParticularLoginDetails(@PathVariable("autoId") Long autoId)
 	{
 		logger.debug("In Retrieving Teacher Login Id...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		Long id = 0l;
 		try {
 			id = teacherLoginService.getParticularLoginDetails(autoId);
-			responseBody = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
+			response = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
 		}catch(ServiceException e)
 		{
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), id);
+			response = ResponseUtil.getResponse(500,e.getMessage(), id);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), id);
+			response = ResponseUtil.getResponse(404,e.getMessage(), id);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

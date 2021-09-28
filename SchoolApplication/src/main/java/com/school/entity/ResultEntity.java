@@ -1,6 +1,7 @@
 package com.school.entity;
 
 import javax.persistence.Entity;
+
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,11 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 //@ToString
 @NoArgsConstructor
@@ -38,6 +35,11 @@ public class ResultEntity {
 	@JoinColumn(name="rollNo",nullable=false)
     @JsonIgnore
 	private StudentEntity student;
+	
+	@ManyToOne(targetEntity=ClassEntity.class,fetch=FetchType.EAGER)
+	@JoinColumn(name="roomNo",nullable=false)
+	@JsonIgnore
+	private ClassEntity classEntity;
 	
 	public ResultEntity(Long resultId, @NotNull Long term1, @NotNull Long term2, @NotNull Long term3,
 			@NotNull String result) {
@@ -82,9 +84,7 @@ public class ResultEntity {
 	}
 
 	public String getResult() {
-//		if(student.getClassEntity().getStandard()=="I" || student.getClassEntity().getStandard()=="II" ||  student.getClassEntity().getStandard()=="III" || student.getClassEntity().getStandard()=="IV" || student.getClassEntity().getStandard()=="V")
-//		{
-			if(term1+term2+term3 >=525)
+	        if(term1+term2+term3 >=525)
 			{
 				result="PASS";
 			}
@@ -92,7 +92,6 @@ public class ResultEntity {
 			{
 				result="FAIL";
 			}
-//		}
 		return result;
 	}
 
@@ -106,6 +105,14 @@ public class ResultEntity {
 
 	public void setStudent(StudentEntity student) {
 		this.student = student;
+	}
+
+	public ClassEntity getClassEntity() {
+		return classEntity;
+	}
+
+	public void setClassEntity(ClassEntity classEntity) {
+		this.classEntity = classEntity;
 	}
 	
 	

@@ -97,7 +97,7 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 		    checkHeadMaster(id);
 		    session=sessionFactory.getCurrentSession();
 		    HeadMasterEntity headMasterEntity = HeadMasterMapper.mapHeadMaster(headMasterDetails);
-		    session.find(HeadMasterEntity.class, id);
+		    //session.find(HeadMasterEntity.class, id);
 		    HeadMasterEntity newHeadMasterDetails=session.load(HeadMasterEntity.class, id);
 		    newHeadMasterDetails.setName(headMasterEntity.getName());
 		    newHeadMasterDetails.setDateOfBirth(headMasterEntity.getDateOfBirth());
@@ -109,11 +109,11 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 		    headMaster = (HeadMasterEntity) session.merge(newHeadMasterDetails);
 		    if(headMaster!=null)
 			{
-				logger.info("Updating HeadMasterDetails is Completed...");
+				logger.info("Updating HeadMasterDetails is Completed");
 			}
 		} catch (HibernateException e) {
 
-			logger.error("Error Occured While Updating Details,Enter Valid Id");
+			logger.error("Error Occured While Updating Details");
 			throw new DatabaseException(e.getMessage());
 		}
 		return headMaster;

@@ -36,69 +36,69 @@ public class HeadMasterLoginController {
 	public ResponseEntity<Response> createLogin(@PathVariable("id") Long id,@Valid @RequestBody HeadMasterLogin login)
 	{
 		logger.debug("In Adding HeadMaster Login details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Long headMasterLoginId=0l;
 		try {
 			headMasterLoginId = headMasterLoginService.createLogin(id,login);
-			responseBody = ResponseUtil.getResponse(200,"Login Details Added Successfully", headMasterLoginId);
+			response = ResponseUtil.getResponse(200,"Login Details Added Successfully", headMasterLoginId);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMasterLoginId);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMasterLoginId);
 			
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMasterLoginId);
+			response = ResponseUtil.getResponse(404,e.getMessage(), headMasterLoginId);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Response> getLoginDetails(@PathVariable("id") Long id)
 	{
 		logger.debug("In Retrieving HeadMaster Login details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		HeadMasterLoginEntity headMasterLogin = null; 
 		try {
 			headMasterLogin = headMasterLoginService.getLoginDetails(id);
-			responseBody = ResponseUtil.getResponse(200,"Login Details Retrieved Successfully", headMasterLogin);
+			response = ResponseUtil.getResponse(200,"Login Details Retrieved Successfully", headMasterLogin);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), headMasterLogin);
+			response = ResponseUtil.getResponse(500,e.getMessage(), headMasterLogin);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), headMasterLogin);
+			response = ResponseUtil.getResponse(404,e.getMessage(), headMasterLogin);
 		}
-	  return responseBody;
+	  return response;
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Response> updateLoginDetails(@PathVariable("id") Long id,@RequestBody HeadMasterLogin login)
 	{
 		logger.debug("In Updating HeadMaster Login details...");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Integer count = null;
 		try {
 			count= headMasterLoginService.updateLoginDetails(id,login);
-			responseBody = ResponseUtil.getResponse(200,"Login Details Updated Successfully", count);
+			response = ResponseUtil.getResponse(200,"Login Details Updated Successfully", count);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), count);
+			response = ResponseUtil.getResponse(500,e.getMessage(), count);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), count);
+			response = ResponseUtil.getResponse(404,e.getMessage(), count);
 		}
-		return responseBody;
+		return response;
 	}
 	@GetMapping("/loginId/{autoId}")
 	public ResponseEntity<Response> getParticularLoginDetails(@PathVariable("autoId") Long autoId)
 	{
 		logger.debug("In Retrieving HeadMaster Login Id...");
-		ResponseEntity<Response> responseBody=null;
+		ResponseEntity<Response> response=null;
 		Long id = 0l;
 		try {
 			id = headMasterLoginService.getParticularLoginDetails(autoId);
-			responseBody = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
+			response = ResponseUtil.getResponse(200,"Login Id Retrieved Successfully",id);
 		}catch(ServiceException e)
 		{
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), id);
+			response = ResponseUtil.getResponse(500,e.getMessage(), id);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), id);
+			response = ResponseUtil.getResponse(404,e.getMessage(), id);
 		}
-		return responseBody;
+		return response;
 	}
 	
 	 @ExceptionHandler(MethodArgumentNotValidException.class)

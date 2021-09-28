@@ -29,7 +29,7 @@ public class SubjectEntity {
    @NotNull
    @Size(max=15)
    private String name;
-   @OneToMany(mappedBy="subjectEntity",fetch=FetchType.EAGER)
+   @OneToMany(mappedBy="subjectEntity",fetch=FetchType.LAZY)
    @JsonIgnore
    private Set<SubjectClassEntity> subjectClass;
    public SubjectEntity(@Size(max = 7) String code, @NotNull @Size(max = 15) String name) {

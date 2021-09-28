@@ -37,72 +37,72 @@ public class ParentController {
       @PostMapping("/{rollNo}")
       public ResponseEntity<Response> addParent(@PathVariable Long rollNo,@Valid @RequestBody Parent parent) {
     	  logger.debug("In Adding Parent details...");
-    	  ResponseEntity<Response> responseBody=null;
+    	  ResponseEntity<Response> response=null;
     	  Long parentId = null;
     	  try {
     		  parentId= parentService.addParent(rollNo,parent);
-  			  responseBody = ResponseUtil.getResponse(200,"Parent Details Added Successfully",parentId);
+  			  response = ResponseUtil.getResponse(200,"Parent Details Added Successfully",parentId);
     	  } 
     	  catch (ServiceException e) {
-    		  responseBody = ResponseUtil.getResponse(500,e.getMessage(), parentId);
+    		  response = ResponseUtil.getResponse(500,e.getMessage(), parentId);
     	  } catch (NotFoundException e) {
-    		  responseBody = ResponseUtil.getResponse(404,e.getMessage(), parentId);
+    		  response = ResponseUtil.getResponse(404,e.getMessage(), parentId);
 		}
-    	  return responseBody;
+    	  return response;
       	}
       
       @GetMapping("/{rollNo}")
       public ResponseEntity<Response> getParent(@PathVariable Long rollNo)  {
     	  logger.debug("In Retrieving Parent details...");
-    	  ResponseEntity<Response> responseBody=null;
+    	  ResponseEntity<Response> response=null;
     	  List<ParentEntity> parent = null;
     	  try {
 			parent = parentService.getParent(rollNo);
-			responseBody = ResponseUtil.getResponse(200,"Parent Details Retrieved Successfully", parent);
+			response = ResponseUtil.getResponse(200,"Parent Details Retrieved Successfully", parent);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), parent);
+			response = ResponseUtil.getResponse(500,e.getMessage(), parent);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(), parent);
+			response = ResponseUtil.getResponse(404,e.getMessage(), parent);
 		}
-    	  return responseBody;
+    	  return response;
       }
       
       @PutMapping("/{id}")
       public ResponseEntity<Response> updateParent(@PathVariable Long id,@Valid @RequestBody Parent parent)  
       {
     	  logger.debug("In Updating Parent details...");
-    	  ResponseEntity<Response> responseBody = null;
+    	  ResponseEntity<Response> response = null;
     	  ParentEntity parentDetail = null;
     	  try {
 			parentDetail = parentService.updateParent(id,parent);
-			responseBody = ResponseUtil.getResponse(200,"Parent Details Updated Successfully", parentDetail);
+			response = ResponseUtil.getResponse(200,"Parent Details Updated Successfully", parentDetail);
     	  	}
     	  catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(), parentDetail);
+			response = ResponseUtil.getResponse(500,e.getMessage(), parentDetail);
     	  	} 
     	  catch (NotFoundException e) {
-    	  	responseBody = ResponseUtil.getResponse(404,e.getMessage(), parentDetail);
+    	  	response = ResponseUtil.getResponse(404,e.getMessage(), parentDetail);
 		}
-    	  return responseBody;
+    	  return response;
       }
       
       @DeleteMapping("/{id}")
       public ResponseEntity<Response> deleteParent(@PathVariable Long id) 
       {
     	  logger.debug("In Deleting Parent details...");
-    	  ResponseEntity<Response> responseBody=null;
+    	  ResponseEntity<Response> response=null;
     	  ParentEntity parent = null;
     	  try {
     		  parent = parentService.deleteParent(id);
-    		  responseBody = ResponseUtil.getResponse(200,"Parent Details Deleted Successfully", parent);
+    		  response = ResponseUtil.getResponse(200,"Parent Details Deleted Successfully", parent);
     	  	} 
     	  catch (ServiceException e) {
-    		  responseBody = ResponseUtil.getResponse(500,e.getMessage(), parent);  
+    		  response = ResponseUtil.getResponse(500,e.getMessage(), parent);  
     	  	}
     	  catch (NotFoundException e) {
-    	  		responseBody = ResponseUtil.getResponse(404,e.getMessage(), parent);
+    	  		response = ResponseUtil.getResponse(404,e.getMessage(), parent);
 		}
-    	  return responseBody;
+    	  return response;
       }
       
       @ExceptionHandler(MethodArgumentNotValidException.class)

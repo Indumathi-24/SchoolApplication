@@ -37,78 +37,78 @@ public class ClassController {
 	 @PostMapping
      public ResponseEntity<Response> addClass(@Valid @RequestBody Class classDetail){
 		logger.debug("In Add Class Details Method");
-		ResponseEntity<Response> responseBody = null;
+		ResponseEntity<Response> response = null;
 		Long roomNo=0l;
 		try {
 			roomNo = classService.addClass(classDetail);
-			responseBody = ResponseUtil.getResponse(200,"Class Details Added Successfully",roomNo);
+			response = ResponseUtil.getResponse(200,"Class Details Added Successfully",roomNo);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
+			response = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
 		}
 		
-		return responseBody;
+		return response;
 	 }
 	 @GetMapping
 	 public ResponseEntity<Response> getAllClass()
 	 {
 		 logger.debug("In Get All Class Details Method");
-		 ResponseEntity<Response> responseBody = null;
+		 ResponseEntity<Response> response = null;
 		 List<ClassEntity> classList=null;
 		try {
 			classList = classService.getAllClass();
-			responseBody = ResponseUtil.getResponse(200,"Class Details Retrieved Successfully",classList);
+			response = ResponseUtil.getResponse(200,"Class Details Retrieved Successfully",classList);
 		} catch (ServiceException e) {
-			responseBody = ResponseUtil.getResponse(500,e.getMessage(),classList);
+			response = ResponseUtil.getResponse(500,e.getMessage(),classList);
 		}
 		
-		 return responseBody;
+		 return response;
 	 }
 	 
 	 @GetMapping("/{roomNo}")
 	 public ResponseEntity<Response> getParticularClass(@PathVariable("roomNo") Long roomNo){
 		 logger.debug("In Get Class Details Method");
-		 ResponseEntity<Response> responseBody=null;
+		 ResponseEntity<Response> response=null;
 		 ClassEntity classDetail = null;
 		 try {
 			 classDetail= classService.getParticularClass(roomNo);
-			 responseBody = ResponseUtil.getResponse(200,"Particular Class Details Retrieved",classDetail);
+			 response = ResponseUtil.getResponse(200,"Particular Class Details Retrieved",classDetail);
 		} catch (ServiceException  e) {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),classDetail);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),classDetail);
 		} catch (NotFoundException e) {
-			responseBody = ResponseUtil.getResponse(404,e.getMessage(),classDetail);
+			response = ResponseUtil.getResponse(404,e.getMessage(),classDetail);
 		}
-		return responseBody; 
+		return response; 
 	 }
 	 @GetMapping("/roomNo")
 	 public ResponseEntity<Response> getRoomNo(){
 		 logger.debug("In Get Class Room No Method");
-		 ResponseEntity<Response> responseBody=null;
+		 ResponseEntity<Response> response=null;
 		 List<Long> roomNoList = null;
 		 try {
 			 roomNoList = classService.getRoomNo();
-			 responseBody = ResponseUtil.getResponse(200,"Room No's Retrieved",roomNoList);
+			 response = ResponseUtil.getResponse(200,"Room No's Retrieved",roomNoList);
 		} catch (ServiceException  e) {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),roomNoList);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),roomNoList);
 		}
-		return responseBody; 
+		return response; 
 	 }
 	 @PutMapping("/{roomNo}")
 	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@Valid @RequestBody Class classDetail) 
 	 {
 		 logger.debug("In Update Class Details Method");
-		 ResponseEntity<Response> responseBody=null;
+		 ResponseEntity<Response> response=null;
 		 ClassEntity classDetails = null;
 		 try {
 			 	classDetails = classService.updateClass(roomNo,classDetail);
-			 	responseBody = ResponseUtil.getResponse(200,"Class Details Updated",classDetails);
+			 	response = ResponseUtil.getResponse(200,"Class Details Updated",classDetails);
 			} 
 		 catch (ServiceException  e) 
 		    {
-			 responseBody = ResponseUtil.getResponse(500,e.getMessage(),classDetails);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),classDetails);
 			} catch (NotFoundException e) {
-				responseBody = ResponseUtil.getResponse(404,e.getMessage(),classDetails);
+				response = ResponseUtil.getResponse(404,e.getMessage(),classDetails);
 		}
-	    return responseBody; 
+	    return response; 
 	 }
 	 
 	 @ExceptionHandler(MethodArgumentNotValidException.class)

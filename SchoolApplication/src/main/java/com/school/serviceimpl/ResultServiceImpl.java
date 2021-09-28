@@ -28,36 +28,39 @@ public class ResultServiceImpl implements ResultService{
 	
 	static Logger logger = Logger.getLogger("ResultServiceImpl.class");
 	@Override
-	public Long addResult(Long rollNo,Result result) throws ServiceException, NotFoundException
+	public Long addResult(Long roomNo,Long rollNo,Result result) throws ServiceException, NotFoundException
 	{
 		logger.debug("In Adding Student's Result...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			studentRepository.checkStudentRollNo(rollNo);
-			return resultRepository.addResult(rollNo,result);
+			return resultRepository.addResult(roomNo,rollNo,result);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	
 	@Override
-	public ResultEntity getResult(Long rollNo) throws ServiceException, NotFoundException
+	public ResultEntity getResult(Long roomNo,Long rollNo) throws ServiceException, NotFoundException
 	{
 		logger.debug("In Retrieving Student's Result...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			studentRepository.checkStudentRollNo(rollNo);
-			return resultRepository.getResult(rollNo);
+			return resultRepository.getResult(roomNo,rollNo);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
 	
 	@Override
-	public ResultEntity updateResult(Long rollNo,Long resultId,Result result) throws ServiceException, NotFoundException
+	public ResultEntity updateResult(Long roomNo,Long rollNo,Long resultId,Result result) throws ServiceException, NotFoundException
 	{
 		logger.debug("In Updating Student's Result...");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			studentRepository.checkStudentRollNo(rollNo);
-			return resultRepository.updateResult(rollNo,resultId,result);
+			return resultRepository.updateResult(roomNo,rollNo,resultId,result);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}

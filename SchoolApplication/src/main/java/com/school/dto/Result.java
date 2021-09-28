@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Result {
 	private Long resultId;
-	@NotNull
 	private Long term1;
-	@NotNull
 	private Long term2;
-	@NotNull
 	private Long term3;
 	private String result;
 	public Long getResultId() {
@@ -47,14 +44,14 @@ public class Result {
 	}
 
 	public String getResult() {
-		if(term1+term2+term3 >=525)
-		{
-			result="PASS";
-		}
-		else
-		{
-			result="FAIL";
-		}
+//		if(term1+term2+term3 >=525)
+//		{
+//			result="PASS";
+//		}
+//		else
+//		{
+//			result="FAIL";
+//		}
 		return result;
 	}
 

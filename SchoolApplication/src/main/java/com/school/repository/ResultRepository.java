@@ -10,4 +10,5 @@ public interface ResultRepository {
 	ResultEntity getResult(Long roomNo,Long rollNo) throws DatabaseException;
 	ResultEntity updateResult(Long roomNo,Long rollNo,Long resultId,Result result) throws DatabaseException;
 	List<ResultEntity> getResultByClass(Long roomNo) throws DatabaseException;
+	Integer updateTermMarks(String termType,Long totalMarks,String termStatus,Long rollNo) throws DatabaseException;
 }

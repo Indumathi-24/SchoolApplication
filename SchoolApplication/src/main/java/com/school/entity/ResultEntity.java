@@ -23,13 +23,12 @@ public class ResultEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long resultId;
-	@NotNull
 	private Long term1;
-	@NotNull
 	private Long term2;
-	@NotNull
 	private Long term3;
-	@NotNull
+	private String term1Status;
+	private String term2Status;
+	private String term3Status;
 	private String result;
 	@ManyToOne(targetEntity=StudentEntity.class,fetch=FetchType.LAZY)
 	@JoinColumn(name="rollNo",nullable=false)
@@ -84,7 +83,7 @@ public class ResultEntity {
 	}
 
 	public String getResult() {
-	        if(term1+term2+term3 >=525)
+	        if(term1Status.equals("PASS") && term2Status.equals("PASS") && term3Status.equals("PASS"))
 			{
 				result="PASS";
 			}
@@ -113,6 +112,30 @@ public class ResultEntity {
 
 	public void setClassEntity(ClassEntity classEntity) {
 		this.classEntity = classEntity;
+	}
+
+	public String getTerm1Status() {
+		return term1Status;
+	}
+
+	public void setTerm1Status(String term1Status) {
+		this.term1Status = term1Status;
+	}
+
+	public String getTerm2Status() {
+		return term2Status;
+	}
+
+	public void setTerm2Status(String term2Status) {
+		this.term2Status = term2Status;
+	}
+
+	public String getTerm3Status() {
+		return term3Status;
+	}
+
+	public void setTerm3Status(String term3Status) {
+		this.term3Status = term3Status;
 	}
 	
 	

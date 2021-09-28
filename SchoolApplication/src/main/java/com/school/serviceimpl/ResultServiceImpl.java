@@ -10,6 +10,7 @@ import com.school.entity.ResultEntity;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
+import com.school.exception.StudentNotFoundException;
 import com.school.repository.ClassRepository;
 import com.school.repository.ResultRepository;
 import com.school.repository.StudentRepository;
@@ -76,4 +77,16 @@ public class ResultServiceImpl implements ResultService{
 			throw new ServiceException(e.getMessage());
 		}
 	}
+	
+//	@Override
+//	public Integer updateTermMarks(Long totalMarks,Long rollNo) throws ServiceException, NotFoundException 
+//	{
+//		logger.debug("In Updating Student's Result...");
+//		try {
+//			studentRepository.checkStudentRollNo(rollNo);
+//			return resultRepository.updateTermMarks(totalMarks,rollNo);
+//		} catch (DatabaseException e) {
+//			throw new ServiceException(e.getMessage());
+//		}
+//	}
 }

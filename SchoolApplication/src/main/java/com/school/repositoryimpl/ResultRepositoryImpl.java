@@ -59,6 +59,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 	 {
 		    logger.debug("In Retrieving Student Results...");
 	        ResultEntity result=new ResultEntity();
+	        ResultEntity resultEntity = new ResultEntity();
 		    Session session=null;
 	        try
 	        {
@@ -66,7 +67,20 @@ public class ResultRepositoryImpl implements ResultRepository {
 			    session=sessionFactory.getCurrentSession();
 				Query<ResultEntity> query =session.createQuery("from ResultEntity r where r.student.rollNo=:rollNo and r.classEntity.roomNo=:roomNo");
 				query.setParameter("rollNo", rollNo);
+				query.setParameter("roomNo",roomNo);
 				result= query.getSingleResult();
+				if(result.getTerm1Status().equals("PASS") && result.getTerm2Status().equals("PASS") && result.getTerm3Status().equals("PASS"))
+				{
+					result.setResult("PASS");
+				}
+				else
+				{
+					result.setResult("FAIL");
+				}
+				Query<ResultEntity> updateQuery =session.createQuery("from ResultEntity r where r.student.rollNo=:rollNo and r.classEntity.roomNo=:roomNo");
+				query.setParameter("rollNo", rollNo);
+				query.setParameter("roomNo",roomNo);
+				resultEntity = query.getSingleResult();
 			    if(result!=null)
 			    {
 			    	logger.info("Retrieving Student Results is Completed");
@@ -77,7 +91,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 				logger.error("Error Occured While Retrieving Student Results");
 				throw new DatabaseException(e.getMessage());
 			}
-	        return result;
+	        return resultEntity;
 	 }
 	 
 	 public List<ResultEntity> getResultByClass(Long roomNo) throws DatabaseException
@@ -173,4 +187,46 @@ public class ResultRepositoryImpl implements ResultRepository {
 //	        }
 //	    return resultList;
 //	 }
+	 
+	 public Integer updateTermMarks(String termType,Long totalMarks,String termStatus,Long rollNo) throws DatabaseException
+	 {
+		 logger.debug("In Updating Student Results Term marks...");
+		 Session session=null;
+		 int count = 0;
+	        try
+	        {
+	        	logger.info("Updating term Marks...");
+			    session=sessionFactory.getCurrentSession();
+			    if(termType.equals("I"))
+			    {
+			    	Query<ResultEntity> query =session.createQuery("Update ResultEntity set term1=:totalMarks,term1Status=:termStatus where student.rollNo=:rollNo");
+			    	query.setParameter("totalMarks", totalMarks);
+			    	query.setParameter("termStatus",termStatus);
+			    	query.setParameter("rollNo", rollNo);
+			    	count = query.executeUpdate();
+			    }
+			    else if(termType.equals("II"))
+			    {
+			    	Query<ResultEntity> query =session.createQuery("Update ResultEntity set term2=:totalMarks,term2Status=:termStatus where student.rollNo=:rollNo");
+			    	query.setParameter("totalMarks", totalMarks);
+			    	query.setParameter("termStatus",termStatus);
+			    	query.setParameter("rollNo", rollNo);
+			    	count = query.executeUpdate();
+			    }
+			    else
+			    {
+			    	Query<ResultEntity> query =session.createQuery("Update ResultEntity set term3=:totalMarks,term3Status=:termStatus where student.rollNo=:rollNo");
+			    	query.setParameter("totalMarks", totalMarks);
+			    	query.setParameter("termStatus",termStatus);
+			    	query.setParameter("rollNo", rollNo);
+			    	count = query.executeUpdate();
+			    }
+	        }
+	        catch(HibernateException e)
+	        {
+	        	logger.error("Error Occured While Updating Student Results");
+	        	throw new DatabaseException(e.getMessage());
+	        }
+	        return count;
+	 }
 }

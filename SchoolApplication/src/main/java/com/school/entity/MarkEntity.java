@@ -12,8 +12,9 @@ import javax.validation.constraints.Max;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
-
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name="Mark")

@@ -51,7 +51,7 @@ public class SubjectClassController {
       {
     	  logger.debug("In Retrieving SubjectClass Details");
     	  ResponseEntity<Response> response = null;
-    	  List<SubjectClassEntity> subjectClass = null;
+    	  List<String> subjectClass = null;
     	  try {
     		  subjectClass = subjectClassService.viewSubjectClass(roomNo);
 			response = ResponseUtil.getResponse(200,"Subject is Retrieved that is Assigned Class Successfully",subjectClass);
@@ -81,13 +81,30 @@ public class SubjectClassController {
       }
       
       @GetMapping("subjectAssign/{id}")
-      public ResponseEntity<Response> getSubjectClassAssignDetails(@PathVariable("id") Long id)
+      public ResponseEntity<Response> getRoomNoForAssignId(@PathVariable("id") Long id)
       {
     	  logger.debug("In Retrieving SubjectClass Details");
     	  ResponseEntity<Response> response = null;
+    	  Long roomNo = null;
+    	  try {
+    		  roomNo = subjectClassService.getRoomNoForAssignId(id);
+			response = ResponseUtil.getResponse(200,"Subject Assigned Id is Retrieved Successfully",roomNo);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(404,e.getMessage(),roomNo);
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
+		}
+    	  return response;
+      }
+      
+      @GetMapping("/subjectCode/{roomNo}/{id}")
+      public ResponseEntity<Response> getSubjectCode(@PathVariable("roomNo") Long roomNo,@PathVariable("id") Long id)
+      {
+    	  logger.debug("In Retrieving SubjectCode Details");
+    	  ResponseEntity<Response> response = null;
     	  String subjectCode = null;
     	  try {
-    		  subjectCode = subjectClassService.getSubjectClassAssignDetails(id);
+    		  subjectCode = subjectClassService.getSubjectCode(roomNo,id);
 			response = ResponseUtil.getResponse(200,"Subject Assigned Id is Retrieved Successfully",subjectCode);
 		} catch (NotFoundException e) {
 			response = ResponseUtil.getResponse(404,e.getMessage(),subjectCode);

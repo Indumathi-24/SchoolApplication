@@ -10,7 +10,8 @@ import com.school.exception.ServiceException;
 public interface SubjectClassService {
 	
 	Long assignSubjectClass(SubjectClass subjectClass) throws NotFoundException, ServiceException;
-	List<SubjectClassEntity> viewSubjectClass(Long roomNo) throws NotFoundException, ServiceException;
+	List<String> viewSubjectClass(Long roomNo) throws NotFoundException, ServiceException;
 	Long getSubjectClassAssignId(String code,Long roomNo) throws NotFoundException, ServiceException;
-	String getSubjectClassAssignDetails(Long id) throws NotFoundException, ServiceException;
+	Long getRoomNoForAssignId(Long id) throws NotFoundException, ServiceException;
+	String getSubjectCode(Long roomNo,Long id) throws NotFoundException, ServiceException;
 }

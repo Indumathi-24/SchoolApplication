@@ -41,7 +41,7 @@ public class SubjectClassRepositoryImpl implements SubjectClassRepository{
 		  studentDetail =  query.uniqueResultOptional().orElse(null);
 		  if(studentDetail==null)
 		  {
-			  throw new SubjectAssignIdNotFoundException("Student Not Found,Enter Valid Roll No");
+			  throw new SubjectAssignIdNotFoundException("Subject Assign Id Not Found,Enter Valid Id");
 		  }
 	 }
 	@Override
@@ -69,11 +69,11 @@ public class SubjectClassRepositoryImpl implements SubjectClassRepository{
 	}
 	
 	@Override
-	public List<SubjectClassEntity> viewSubjectClass(Long roomNo) throws DatabaseException
+	public List<String> viewSubjectClass(Long roomNo) throws DatabaseException
 	{
 		logger.debug("In Retrieving SubjectClass...");
 		Session session = null;
-		List<SubjectClassEntity> subjectClassList = new ArrayList<>();
+		List<String> subjectClassList = new ArrayList<>();
 		try {
 			logger.info("Retrieving SubjectClass...");
 			session =sessionFactory.getCurrentSession();
@@ -110,18 +110,40 @@ public class SubjectClassRepositoryImpl implements SubjectClassRepository{
 	}
 	
 	@Override
-	public String getSubjectClassAssignDetails(Long id) throws DatabaseException, NotFoundException
+	public Long getRoomNoForAssignId(Long id) throws DatabaseException, NotFoundException
 	{
 		logger.debug("In Retrieving SubjectClass...");
 		Session session = null;
-		String subjectCode = null;
+		Long roomNo = null;
 		try {
 			logger.info("Retrieving SubjectClass...");
 			checkSubjectAssignId(id);
 			session =sessionFactory.getCurrentSession();
-			Query query = session.createQuery("Select subjectEntity.code from SubjectClassEntity where id=:subjectAssignId");
+			Query query = session.createQuery("Select classEntity.roomNo from SubjectClassEntity where id=:subjectAssignId");
 			query.setParameter("subjectAssignId", id);
-			subjectCode =  (String) query.uniqueResult();
+			roomNo =  (Long) query.uniqueResult();
+		}
+		catch(HibernateException e)
+		{
+			throw new DatabaseException(e.getMessage());
+		}
+		return roomNo;
+	}
+	
+	@Override
+	public String getSubjectCode(Long roomNo,Long id) throws NotFoundException, DatabaseException
+	{
+		logger.debug("In Retrieving SubjectCode...");
+		Session session = null;
+		String subjectCode = null;
+		try {
+			logger.info("Retrieving SubjectCode...");
+			checkSubjectAssignId(id);
+			session =sessionFactory.getCurrentSession();
+			Query query = session.createQuery("Select subjectEntity.code from SubjectClassEntity where id=:id and classEntity.roomNo=:roomNo");
+			query.setParameter("id", id);
+			query.setParameter("roomNo", roomNo);
+			subjectCode = (String) query.uniqueResult();
 		}
 		catch(HibernateException e)
 		{

@@ -12,6 +12,7 @@ import com.school.exception.ClassNotFoundException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
+import com.school.exception.StudentNotFoundException;
 import com.school.repository.ClassRepository;
 import com.school.repository.StudentRepository;
 import com.school.service.StudentService;
@@ -50,11 +51,10 @@ public class StudentServiceImpl implements StudentService{
 	}
 	
 	@Override
-	public StudentEntity getParticularStudent(Long roomNo,Long rollNo) throws ServiceException, NotFoundException{
+	public StudentEntity getParticularStudent(Long rollNo) throws ServiceException, NotFoundException{
 		logger.debug("In Retrieving Student Details");
 		try {
-			classRepository.checkClassRoomNo(roomNo);
-			return studentRepository.getParticularStudent(roomNo,rollNo);
+			return studentRepository.getParticularStudent(rollNo);
 		}
 		catch(DatabaseException e)
 		{
@@ -81,6 +81,19 @@ public class StudentServiceImpl implements StudentService{
 		try {
 			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.deleteStudent(roomNo,rollNo);
+		}
+		catch(DatabaseException e)
+		{
+			throw new ServiceException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public Long getStudentRoomNo(Long roomNo) throws ServiceException, NotFoundException
+	{
+		logger.debug("In Retrieving Student Room No");
+		try {
+			return studentRepository.getStudentRoomNo(roomNo);
 		}
 		catch(DatabaseException e)
 		{

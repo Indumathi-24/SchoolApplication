@@ -100,7 +100,7 @@ public class StudentRepositoryImpl implements StudentRepository{
 		
   
   
-  public StudentEntity getParticularStudent(Long roomNo,Long rollNo) throws DatabaseException, NotFoundException{
+  public StudentEntity getParticularStudent(Long rollNo) throws DatabaseException, NotFoundException{
 	  logger.debug("In Retrieving Particular Student Detail");
 	  StudentEntity student = new StudentEntity();
 	  Session session=null;
@@ -109,9 +109,8 @@ public class StudentRepositoryImpl implements StudentRepository{
 		  logger.info("Retrieving Particular Student Detail");
 		  checkStudentRollNo(rollNo);
 		  session=sessionFactory.getCurrentSession();
-		  Query<StudentEntity> query=session.createQuery("from StudentEntity  where roomNo=:rNo and rollNo=:roNo");
-		  query.setParameter("rNo", roomNo);
-		  query.setParameter("roNo", rollNo);
+		  Query<StudentEntity> query=session.createQuery("from StudentEntity where rollNo=:rollNo");
+		  query.setParameter("rollNo", rollNo);
 		  student = query.getSingleResult();
 		  if(student!=null)
 		  {
@@ -181,5 +180,25 @@ public class StudentRepositoryImpl implements StudentRepository{
 	  }
 	  return studentDetail;
   }
+  
+
+    public Long getStudentRoomNo(Long rollNo) throws StudentNotFoundException, DatabaseException
+    {
+    	logger.debug("In Retrieving Student Room No");
+    	Session session=null;
+    	Long roomNo=null;
+    	try {
+    	  logger.info("Retrieving Particular Student Detail");
+  		  checkStudentRollNo(rollNo);
+  		  session=sessionFactory.getCurrentSession();
+  		  Query query=session.createQuery("Select classEntity.roomNo from StudentEntity where rollNo=:rollNo");
+  		  query.setParameter("rollNo", rollNo);
+  		  roomNo=(Long) query.uniqueResult();
+    	}
+    	catch(HibernateException e){
+    		throw new DatabaseException(e.getMessage());
+    	}
+    	return roomNo;
+    }
   
 }

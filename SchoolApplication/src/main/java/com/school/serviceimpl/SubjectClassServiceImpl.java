@@ -44,7 +44,7 @@ public class SubjectClassServiceImpl implements SubjectClassService{
 		}
       }
       @Override
-      public List<SubjectClassEntity> viewSubjectClass(Long roomNo) throws NotFoundException, ServiceException
+      public List<String> viewSubjectClass(Long roomNo) throws NotFoundException, ServiceException
       {
     	  logger.debug("In Retrieving SubjectClass Details");
     	  try {
@@ -70,13 +70,25 @@ public class SubjectClassServiceImpl implements SubjectClassService{
       }
       
       @Override
-      public  String getSubjectClassAssignDetails(Long id) throws NotFoundException, ServiceException
+      public  Long getRoomNoForAssignId(Long id) throws NotFoundException, ServiceException
        {
      	  logger.debug("In Retrieving SubjectClass Details");
      	  try {
- 			return subjectClassRepository.getSubjectClassAssignDetails(id);
+ 			return subjectClassRepository.getRoomNoForAssignId(id);
  		} catch (DatabaseException e) {
  			throw new ServiceException(e.getMessage());
  		}
        }
+      
+      @Override
+      public String getSubjectCode(Long roomNo,Long id) throws NotFoundException, ServiceException
+      {
+    	  logger.debug("In Retrieving SubjectCode Details");
+     	  try {
+     		  classRepository.checkClassRoomNo(roomNo);
+ 			return subjectClassRepository.getSubjectCode(roomNo,id);
+ 		} catch (DatabaseException e) {
+ 			throw new ServiceException(e.getMessage());
+ 		} 
+      }
 }

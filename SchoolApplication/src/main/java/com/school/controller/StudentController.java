@@ -71,14 +71,32 @@ public class StudentController {
 		return response;
 	}
 	
-	@GetMapping("/{roomNo}/{rollNo}")
-	public ResponseEntity<Response> getParticularStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo) 
+	@GetMapping("/class/{rollNo}")
+	public ResponseEntity<Response> getStudentRoomNo(@PathVariable("rollNo") Long rollNo) 
+	{
+		logger.debug("In Retrieving All Student details...");
+		ResponseEntity<Response> response = null;
+		Long roomNo = null;
+		try {
+			roomNo=studentService.getStudentRoomNo(rollNo);
+			response = ResponseUtil.getResponse(200,"Student Details Retrieved Successfully",roomNo);
+		} 
+		catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(404,e.getMessage(),roomNo);
+		}
+		return response;
+	}
+	
+	@GetMapping("/studentDetail/{rollNo}")
+	public ResponseEntity<Response> getParticularStudent(@PathVariable("rollNo") Long rollNo) 
      {
 		logger.debug("In Retrieving Student details...");
 		ResponseEntity<Response> response = null;
 		StudentEntity student = new StudentEntity();
 		try {
-			student = studentService.getParticularStudent(roomNo,rollNo);
+			student = studentService.getParticularStudent(rollNo);
 			response = ResponseUtil.getResponse(200,"Particular Student Details Retrieved Successfully",student);
 		} 
 		catch (ServiceException e) {

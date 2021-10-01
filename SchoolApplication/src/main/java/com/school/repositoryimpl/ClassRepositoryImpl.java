@@ -31,6 +31,7 @@ public class ClassRepositoryImpl implements ClassRepository {
 	      query.setParameter("rNo",roomNo);
 	      ClassEntity classDetail = new ClassEntity();
 	      classDetail= query.uniqueResultOptional().orElse(null);
+	      System.out.println(classDetail);
 	      if(classDetail==null)
 		  {
 		     throw new ClassNotFoundException("Class not Found,Enter the Valid Room No!");
@@ -137,17 +138,19 @@ public class ClassRepositoryImpl implements ClassRepository {
 		return updatedClass;
     }
     
-     public List<Long> getRoomNo() throws DatabaseException
+     public Long getRoomNo(String standard,String section) throws DatabaseException
      {
     	 logger.debug("In Retrieving Class Room No's Method");
     	 Session session = null;
-    	 List<Long> roomNoList = null;
+    	 Long roomNo = null;
     	 try {
     		 logger.info("Retrieving Class Room No's ");
     		 session = sessionFactory.getCurrentSession();
-    		 Query query = session.createQuery("Select roomNo from ClassEntity");
-    		 roomNoList = query.list();
-    		 if(!roomNoList.isEmpty())
+    		 Query query = session.createQuery("Select roomNo from ClassEntity where standard=:standard and section=:section");
+    		 query.setParameter("standard", standard);
+    		 query.setParameter("section", section);
+    		 roomNo = (Long) query.uniqueResult();
+    		 if(roomNo!=null)
     		 {
     			 logger.info("Retrieving Class Room No's is Completed ");
     		 }
@@ -157,7 +160,7 @@ public class ClassRepositoryImpl implements ClassRepository {
     		 logger.info("Error Occured while Retrieving Class Room No's ");
     		 throw new DatabaseException(e.getMessage());
     	 }
-    	 return roomNoList;
+    	 return roomNo;
      }
     	 
      }

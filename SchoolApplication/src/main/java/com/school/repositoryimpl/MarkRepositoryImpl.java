@@ -145,7 +145,7 @@ public class MarkRepositoryImpl implements MarkRepository{
 		return count;
 	}
 	
-	public List<MarkEntity> getMarks(String code,Long rollNo) throws DatabaseException, NotFoundException
+	public List<MarkEntity> getMarks(Long rollNo) throws DatabaseException, NotFoundException
 	{
 		logger.debug("In Retrieving Mark Details...");
 		Session session = null;
@@ -154,60 +154,33 @@ public class MarkRepositoryImpl implements MarkRepository{
 		{
 			logger.info("Retrieving Mark Details...");
 			session = sessionFactory.getCurrentSession();
-			SubjectEntity subjectEntity = subjectRepository.getParticularSubject(code);
-			System.out.println(subjectEntity.getName());
-			String subjectName = subjectEntity.getName();
-			System.out.println(subjectName);
-			//System.out.println(mark.getTamil());
-			switch(subjectName)
+			Query query = session.createQuery("from MarkEntity m  where m.studentEntity.rollNo=:rollNo");
+			query.setParameter("rollNo", rollNo);
+			markList = query.list();
+			if(!markList.isEmpty())
 			{
-			case "Tamil":
-				{
-					System.out.println("Inside switch");
-					Query query = session.createQuery("Select m.tamil,m.termType from MarkEntity m  where m.studentEntity.rollNo=:rollNo");
-					query.setParameter("rollNo", rollNo);
-					markList = query.list();
-					break;
-				}
-			case "English":
-			{
-				System.out.println("Inside switch");
-				Query query = session.createQuery("Select m.english,m.termType from MarkEntity m where m.studentEntity.rollNo=:rollNo");
-				query.setParameter("rollNo", rollNo);
-				markList = query.list();
-				break;
-			}	
-			
-			case "Maths":
-			{
-				System.out.println("Inside switch");
-				Query query = session.createQuery("Select m.maths,m.termType from MarkEntity m where m.studentEntity.rollNo=:rollNo");
-				query.setParameter("rollNo", rollNo);
-				markList = query.list();
-				break;
+				logger.info("Retrieving Mark Details is Completed");
 			}
-			
-			case "Science":
-			{
-				System.out.println("Inside switch");
-				Query query = session.createQuery("Select m.science,m.termType from MarkEntity m where m.studentEntity.rollNo=:rollNo");
-				query.setParameter("rollNo", rollNo);
-				markList = query.list();
-				break;
-			}
-			
-			case "SocialScience":
-			{
-				System.out.println("Inside switch");
-				Query query = session.createQuery("Select m.socialScience,m.termType from MarkEntity m where m.studentEntity.rollNo=:rollNo");
-				query.setParameter("rollNo", rollNo);
-				markList = query.list();
-				break;
-			}
-				
-			default:
-				logger.warn("Subject Name is not there!!!!");
-			}
+		}
+		catch(HibernateException e)
+		{
+			logger.error("Error Occurred while Retrieving Mark Details...");
+			throw new DatabaseException(e.getMessage());
+		}
+		return markList;
+	}
+	
+	public List<MarkEntity> getAllMarks() throws DatabaseException
+	{
+		logger.debug("In Retrieving Mark Details...");
+		Session session = null;
+		List<MarkEntity> markList =new ArrayList<MarkEntity>();
+		try
+		{
+			logger.info("Retrieving Mark Details...");
+			session = sessionFactory.getCurrentSession();
+			Query query = session.createQuery("from MarkEntity m");
+			markList = query.list();
 			if(!markList.isEmpty())
 			{
 				logger.info("Retrieving Mark Details is Completed");

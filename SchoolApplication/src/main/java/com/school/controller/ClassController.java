@@ -79,16 +79,16 @@ public class ClassController {
 		}
 		return response; 
 	 }
-	 @GetMapping("/roomNo")
-	 public ResponseEntity<Response> getRoomNo(){
+	 @GetMapping("/{standard}/{section}")
+	 public ResponseEntity<Response> getRoomNo(@PathVariable("standard") String standard,@PathVariable("section") String section){
 		 logger.debug("In Get Class Room No Method");
 		 ResponseEntity<Response> response=null;
-		 List<Long> roomNoList = null;
+		 Long roomNo = null;
 		 try {
-			 roomNoList = classService.getRoomNo();
-			 response = ResponseUtil.getResponse(200,"Room No's Retrieved",roomNoList);
+			 roomNo = classService.getRoomNo(standard,section);
+			 response = ResponseUtil.getResponse(200,"Room No's Retrieved",roomNo);
 		} catch (ServiceException  e) {
-			 response = ResponseUtil.getResponse(500,e.getMessage(),roomNoList);
+			 response = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
 		}
 		return response; 
 	 }

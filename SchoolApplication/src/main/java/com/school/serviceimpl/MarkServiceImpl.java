@@ -54,12 +54,12 @@ public class MarkServiceImpl implements MarkService{
 	
 	@Override
 	
-	public List<MarkEntity> getMarks(String code,Long rollNo) throws ServiceException, NotFoundException
+	public List<MarkEntity> getMarks(Long rollNo) throws ServiceException, NotFoundException
 	{
 		logger.debug("In Retrieving Mark details...");
 		try {
 			studentRepository.checkStudentRollNo(rollNo);
-			return markRepository.getMarks(code,rollNo);
+			return markRepository.getMarks(rollNo);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		} 
@@ -72,6 +72,16 @@ public class MarkServiceImpl implements MarkService{
 		try {
 			studentRepository.checkStudentRollNo(rollNo);
 			return markRepository.getAllTermMarks(rollNo);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		} 
+	}
+	
+	@Override
+	public List<MarkEntity> getAllMarks() throws ServiceException
+	{
+		try {
+			return markRepository.getAllMarks();
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		} 

@@ -50,10 +50,10 @@ public class StudentEntity implements Serializable{
     @JoinColumn(name="roomNo",nullable=false)
     @JsonIgnore
     private ClassEntity classEntity;
-    @OneToOne(mappedBy="student")
+    @OneToOne(mappedBy="student",cascade=CascadeType.ALL)
     @JsonIgnore
 	private StudentLoginEntity studentLogin;
-    @OneToMany(mappedBy="student",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="student",fetch=FetchType.EAGER,cascade=CascadeType.ALL,orphanRemoval=true)
     @JsonIgnore
     private Set<ResultEntity> result;
 	public StudentEntity(Long rollNo, String name, Date dateOfBirth, String gender, String address, ClassEntity classEntity

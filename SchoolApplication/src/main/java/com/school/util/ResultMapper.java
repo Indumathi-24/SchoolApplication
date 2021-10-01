@@ -13,10 +13,13 @@ public class ResultMapper {
     	 ClassEntity classEntity = new ClassEntity();
     	 classEntity.setRoomNo(roomNo);
     	 studentEntity.setRollNo(rollNo);
-    	 resultEntity.setTerm1(result.getTerm1());
-    	 resultEntity.setTerm2(result.getTerm2());
-    	 resultEntity.setTerm3(result.getTerm3());
-    	 resultEntity.setResult(result.getResult());
+    	 resultEntity.setTerm1(0l);
+    	 resultEntity.setTerm2(0l);
+    	 resultEntity.setTerm3(0l);
+    	 resultEntity.setTerm1Status("-");
+    	 resultEntity.setTerm2Status("-");
+    	 resultEntity.setTerm3Status("-");
+    	 resultEntity.setResult("-");
     	 resultEntity.setStudent(studentEntity);
     	 resultEntity.setClassEntity(classEntity);
     	 return resultEntity;

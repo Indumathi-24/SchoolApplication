@@ -66,11 +66,11 @@ public class ClassServiceImpl implements ClassService {
 		}
 	}
 	@Override
-	public List<Long> getRoomNo() throws ServiceException
+	public Long getRoomNo(String standard,String section) throws ServiceException
 	{
 		logger.debug("In Retrieving Class Room No's Method");
 		try {
-			return  classRepository.getRoomNo();
+			return  classRepository.getRoomNo(standard,section);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}

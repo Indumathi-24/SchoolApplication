@@ -1,11 +1,15 @@
 package com.school.controller;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +24,7 @@ import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/teacherSubject")
+@CrossOrigin("http://localhost:4200")
 public class TeacherSubjectController {
 
 	static Logger logger = Logger.getLogger("TeacherSubjectController.class");
@@ -32,12 +37,31 @@ public class TeacherSubjectController {
 		ResponseEntity<Response> response = null;
 		Long id = 0l;
 		try {
+			System.out.println(teacherSubjectDetails);
 			 id = teacherSubjectServiceImpl.assignTeacherSubject(teacherSubjectDetails);
 			 response = ResponseUtil.getResponse(200,"Teacher is Assigned to Subject Successfully", id);
 		} catch (ServiceException e) {
 			response = ResponseUtil.getResponse(500,e.getMessage(),id);
 		} catch (NotFoundException e) {
 			response = ResponseUtil.getResponse(404,e.getMessage(),id);
+		}
+		return response;
+	}
+	
+	@GetMapping("/{teacherId}")
+	public ResponseEntity<Response> getSubjectClassId(@PathVariable("teacherId") Long teacherId) 
+	{
+		logger.debug("In Retrieving Subject Class Ids...");
+		ResponseEntity<Response> response = null;
+		List<Long> subjectClassAssignIdList = null;
+		try {
+			System.out.println(teacherId);
+			subjectClassAssignIdList = teacherSubjectServiceImpl.getSubjectClassId(teacherId);
+			 response = ResponseUtil.getResponse(200,"Subject Class Assigned Ids are retrieved Successfully",subjectClassAssignIdList );
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectClassAssignIdList);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(404,e.getMessage(),subjectClassAssignIdList);
 		}
 		return response;
 	}

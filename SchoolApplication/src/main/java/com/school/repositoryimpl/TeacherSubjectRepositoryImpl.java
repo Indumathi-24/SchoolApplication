@@ -1,5 +1,8 @@
 package com.school.repositoryimpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.school.dto.TeacherSubject;
+import com.school.entity.SubjectClassEntity;
 import com.school.entity.TeacherSubjectEntity;
 import com.school.exception.DatabaseException;
 import com.school.repository.TeacherSubjectRepository;
@@ -99,6 +103,32 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
 			throw new DatabaseException(e.getMessage());
 		}
 		return count;
+	}
+	
+	@Override
+	public List<Long> getSubjectClassId(Long teacherId) throws DatabaseException
+	{
+		logger.debug("In Retrieving Subject Class Id...");
+		Session session=null;
+		List<Long> subjectClassAssignIdList = null;
+		try
+		{
+			logger.info("Retrieving Subject Class Id...");
+			session=sessionFactory.getCurrentSession();
+			Query query = session.createQuery("Select subjectClassEntity.id from TeacherSubjectEntity where teacher.id=:teacherId");
+			query.setParameter("teacherId", teacherId);
+			subjectClassAssignIdList = query.list();
+			if(!subjectClassAssignIdList.isEmpty())
+			{
+				logger.info("Retrieving Subject Class Id is Completed");
+			}
+		}
+		catch(HibernateException e)
+		{
+			throw new DatabaseException(e.getMessage());
+		}
+		return subjectClassAssignIdList;
+			
 	}
 
 }

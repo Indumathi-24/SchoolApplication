@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ import com.school.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api/mark")
+@CrossOrigin("http://localhost:4200")
 public class MarkController {
 	
 	static Logger logger = Logger.getLogger("MarkController.class");
@@ -69,19 +71,34 @@ public class MarkController {
 		return response;
 	}
 	
-	@GetMapping("/{code}/{rollNo}")
-	public ResponseEntity<Response> getMarks(@PathVariable("code") String code,@PathVariable("rollNo") Long rollNo)
+	@GetMapping("subjectMarks/{rollNo}")
+	public ResponseEntity<Response> getMarks(@PathVariable("rollNo") Long rollNo)
 	{
 		logger.debug("In Retrieving Marks details...");
 		ResponseEntity<Response> response=null;
 		List<MarkEntity> markList = new ArrayList<>();
 		try {
-			markList=markService.getMarks(code,rollNo);
+			markList=markService.getMarks(rollNo);
 			response = ResponseUtil.getResponse(200,"Mark Details Retrieved Successfully",markList);
 		} catch (ServiceException e) {
 			response = ResponseUtil.getResponse(500,e.getMessage(),markList);
 		} catch (NotFoundException e) {
 			response = ResponseUtil.getResponse(404,e.getMessage(),markList);
+		}
+		return response;
+	}
+	
+	@GetMapping
+	public ResponseEntity<Response> getAllMarks()
+	{
+		logger.debug("In Retrieving Marks details...");
+		ResponseEntity<Response> response=null;
+		List<MarkEntity> markList = new ArrayList<>();
+		try {
+			markList=markService.getAllMarks();
+			response = ResponseUtil.getResponse(200,"Mark Details Retrieved Successfully",markList);
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),markList);
 		}
 		return response;
 	}

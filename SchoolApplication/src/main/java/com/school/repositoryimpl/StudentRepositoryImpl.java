@@ -169,7 +169,7 @@ public class StudentRepositoryImpl implements StudentRepository{
 		StudentEntity studentEntity=session.load(StudentEntity.class, rollNo);
 		session.delete(studentEntity);
 		studentDetail = session.load(StudentEntity.class, rollNo);
-	    if(studentDetail!=null)
+	    if(studentDetail==null)
 		{
 			logger.info("Deleting Student Detail is Completed");
 		}

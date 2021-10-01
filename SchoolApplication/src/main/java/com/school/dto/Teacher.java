@@ -11,9 +11,11 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class Teacher {
 	private Long id;
 	@NotNull

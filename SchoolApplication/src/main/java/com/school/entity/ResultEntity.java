@@ -1,5 +1,6 @@
 package com.school.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 
 import javax.persistence.FetchType;
@@ -30,14 +31,14 @@ public class ResultEntity {
 	private String term2Status;
 	private String term3Status;
 	private String result;
-	@ManyToOne(targetEntity=StudentEntity.class,fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=StudentEntity.class)
 	@JoinColumn(name="rollNo",nullable=false)
-    @JsonIgnore
+    //@JsonIgnore
 	private StudentEntity student;
 	
-	@ManyToOne(targetEntity=ClassEntity.class,fetch=FetchType.EAGER)
+	@ManyToOne(targetEntity=ClassEntity.class)
 	@JoinColumn(name="roomNo",nullable=false)
-	@JsonIgnore
+	//@JsonIgnore
 	private ClassEntity classEntity;
 	
 	public ResultEntity(Long resultId, @NotNull Long term1, @NotNull Long term2, @NotNull Long term3,
@@ -83,14 +84,15 @@ public class ResultEntity {
 	}
 
 	public String getResult() {
-	        if(term1Status.equals("PASS") && term2Status.equals("PASS") && term3Status.equals("PASS"))
-			{
-				result="PASS";
-			}
-			else
-			{
-				result="FAIL";
-			}
+//		String status = "PASS";
+//	        if(term1Status.equals(status) && term2Status.equals(status) && term3Status.equals(status))
+//			{
+//				result="PASS";
+//			}
+//			else
+//			{
+//				result="FAIL";
+//			}
 		return result;
 	}
 

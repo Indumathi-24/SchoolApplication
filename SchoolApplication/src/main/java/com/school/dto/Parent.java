@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Parent {
-	@NotNull
 	private Long id;
 	@NotNull
 	private String fatherName;

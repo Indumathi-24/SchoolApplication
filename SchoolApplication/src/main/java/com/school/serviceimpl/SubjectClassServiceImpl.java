@@ -1,13 +1,17 @@
 package com.school.serviceimpl;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.school.dto.SubjectClass;
+import com.school.entity.SubjectClassEntity;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
+import com.school.exception.SubjectNotFoundException;
 import com.school.repository.ClassRepository;
 import com.school.repository.SubjectClassRepository;
 import com.school.repository.SubjectRepository;
@@ -39,4 +43,40 @@ public class SubjectClassServiceImpl implements SubjectClassService{
 			throw new ServiceException(e.getMessage());
 		}
       }
+      @Override
+      public List<SubjectClassEntity> viewSubjectClass(Long roomNo) throws NotFoundException, ServiceException
+      {
+    	  logger.debug("In Retrieving SubjectClass Details");
+    	  try {
+    		  System.out.println(roomNo);
+    		  classRepository.checkClassRoomNo(roomNo);
+			return subjectClassRepository.viewSubjectClass(roomNo);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
+      }
+      
+      @Override
+     public  Long getSubjectClassAssignId(String code,Long roomNo) throws NotFoundException, ServiceException
+      {
+    	  logger.debug("In Retrieving SubjectClass Details");
+    	  try {
+    		  System.out.println(code);
+    		  subjectRepository.checkSubjectCode(code);
+			return subjectClassRepository.getSubjectClassAssignId(code,roomNo);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
+      }
+      
+      @Override
+      public  String getSubjectClassAssignDetails(Long id) throws NotFoundException, ServiceException
+       {
+     	  logger.debug("In Retrieving SubjectClass Details");
+     	  try {
+ 			return subjectClassRepository.getSubjectClassAssignDetails(id);
+ 		} catch (DatabaseException e) {
+ 			throw new ServiceException(e.getMessage());
+ 		}
+       }
 }

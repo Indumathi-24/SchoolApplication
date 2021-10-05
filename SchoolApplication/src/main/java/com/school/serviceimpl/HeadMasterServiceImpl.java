@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.school.dto.HeadMaster;
 import com.school.entity.HeadMasterEntity;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
@@ -21,11 +23,16 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 	@Autowired
 	private HeadMasterRepository headMasterRepository;
 	@Override
-	public Long addHeadMasterDetails(HeadMaster headMaster) throws ServiceException {
+	public Long addHeadMasterDetails(HeadMaster headMaster) throws ServiceException, NotFoundException {
 		logger.debug("In Adding HeadMaster details...");
 		try {
 			return headMasterRepository.addHeadMasterDetails(headMaster);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
@@ -43,7 +50,11 @@ public class HeadMasterServiceImpl implements HeadMasterService{
 		logger.debug("In Updating HeadMaster details...");
 		try {
 			return headMasterRepository.updateHeadMasterDetails(id,headMaster);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.school.dto.Parent;
 import com.school.entity.ParentEntity;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.ParentService;
@@ -83,7 +84,14 @@ public class ParentController {
 			response = ResponseUtil.getResponse(500,e.getMessage(), parentDetail);
     	  	} 
     	  catch (NotFoundException e) {
-    	  	response = ResponseUtil.getResponse(404,e.getMessage(), parentDetail);
+    		  if(e instanceof ConstraintViolationException)
+				{
+				  response = ResponseUtil.getResponse(422,e.getMessage(),parentDetail);
+				}
+				else
+				{
+				  response = ResponseUtil.getResponse(404,e.getMessage(),parentDetail);
+				}
 		}
     	  return response;
       }

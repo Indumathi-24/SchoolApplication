@@ -2,6 +2,7 @@ package com.school.util;
 
 import java.util.Properties;
 
+
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;

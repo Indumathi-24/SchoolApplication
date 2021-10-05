@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.school.dto.Teacher;
 import com.school.entity.TeacherEntity;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.TeacherService;
@@ -47,6 +48,8 @@ public class TeacherController {
 			response =  ResponseUtil.getResponse(200,"Teacher Details Added Successfully",teacherId);
 		} catch (ServiceException e) {
 		    response = ResponseUtil.getResponse(500,e.getMessage(),teacherId);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(422,e.getMessage(),teacherId);
 		}
 		return response;
 	}
@@ -77,7 +80,14 @@ public class TeacherController {
 			 response = ResponseUtil.getResponse(500,e.getMessage(),teacherEntity);		
 		} 
 		catch (NotFoundException e) {
-			 response = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);		
+			if(e instanceof ConstraintViolationException)
+			{
+			  response = ResponseUtil.getResponse(422,e.getMessage(),teacherEntity);
+			}
+			else
+			{
+			  response = ResponseUtil.getResponse(404,e.getMessage(),teacherEntity);
+			}	
 		}
 		return response;
 	}

@@ -14,4 +14,5 @@ public interface MarkRepository {
      List<MarkEntity> getMarks(Long rollNo) throws DatabaseException, NotFoundException;
      List<MarkEntity> getAllTermMarks(Long rollNo) throws DatabaseException;
      List<MarkEntity> getAllMarks() throws DatabaseException;
+     List<MarkEntity> getAllStudentMarks(Long roomNo) throws DatabaseException;
 }

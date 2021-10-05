@@ -154,6 +154,31 @@ public class StudentRepositoryImpl implements StudentRepository{
 	  return studentDetail;
   }
   
+  public Integer updateStudentPassword(Long rollNo,String password) throws DatabaseException, NotFoundException{
+	  logger.debug("In Updating Student Password Detail");
+	  Session session=null;
+	  Integer count = 0;
+	  try
+	  {
+		logger.info("Updating Student Detail");
+		checkStudentRollNo(rollNo);
+		session=sessionFactory.getCurrentSession();
+		Query query = session.createQuery("Update StudentEntity set password=:password where rollNo=:rollNo");
+		query.setParameter("password", password);
+		query.setParameter("rollNo", rollNo);
+		count = query.executeUpdate();
+		if(count!=null)
+		{
+			logger.info("Updating Student Password Detail is Completed");
+		}
+	  }
+	  catch(HibernateException e) {
+		    logger.error("Error Occurred While Updating Student Details");
+		    throw new DatabaseException(e.getMessage());
+	  }
+	  return count;
+  }
+  
   public StudentEntity deleteStudent(Long roomNo,Long rollNo) throws DatabaseException, NotFoundException
   {
 	  logger.debug("In Deleting Student Detail");

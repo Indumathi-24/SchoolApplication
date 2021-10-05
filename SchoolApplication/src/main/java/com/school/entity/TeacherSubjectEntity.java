@@ -30,7 +30,7 @@ public class TeacherSubjectEntity implements Serializable{
 	@JsonIgnore
 	private TeacherEntity teacher;
 	@ManyToOne(targetEntity=SubjectClassEntity.class,fetch=FetchType.EAGER)
-	@JoinColumn(name="id",nullable=false)
+	@JoinColumn(name="id",nullable=false,unique=true)
 	@JsonIgnore
 	private SubjectClassEntity subjectClassEntity;
 }

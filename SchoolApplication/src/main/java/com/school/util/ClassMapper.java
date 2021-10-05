@@ -10,6 +10,7 @@ public class ClassMapper {
 		classEntity.setRoomNo(classDetail.getRoomNo());
 		classEntity.setStandard(classDetail.getStandard());
 		classEntity.setSection(classDetail.getSection());
+		classEntity.setPassPercentage(classDetail.getPassPercentage());
 		return classEntity;
 	}
 }

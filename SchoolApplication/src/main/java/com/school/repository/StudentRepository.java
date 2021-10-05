@@ -17,4 +17,5 @@ public interface StudentRepository {
 	StudentEntity updateStudent(Long roomNo,Long rollNo,Student student) throws  DatabaseException, NotFoundException;
 	StudentEntity deleteStudent(Long roomNo,Long rollNo) throws  DatabaseException, NotFoundException;
 	Long getStudentRoomNo(Long roomNo) throws StudentNotFoundException, DatabaseException;
+	Integer updateStudentPassword(Long rollNo,String password) throws DatabaseException, NotFoundException;
 }

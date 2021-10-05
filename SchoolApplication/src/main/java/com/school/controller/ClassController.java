@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.school.dto.Class;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.entity.ClassEntity;
@@ -44,6 +45,15 @@ public class ClassController {
 			response = ResponseUtil.getResponse(200,"Class Details Added Successfully",roomNo);
 		} catch (ServiceException e) {
 			response = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
+		}catch (NotFoundException e) {
+			if(e instanceof ConstraintViolationException)
+			{
+			  response = ResponseUtil.getResponse(422,e.getMessage(),roomNo);
+			}
+			else
+			{
+			  response = ResponseUtil.getResponse(404,e.getMessage(),roomNo);
+			}
 		}
 		
 		return response;
@@ -106,7 +116,14 @@ public class ClassController {
 		    {
 			 response = ResponseUtil.getResponse(500,e.getMessage(),classDetails);
 			} catch (NotFoundException e) {
-				response = ResponseUtil.getResponse(404,e.getMessage(),classDetails);
+				if(e instanceof ConstraintViolationException)
+				{
+				  response = ResponseUtil.getResponse(422,e.getMessage(),classDetails);
+				}
+				else
+				{
+				  response = ResponseUtil.getResponse(404,e.getMessage(),classDetails);
+				}
 		}
 	    return response; 
 	 }

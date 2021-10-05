@@ -17,4 +17,5 @@ public interface StudentService {
      StudentEntity updateStudent(Long roomNo,Long rollNo,Student student) throws ServiceException, NotFoundException;
      StudentEntity deleteStudent(Long roomNo,Long rollNo) throws ServiceException, NotFoundException;
      Long getStudentRoomNo(Long roomNo) throws ServiceException, NotFoundException;
+     Integer updateStudentPassword(Long rollNo,String password) throws ServiceException, NotFoundException;
 }

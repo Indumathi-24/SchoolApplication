@@ -8,7 +8,7 @@ import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 
 public interface TeacherService {
-	Long addTeacherDetails(Teacher teacherDetails) throws ServiceException;
+	Long addTeacherDetails(Teacher teacherDetails) throws ServiceException, NotFoundException;
 	List<TeacherEntity> getAllTeacherDetails() throws ServiceException;
 	TeacherEntity updateTeacherDetails(Long id,Teacher teacherDetails) throws ServiceException, NotFoundException ;
 	TeacherEntity deleteTeacherDetails(Long id) throws ServiceException, NotFoundException;

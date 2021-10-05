@@ -3,6 +3,7 @@ package com.school.serviceimpl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.school.dto.Parent;
 import com.school.entity.ParentEntity;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ParentNotFoundException;
@@ -18,6 +20,7 @@ import com.school.exception.StudentNotFoundException;
 import com.school.repository.ParentRepository;
 import com.school.repository.StudentRepository;
 import com.school.service.ParentService;
+import com.school.util.ResponseUtil;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -56,7 +59,12 @@ public class ParentServiceImpl implements ParentService {
 	{
 		try {
 			return parentRepository.updateParent(id,parent);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}

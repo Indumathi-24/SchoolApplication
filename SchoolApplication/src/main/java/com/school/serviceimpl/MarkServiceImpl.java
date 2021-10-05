@@ -4,16 +4,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.school.dto.Mark;
 import com.school.entity.MarkEntity;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.exception.StudentNotFoundException;
+import com.school.repository.ClassRepository;
 import com.school.repository.MarkRepository;
 import com.school.repository.StudentRepository;
+import com.school.repository.SubjectRepository;
 import com.school.service.MarkService;
 
 @Service
@@ -25,6 +29,12 @@ public class MarkServiceImpl implements MarkService{
 	
 	@Autowired
 	private StudentRepository studentRepository; 
+	
+	@Autowired
+	private ClassRepository classRepository;
+	
+	@Autowired
+	private SubjectRepository subjectRepository;
 	
     @Override
     public Long addMark(Long rollNo,Mark mark) throws ServiceException, NotFoundException
@@ -45,9 +55,11 @@ public class MarkServiceImpl implements MarkService{
 	{
 		logger.debug("In Updating Mark details...");
 		try {
+			subjectRepository.checkSubjectCode(code);
 			studentRepository.checkStudentRollNo(rollNo);
 			return markRepository.updateMark(code,rollNo,mark);
-		} catch (DatabaseException e) {
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		} 
 	}
@@ -72,6 +84,18 @@ public class MarkServiceImpl implements MarkService{
 		try {
 			studentRepository.checkStudentRollNo(rollNo);
 			return markRepository.getAllTermMarks(rollNo);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		} 
+	}
+	
+	@Override
+	public List<MarkEntity> getAllStudentMarks(Long roomNo) throws ServiceException, NotFoundException
+	{
+		logger.debug("In Retrieving All Term  Mark details...");
+		try {
+			classRepository.checkClassRoomNo(roomNo);
+			return markRepository.getAllStudentMarks(roomNo);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		} 

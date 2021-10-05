@@ -1,5 +1,6 @@
 package com.school.controller;
 
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.NotFoundException;
 
 import com.school.exception.ServiceException;
@@ -48,6 +49,8 @@ public class SubjectController {
 			 response = ResponseUtil.getResponse(200,"Subject Details Added Successfully",subjectCode);
 		} catch (ServiceException e) {
 		     response = ResponseUtil.getResponse(500,e.getMessage(),subjectCode);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(422,e.getMessage(),subjectCode);
 		} 
 		return response;
 	}
@@ -93,7 +96,14 @@ public class SubjectController {
 		} catch (ServiceException  e) {
 			response = ResponseUtil.getResponse(500,e.getMessage(),subjectEntity);
 		} catch (NotFoundException e) {
-			response = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
+			if(e instanceof ConstraintViolationException)
+			{
+			  response = ResponseUtil.getResponse(422,e.getMessage(),subjectEntity);
+			}
+			else
+			{
+			  response = ResponseUtil.getResponse(404,e.getMessage(),subjectEntity);
+			}
 		}
 		return response;
 	}

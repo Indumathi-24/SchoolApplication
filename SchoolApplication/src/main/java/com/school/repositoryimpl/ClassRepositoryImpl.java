@@ -1,5 +1,6 @@
 package com.school.repositoryimpl;
 import java.util.ArrayList;
+
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.school.dto.Class;
 import com.school.entity.ClassEntity;
+import com.school.exception.ClassAlreadyExistException;
 import com.school.exception.ClassNotFoundException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
@@ -38,13 +40,29 @@ public class ClassRepositoryImpl implements ClassRepository {
 		  }
 	  }
 	
-	public Long addClass(Class classDetail) throws DatabaseException {
+	public void checkClassStandardSection(String standard,String section) throws ClassAlreadyExistException  {
+		  logger.debug("In Check Class Details Method");
+	      Session session =sessionFactory.getCurrentSession();
+	      Query<ClassEntity> query=session.createQuery("from ClassEntity where standard=:standard and section=:section");
+	      query.setParameter("standard",standard);
+	      query.setParameter("section",section);
+	      ClassEntity classDetail = new ClassEntity();
+	      classDetail= query.uniqueResultOptional().orElse(null);
+	      System.out.println(classDetail);
+	      if(classDetail!=null)
+		  {
+		     throw new ClassAlreadyExistException("Standard and Section already exists");
+		  }
+	  }
+	
+	public Long addClass(Class classDetail) throws DatabaseException, NotFoundException {
 		logger.debug("In Add Class Details Method");
 		Session session=null;
 		Long roomNo = 0l;
 		try
 		{
 			logger.info("In Add Class Details Method");
+			checkClassStandardSection(classDetail.getStandard(),classDetail.getSection());
 			session = sessionFactory.getCurrentSession();
 			ClassEntity classEntity = ClassMapper.mapClass(classDetail);
 			roomNo = (Long) session.save(classEntity);
@@ -120,6 +138,7 @@ public class ClassRepositoryImpl implements ClassRepository {
 		try {
 			logger.info("Updating Class Details Method");
 			checkClassRoomNo(roomNo);
+			checkClassStandardSection(classDetail.getStandard(),classDetail.getSection());
 			session=sessionFactory.getCurrentSession();
 			ClassEntity classEntity = ClassMapper.mapClass(classDetail);
 			session.find(ClassEntity.class,roomNo);

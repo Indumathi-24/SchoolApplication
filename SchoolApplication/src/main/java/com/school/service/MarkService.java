@@ -14,4 +14,5 @@ public interface MarkService {
      List<MarkEntity> getMarks(Long rollNo) throws ServiceException, NotFoundException;
      List<MarkEntity> getAllMarks() throws ServiceException;
      List<MarkEntity> getAllTermMarks(Long rollNo) throws ServiceException, NotFoundException;
+     List<MarkEntity> getAllStudentMarks(Long roomNo) throws ServiceException, NotFoundException;
 }

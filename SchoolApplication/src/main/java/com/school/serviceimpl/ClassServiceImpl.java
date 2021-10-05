@@ -1,4 +1,6 @@
 package com.school.serviceimpl;
+import com.school.exception.ClassAlreadyExistException;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
@@ -8,6 +10,7 @@ import java.util.Optional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.school.repository.ClassRepository;
@@ -23,11 +26,16 @@ public class ClassServiceImpl implements ClassService {
 	private ClassRepository classRepository;
 	
 	@Override
-	public Long addClass(Class classEntity) throws ServiceException {
+	public Long addClass(Class classEntity) throws ServiceException, NotFoundException {
 		    logger.debug("In Add Class Details Method");
 			try {
 				return classRepository.addClass(classEntity);
-			} catch (DatabaseException e) {
+			} 
+			catch(DataIntegrityViolationException e)
+			{
+				throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+			}
+			catch (DatabaseException e) {
 				throw new ServiceException(e.getMessage());
 			}
 		
@@ -61,7 +69,12 @@ public class ClassServiceImpl implements ClassService {
 		logger.debug("In Update Class Details Method");
 		try {
 			return  classRepository.updateClass(roomNo,classDetail);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}

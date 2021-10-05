@@ -21,6 +21,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -46,9 +48,10 @@ public class StudentEntity implements Serializable{
     private String gender;
     @Column(nullable=false)
     private String address;
-    @ManyToOne(targetEntity=ClassEntity.class,fetch=FetchType.LAZY)
+    @Column(nullable=false)
+	private String password;
+    @ManyToOne(targetEntity=ClassEntity.class)
     @JoinColumn(name="roomNo",nullable=false)
-    @JsonIgnore
     private ClassEntity classEntity;
     @OneToOne(mappedBy="student",cascade=CascadeType.ALL)
     @JsonIgnore

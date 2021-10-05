@@ -1,9 +1,13 @@
 package com.school.serviceimpl;
 import java.util.List;
 
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
@@ -21,12 +25,17 @@ public class SubjectServicImpl implements SubjectService{
 	
 	
 	@Override
-	public String addSubject(Subject subject) throws ServiceException 
+	public String addSubject(Subject subject) throws ServiceException, NotFoundException 
 	{
 		logger.debug("In Adding Subject Details...");
 		try {
 			return subjectRepository.addSubject(subject);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
@@ -57,7 +66,12 @@ public class SubjectServicImpl implements SubjectService{
 		logger.debug("In Updating Subject Details...");
 		try {
 			return subjectRepository.updateSubject(code, subject);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}

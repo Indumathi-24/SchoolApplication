@@ -15,4 +15,6 @@ public class Class {
 	private String standard;
 	@NotNull
 	private String section;
+	@NotNull
+	private Double passPercentage;
 }

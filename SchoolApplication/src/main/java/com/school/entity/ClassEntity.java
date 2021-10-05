@@ -25,6 +25,8 @@ public class ClassEntity implements Serializable{
     private String standard;
     @Column(nullable=false)
     private String section;
+    @Column(nullable=false)
+    private Double passPercentage;
 	@OneToMany(mappedBy="classEntity",fetch=FetchType.EAGER)
 	@JsonIgnore
     private Set<StudentEntity> studentEntity;
@@ -34,10 +36,15 @@ public class ClassEntity implements Serializable{
 	public ClassEntity() {
 		
 	}
-	public ClassEntity(Long roomNo, String standard, String section) {
+	public ClassEntity(Long roomNo, String standard, String section, Double passPercentage,
+			Set<StudentEntity> studentEntity, Set<SubjectClassEntity> subjectClass) {
 		super();
 		this.roomNo = roomNo;
 		this.standard = standard;
 		this.section = section;
+		this.passPercentage = passPercentage;
+		this.studentEntity = studentEntity;
+		this.subjectClass = subjectClass;
 	}
+	
 }

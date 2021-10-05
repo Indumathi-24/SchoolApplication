@@ -2,6 +2,7 @@ package com.school.dto;
 
 import java.util.Date;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,4 +20,7 @@ public class Student {
     private String gender;
 	@NotNull
     private String address;
+	@NotNull
+	@Size(min=8)
+	private String password;
 }

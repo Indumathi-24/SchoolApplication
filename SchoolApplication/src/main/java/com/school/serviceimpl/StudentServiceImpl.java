@@ -75,6 +75,19 @@ public class StudentServiceImpl implements StudentService{
 		}
 	}
 	
+	
+	@Override
+	public Integer updateStudentPassword(Long rollNo,String password) throws ServiceException, NotFoundException{
+		logger.debug("In Updating Student Details");
+		try {
+			return studentRepository.updateStudentPassword(rollNo,password);
+		}
+		catch(DatabaseException e)
+		{
+			throw new ServiceException(e.getMessage());
+		}
+	}
+	
 	@Override
 	public StudentEntity deleteStudent(Long roomNo,Long rollNo) throws ServiceException, NotFoundException{
 		logger.debug("In Deleting Student Details");
@@ -93,6 +106,7 @@ public class StudentServiceImpl implements StudentService{
 	{
 		logger.debug("In Retrieving Student Room No");
 		try {
+			classRepository.checkClassRoomNo(roomNo);
 			return studentRepository.getStudentRoomNo(roomNo);
 		}
 		catch(DatabaseException e)

@@ -8,7 +8,7 @@ import com.school.dto.Subject;
 import com.school.entity.SubjectEntity;
 
 public interface SubjectService {
-	String addSubject(Subject subject) throws ServiceException;
+	String addSubject(Subject subject) throws ServiceException, NotFoundException;
 	List<SubjectEntity> getAllSubject() throws ServiceException;
 	SubjectEntity getParticularSubject(String code) throws ServiceException, NotFoundException;
 	SubjectEntity updateSubject(String code,Subject subject) throws ServiceException, NotFoundException;

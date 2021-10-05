@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.school.dto.Teacher;
 import com.school.entity.TeacherEntity;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
@@ -21,11 +23,16 @@ public class TeacherServiceImpl implements TeacherService{
 	private TeacherRepository teacherRepository;
 	
 	@Override
-	public Long addTeacherDetails(Teacher teacherDetails) throws ServiceException {
+	public Long addTeacherDetails(Teacher teacherDetails) throws ServiceException, NotFoundException {
 		logger.debug("In Adding Teacher Details");
 		try {
 			return teacherRepository.addTeacherDetails(teacherDetails);
-		} catch (DatabaseException e) {
+		}
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}
@@ -43,7 +50,12 @@ public class TeacherServiceImpl implements TeacherService{
 		logger.debug("In Updating Teacher Details");
 		try {
 			return teacherRepository.updateTeacherDetails(id,teacherDetails);
-		} catch (DatabaseException e) {
+		} 
+		catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Violating Integrity Constraints, Duplicate Key Entered");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}

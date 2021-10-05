@@ -123,6 +123,22 @@ public class StudentController {
 		return response;
 	}
 	
+	@PutMapping("password/{rollNo}/{password}")
+	public ResponseEntity<Response> updateStudentPassword(@PathVariable("rollNo") Long rollNo,@PathVariable("password") String password){
+		logger.debug("In Updating Student Password details...");
+		ResponseEntity<Response> response=null;
+		Integer count = null;
+		try {
+			count=studentService.updateStudentPassword(rollNo,password);
+			response = ResponseUtil.getResponse(200,"Student Details Updated Successfully",count);
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),count);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(404,e.getMessage(),count);
+		}
+		return response;
+	}
+	
 	@DeleteMapping("/{roomNo}/{rollNo}")
 	public ResponseEntity<Response> deleteStudent(@PathVariable("roomNo") Long roomNo,@PathVariable("rollNo") Long rollNo) {
 		logger.debug("In Deleting Student details...");

@@ -8,7 +8,7 @@ import com.school.exception.ServiceException;
 
 public interface HeadMasterService {
 	
-	Long addHeadMasterDetails(HeadMaster headMaster) throws ServiceException;
+	Long addHeadMasterDetails(HeadMaster headMaster) throws ServiceException, NotFoundException;
 	List<HeadMasterEntity> getAllHeadMasterDetails() throws ServiceException;
 	HeadMasterEntity updateHeadMasterDetails(Long id,HeadMaster headMaster) throws  ServiceException, NotFoundException;
 	HeadMasterEntity deleteHeadMasterDetails(Long id) throws ServiceException, NotFoundException;

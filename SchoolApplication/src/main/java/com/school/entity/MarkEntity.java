@@ -36,9 +36,8 @@ public class MarkEntity {
 	private Long socialScience;
 	private String termType;
 	private String result;
-	@ManyToOne(targetEntity=StudentEntity.class,fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=StudentEntity.class)
 	@JoinColumn(name="rollNo",nullable=false)
-	@JsonIgnore
 	private StudentEntity studentEntity;
 	public Long getMarkId() {
 		return markId;

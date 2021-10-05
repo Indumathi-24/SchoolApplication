@@ -119,6 +119,24 @@ public class MarkController {
 		}
 		return response;
 	}
+	
+	@GetMapping("/studentsMarks/{roomNo}")
+	public ResponseEntity<Response> getAllStudentMarks(@PathVariable("roomNo") Long roomNo)
+	{
+		logger.debug("In Retrieving Marks details of all Students...");
+		ResponseEntity<Response> response=null;
+		List<MarkEntity> markList = new ArrayList<>();
+		try {
+			markList=markService.getAllStudentMarks(roomNo);
+			response = ResponseUtil.getResponse(200,"Mark Details Retrieved Successfully",markList);
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),markList);
+		} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(404,e.getMessage(),markList);
+		}
+		return response;
+	}
+	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
         logger.error("Validation fails, Check your input!");

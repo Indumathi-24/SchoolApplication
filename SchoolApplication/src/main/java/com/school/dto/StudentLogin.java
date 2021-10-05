@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StudentLogin {
-	@NotNull
 	private Long autoId;
 	@NotNull
 	@Size(min=8)

@@ -26,8 +26,10 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 	
 	@Autowired
 	private TeacherSubjectRepository teacherSubjectRepository;
+	
 	@Autowired
 	private TeacherRepository teacherRepository;
+	
 	@Autowired
 	private SubjectRepository subjectRepository;
 	
@@ -40,11 +42,6 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 		logger.debug("In Adding TeacherSubject Details...");
 		try {
 			System.out.println(teacherSubjectDetails);
-//			teacherRepository.checkTeacher(teacherSubjectDetails.getTeacherDetail().getId());
-//			System.out.println(teacherSubjectDetails.getSubjectClassDetail().getId());
-//			System.out.println(teacherSubjectDetails.getSubjectClassDetail().getClassDetail());
-//			subjectRepository.checkSubjectCode(teacherSubjectDetails.getSubjectClassDetail().getSubject().getCode());
-			//classRepository.checkClassRoomNo(teacherSubjectDetails.getSubjectClassDetail().getClassDetail().getRoomNo());
 			return teacherSubjectRepository.assignTeacherSubject(teacherSubjectDetails);
 		} catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());

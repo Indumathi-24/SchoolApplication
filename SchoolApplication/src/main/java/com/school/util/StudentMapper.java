@@ -15,6 +15,7 @@ public class StudentMapper {
     	 studentEntity.setGender(student.getGender());
     	 studentEntity.setDateOfBirth(student.getDateOfBirth());
     	 studentEntity.setAddress(student.getAddress());
+    	 studentEntity.setPassword(student.getPassword());
     	 studentEntity.setClassEntity(classEntity);
     	 return studentEntity;
      }

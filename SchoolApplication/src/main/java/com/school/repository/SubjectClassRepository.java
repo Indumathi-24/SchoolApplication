@@ -13,4 +13,6 @@ public interface SubjectClassRepository {
     Long  getSubjectClassAssignId(String code,Long roomNo) throws DatabaseException;
     Long getRoomNoForAssignId(Long id) throws DatabaseException, NotFoundException;
     String getSubjectCode(Long roomNo,Long id) throws NotFoundException, DatabaseException;
+    List<Long> getRoomNoList(List<Long> assignIdList) throws DatabaseException;
+    List<String> getSubjectCodeList(Long roomNo,List<Long> assignIdList) throws DatabaseException;
 }

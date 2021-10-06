@@ -232,7 +232,7 @@ public class MarkRepositoryImpl implements MarkRepository{
 		{
 			logger.info("Retrieving Mark Details...");
 			session = sessionFactory.getCurrentSession();
-			Query query = session.createQuery("from MarkEntity m where m.studentEntity.rollNo=:rollNo");
+			Query query = session.createQuery("from MarkEntity m where m.studentEntity.rollNo=:rollNo order by m.termType asc");
 			query.setParameter("rollNo", rollNo);
 			markList = query.list();
 //			for(int i=0;i<markList.size();i++)
@@ -285,7 +285,7 @@ public class MarkRepositoryImpl implements MarkRepository{
 			{
 				logger.info("Retrieving Mark Details...");
 				session = sessionFactory.getCurrentSession();
-				Query query = session.createQuery("from MarkEntity m where m.studentEntity.classEntity.roomNo=:roomNo ");
+				Query query = session.createQuery("from MarkEntity m where m.studentEntity.classEntity.roomNo=:roomNo order by m.termType asc");
 				query.setParameter("roomNo", roomNo);
 				markList = query.list();
 				for(int i=0;i<markList.size();i++)

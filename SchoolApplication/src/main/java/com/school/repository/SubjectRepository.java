@@ -16,4 +16,5 @@ public interface SubjectRepository {
 	SubjectEntity getParticularSubject(String code) throws DatabaseException, NotFoundException ;
 	SubjectEntity updateSubject(String code,Subject subject) throws  DatabaseException, NotFoundException;
 	SubjectEntity deleteSubject( String code) throws DatabaseException, NotFoundException;
+	List<SubjectEntity> getSubjects(List<String> subjectCodeList) throws DatabaseException;
 }

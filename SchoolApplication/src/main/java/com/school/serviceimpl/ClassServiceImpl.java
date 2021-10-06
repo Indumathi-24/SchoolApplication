@@ -88,4 +88,15 @@ public class ClassServiceImpl implements ClassService {
 			throw new ServiceException(e.getMessage());
 		}
 	}
+	
+	@Override
+	public List<ClassEntity> getClassList(List<Long> roomNoList) throws ServiceException {
+		logger.debug("In Get Particular Class Detail Method");
+		try {
+			return classRepository.getClassList(roomNoList);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
+		
+	}
 }

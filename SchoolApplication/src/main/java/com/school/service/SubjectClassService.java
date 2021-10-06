@@ -14,4 +14,6 @@ public interface SubjectClassService {
 	Long getSubjectClassAssignId(String code,Long roomNo) throws NotFoundException, ServiceException;
 	Long getRoomNoForAssignId(Long id) throws NotFoundException, ServiceException;
 	String getSubjectCode(Long roomNo,Long id) throws NotFoundException, ServiceException;
+	List<Long> getRoomNoList(List<Long> assignIdList) throws ServiceException;
+	List<String> getSubjectCodeList(Long roomNo,List<Long> assignIdList) throws ServiceException;
 }

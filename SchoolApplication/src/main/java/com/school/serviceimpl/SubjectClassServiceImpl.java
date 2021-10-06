@@ -91,4 +91,27 @@ public class SubjectClassServiceImpl implements SubjectClassService{
  			throw new ServiceException(e.getMessage());
  		} 
       }
+      
+      @Override
+      public List<Long> getRoomNoList(List<Long> assignIdList) throws ServiceException
+       {
+     	  logger.debug("In Retrieving SubjectClass Details");
+     	  try {
+ 			return subjectClassRepository.getRoomNoList(assignIdList);
+ 		} catch (DatabaseException e) {
+ 			throw new ServiceException(e.getMessage());
+ 		}
+       }
+      
+      @Override
+      public List<String> getSubjectCodeList(Long roomNo,List<Long> assignIdList) throws ServiceException
+      {
+    	  logger.debug("In Retrieving SubjectCode Details");
+     	  try {
+ 			return subjectClassRepository.getSubjectCodeList(roomNo,assignIdList);
+ 		} catch (DatabaseException e) {
+ 			throw new ServiceException(e.getMessage());
+ 		} 
+      }
+      
 }

@@ -165,4 +165,37 @@ public class SubjectRepositoryImpl implements SubjectRepository{
 	  return subjectDetail;
     }
     
+    public List<SubjectEntity> getSubjects(List<String> subjectCodeList) throws DatabaseException
+    {
+   
+      logger.debug("In Retrieving Subject Details...");
+      List<SubjectEntity> subjectList = new ArrayList<SubjectEntity>();
+      SubjectEntity subjectEntity = new SubjectEntity();
+   	  Session session=null;
+   	  try
+   	  {
+   		  logger.info("Retrieving Subject Details...");
+   		  for(int i=0;i<subjectCodeList.size();i++)
+   		  {
+   			 System.out.println(subjectCodeList.get(i));
+   			session=sessionFactory.getCurrentSession();
+   			Query<SubjectEntity> query = session.createQuery("from SubjectEntity where code=:code");
+   			query.setParameter("code", subjectCodeList.get(i));
+   			subjectEntity = query.getSingleResult();
+   			subjectList.add(subjectEntity);
+   		  }
+   		  if(!subjectList.isEmpty())
+   		  {
+   			logger.info("Retrieving Subject Details is Completed");
+   		  }
+   	  }
+   	  catch(HibernateException e)
+   	  {
+   		logger.error("Error Occured while Retrieving Subject Details");
+		throw new DatabaseException(e.getMessage());
+   	  }
+   	  
+   	  return subjectList;
+    }
+    
 }

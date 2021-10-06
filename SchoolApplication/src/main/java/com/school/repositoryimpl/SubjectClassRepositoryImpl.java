@@ -151,4 +151,59 @@ public class SubjectClassRepositoryImpl implements SubjectClassRepository{
 		}
 		return subjectCode;
 	}
+	
+	@Override
+	public List<Long> getRoomNoList(List<Long> assignIdList) throws DatabaseException
+	{
+		logger.debug("In Retrieving Room No list...");
+		Session session = null;
+		List<Long> roomNoList = new ArrayList<>();
+		try {
+			logger.info("Retrieving Room No list...");
+			session =sessionFactory.getCurrentSession();
+			for(int i=0;i<assignIdList.size();i++)
+			{
+				Query query = session.createQuery("Select classEntity.roomNo from SubjectClassEntity where id=:subjectAssignId");
+				query.setParameter("subjectAssignId", assignIdList.get(i));
+				if(!roomNoList.contains((Long) query.uniqueResult()))
+				{
+					roomNoList.add((Long) query.uniqueResult());
+				}
+			}
+		}
+		catch(HibernateException e)
+		{
+			throw new DatabaseException(e.getMessage());
+		}
+		return roomNoList;
+	}
+	
+	@Override
+	public List<String> getSubjectCodeList(Long roomNo,List<Long> assignIdList) throws DatabaseException
+	{
+		logger.debug("In Retrieving Room No list...");
+		Session session = null;
+		List<String> subjectCodeList = new ArrayList<>();
+		String subjectCode = null;
+		try {
+			logger.info("Retrieving Room No list...");
+			session =sessionFactory.getCurrentSession();
+			for(int i=0;i<assignIdList.size();i++)
+			{
+				Query query = session.createQuery("Select subjectEntity.code from SubjectClassEntity where id=:id and classEntity.roomNo=:roomNo");
+				query.setParameter("id", assignIdList.get(i));
+				query.setParameter("roomNo", roomNo);
+				subjectCode = (String) query.uniqueResult();
+				if(subjectCode!=null)
+				{
+					subjectCodeList.add(subjectCode);
+				}
+			}
+		}
+		catch(HibernateException e)
+		{
+			throw new DatabaseException(e.getMessage());
+		}
+		return subjectCodeList;
+	}
 }

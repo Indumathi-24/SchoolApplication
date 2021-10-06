@@ -141,6 +141,7 @@ public class StudentRepositoryImpl implements StudentRepository{
 		studentDetails.setDateOfBirth(studentEntity.getDateOfBirth());
 		studentDetails.setGender(studentEntity.getGender());
 		studentDetails.setAddress(studentEntity.getAddress());
+		studentDetails.setPassword(studentEntity.getPassword());
 		studentDetail = (StudentEntity) session.merge(studentDetails);
 		if(studentDetail!=null)
 		{

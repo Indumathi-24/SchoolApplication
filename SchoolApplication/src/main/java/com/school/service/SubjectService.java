@@ -13,4 +13,5 @@ public interface SubjectService {
 	SubjectEntity getParticularSubject(String code) throws ServiceException, NotFoundException;
 	SubjectEntity updateSubject(String code,Subject subject) throws ServiceException, NotFoundException;
 	SubjectEntity deleteSubject(String code) throws ServiceException, NotFoundException;
+	List<SubjectEntity> getSubjects(List<String> subjectCodeList) throws ServiceException;
 }

@@ -1,7 +1,7 @@
 package com.school.controller;
 import com.school.service.ClassService;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -102,6 +102,21 @@ public class ClassController {
 		}
 		return response; 
 	 }
+	 
+	 @GetMapping("/roomNoList/{roomNoList}")
+	 public ResponseEntity<Response> getClassList(@PathVariable("roomNoList") List<Long> roomNoList){
+		 logger.debug("In Get Class Details Method");
+		 ResponseEntity<Response> response=null;
+		 List<ClassEntity> classList = new ArrayList<>();
+		 try {
+			 classList= classService.getClassList(roomNoList);
+			 response = ResponseUtil.getResponse(200,"Class Details Retrieved",classList);
+		} catch (ServiceException  e) {
+			 response = ResponseUtil.getResponse(500,e.getMessage(),classList);
+		} 
+		return response; 
+	 }
+	 
 	 @PutMapping("/{roomNo}")
 	 public ResponseEntity<Response> updateClass(@PathVariable("roomNo") Long roomNo,@Valid @RequestBody Class classDetail) 
 	 {

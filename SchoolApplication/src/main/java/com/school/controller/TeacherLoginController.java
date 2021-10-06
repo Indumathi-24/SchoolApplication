@@ -79,7 +79,7 @@ public class TeacherLoginController {
 		Integer result = null;
 		try {
 			 result = teacherLoginService.updateLoginDetails(id,login);
-			 response =  ResponseUtil.getResponse(200,"Teacher Login Details Updated Successfully",result);
+			 response =  ResponseUtil.getResponse(200,"Password Details Updated Successfully",result);
 		}
 		catch(ServiceException  e)
 		{

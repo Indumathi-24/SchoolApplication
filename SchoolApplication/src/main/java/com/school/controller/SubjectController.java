@@ -124,6 +124,20 @@ public class SubjectController {
 		return response;
 	}
 	
+	@GetMapping("/subjectList/{subjectCodeList}")
+	public ResponseEntity<Response> getSubjects(@PathVariable("subjectCodeList") List<String> subjectCodeList)  
+     {
+		logger.debug("In Retrieving Subject Details...");
+		ResponseEntity<Response> response=null;
+		List<SubjectEntity> subjectEntityList = new ArrayList<SubjectEntity>();
+		try {
+			subjectEntityList = subjectService.getSubjects(subjectCodeList);
+			response = ResponseUtil.getResponse(200,"Subject Details Retrieved Successfully",subjectEntityList);
+		} catch (ServiceException  e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectEntityList);
+		} 
+		return response;
+	 }
 	 @ExceptionHandler(MethodArgumentNotValidException.class)
 	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {
 	        logger.error("Validation fails, Check your input!");

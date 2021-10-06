@@ -86,4 +86,15 @@ public class SubjectServicImpl implements SubjectService{
 			throw new ServiceException(e.getMessage());
 		}
 	}
+	
+	@Override
+	public List<SubjectEntity> getSubjects(List<String> subjectCodeList) throws ServiceException
+	{
+		logger.debug("In Retrieving Subject Details...");
+		try {
+			return subjectRepository.getSubjects(subjectCodeList);
+		} catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package com.school.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -110,6 +111,36 @@ public class SubjectClassController {
 			response = ResponseUtil.getResponse(404,e.getMessage(),subjectCode);
 		} catch (ServiceException e) {
 			response = ResponseUtil.getResponse(500,e.getMessage(),subjectCode);
+		}
+    	  return response;
+      }
+      
+      @GetMapping("/subjectAssignList/{assignIdList}")
+      public ResponseEntity<Response> getRoomNoList(@PathVariable("assignIdList") List<Long> assignIdList)
+      {
+    	  logger.debug("In Retrieving SubjectClass Details");
+    	  ResponseEntity<Response> response = null;
+    	  List<Long> roomNoList = new ArrayList<>();
+    	  try {
+    		  roomNoList = subjectClassService.getRoomNoList(assignIdList);
+			response = ResponseUtil.getResponse(200,"Room No List is Retrieved Successfully",roomNoList);
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),roomNoList);
+		}
+    	  return response;
+      }
+      
+      @GetMapping("/subjectCodeList/{roomNo}/{assignIdList}")
+      public ResponseEntity<Response> getSubjectCodeList(@PathVariable("roomNo") Long roomNo,@PathVariable("assignIdList") List<Long> assignIdList)
+      {
+    	  logger.debug("In Retrieving SubjectCode Details");
+    	  ResponseEntity<Response> response = null;
+    	  List<String> subjectCodeList = null;
+    	  try {
+    		  subjectCodeList = subjectClassService.getSubjectCodeList(roomNo,assignIdList);
+			response = ResponseUtil.getResponse(200,"Subject Codes are Retrieved Successfully",subjectCodeList);
+		} catch (ServiceException e) {
+			response = ResponseUtil.getResponse(500,e.getMessage(),subjectCodeList);
 		}
     	  return response;
       }

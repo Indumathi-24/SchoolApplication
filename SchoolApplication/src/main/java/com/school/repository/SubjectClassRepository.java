@@ -9,7 +9,7 @@ import com.school.exception.NotFoundException;
 
 public interface SubjectClassRepository {
     Long assignSubjectClass(SubjectClass subjectClass) throws DatabaseException;
-    List<String> viewSubjectClass(Long roomNo) throws NotFoundException, DatabaseException;
+    List<String> viewSubjectClass(Long roomNo) throws DatabaseException, NotFoundException;
     Long  getSubjectClassAssignId(String code,Long roomNo) throws DatabaseException;
     Long getRoomNoForAssignId(Long id) throws DatabaseException, NotFoundException;
     String getSubjectCode(Long roomNo,Long id) throws NotFoundException, DatabaseException;

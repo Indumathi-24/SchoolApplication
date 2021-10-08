@@ -105,23 +105,6 @@ public class ResultController {
     	  return response;
       }
       
-//      @PutMapping("/{rollNo}/{totalMarks}")
-//      public ResponseEntity<Response> updateTermMarks(@PathVariable("rollNo") Long rollNo,@PathVariable("totalMarks") Long totalMarks)
-//      {
-//    	  logger.debug("In Updating Student's Result...");
-//    	  ResponseEntity<Response> response = null;
-//    	  Integer count = null;  
-//    	  try 
-//    	  {
-//    		  count = resultService.updateTermMarks(rollNo,totalMarks);
-//  			response = ResponseUtil.getResponse(200,"Result Details For Student Updated Successfully",count);
-//    	  } catch (ServiceException e) {
-//    		  response = ResponseUtil.getResponse(500,e.getMessage(),count);	
-//  		} catch (NotFoundException e) {
-//  			response = ResponseUtil.getResponse(404,e.getMessage(),count);
-//		}
-//    	  return response;
-//      }
       
       @ExceptionHandler(MethodArgumentNotValidException.class)
 	    public ResponseEntity<Response> validationFailed(MethodArgumentNotValidException e) {

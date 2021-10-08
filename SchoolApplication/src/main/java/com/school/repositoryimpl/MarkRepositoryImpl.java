@@ -72,15 +72,11 @@ public class MarkRepositoryImpl implements MarkRepository{
 			logger.debug("Updating Mark Details...");
 			session = sessionFactory.getCurrentSession();
 			SubjectEntity subjectEntity = subjectRepository.getParticularSubject(code);
-			System.out.println(subjectEntity.getName());
 			String subjectName = subjectEntity.getName();
-			System.out.println(subjectName);
-			System.out.println(mark.getTamil());
 			switch(subjectName)
 			{
 			case "Tamil":
 				{
-					System.out.println("Inside switch");
 					Query query = session.createQuery("Update MarkEntity m  SET m.tamil=:tamil  where m.studentEntity.rollNo=:rollNo and m.termType=:termType");
 					query.setParameter("tamil",mark.getTamil());
 					query.setParameter("rollNo", rollNo);
@@ -90,7 +86,6 @@ public class MarkRepositoryImpl implements MarkRepository{
 				}
 			case "English":
 			{
-				System.out.println("Inside switch");
 				Query query = session.createQuery("Update MarkEntity m  SET m.english=:english  where m.studentEntity.rollNo=:rollNo and m.termType=:termType");
 				query.setParameter("english",mark.getEnglish());
 				query.setParameter("rollNo", rollNo);
@@ -101,7 +96,6 @@ public class MarkRepositoryImpl implements MarkRepository{
 			
 			case "Maths":
 			{
-				System.out.println("Inside switch");
 				Query query = session.createQuery("Update MarkEntity m  SET m.maths=:maths  where m.studentEntity.rollNo=:rollNo and m.termType=:termType");
 				query.setParameter("maths",mark.getMaths());
 				query.setParameter("rollNo", rollNo);
@@ -112,7 +106,6 @@ public class MarkRepositoryImpl implements MarkRepository{
 			
 			case "Science":
 			{
-				System.out.println("Inside switch");
 				Query query = session.createQuery("Update MarkEntity m  SET m.science=:science  where m.studentEntity.rollNo=:rollNo and m.termType=:termType");
 				query.setParameter("science",mark.getScience());
 				query.setParameter("rollNo", rollNo);
@@ -123,7 +116,6 @@ public class MarkRepositoryImpl implements MarkRepository{
 			
 			case "SocialScience":
 			{
-				System.out.println("Inside switch");
 				Query query = session.createQuery("Update MarkEntity m  SET m.socialScience=:socialScience  where m.studentEntity.rollNo=:rollNo and m.termType=:termType");
 				query.setParameter("socialScience",mark.getSocialScience());
 				query.setParameter("rollNo", rollNo);
@@ -235,33 +227,6 @@ public class MarkRepositoryImpl implements MarkRepository{
 			Query query = session.createQuery("from MarkEntity m where m.studentEntity.rollNo=:rollNo order by m.termType asc");
 			query.setParameter("rollNo", rollNo);
 			markList = query.list();
-//			for(int i=0;i<markList.size();i++)
-//			{
-//				System.out.println("inside loop");
-//				System.out.println(markList.get(i));
-//				System.out.println(markList.get(i).getTermType());
-//				if(markList.get(i).getTermType().equals("I") || markList.get(i).getTermType().equals("II") || markList.get(i).getTermType().equals("III")) {
-//					System.out.println("inside term if");
-//					if(markList.get(i).getTamil()!=null && markList.get(i).getEnglish()!=null && markList.get(i).getMaths()!=null && markList.get(i).getScience()!=null && markList.get(i).getSocialScience()!=null)
-//					{
-//						System.out.println("inside mark if");
-//						totalMarks = markList.get(i).getTamil()+markList.get(i).getEnglish()+markList.get(i).getMaths()+markList.get(i).getScience()+markList.get(i).getSocialScience();
-//						System.out.println(totalMarks);
-//						if(markList.get(i).getTamil()>=35 && markList.get(i).getEnglish()>=35 && markList.get(i).getMaths()>=35 && markList.get(i).getScience()>=35 && markList.get(i).getSocialScience()>=35)
-//						{
-//							termStatus="PASS";
-//							updateResult(termStatus,rollNo,markList.get(i).getTermType());
-//						}
-//						else
-//						{
-//							termStatus="FAIL";
-//							updateResult(termStatus,rollNo,markList.get(i).getTermType());
-//						}
-//						resultRepository.updateTermMarks(markList.get(i).getTermType(),totalMarks,termStatus, rollNo);
-//					}
-//				}
-//			}
-			
 			if(!markList.isEmpty())
 			{
 				logger.info("Retrieving Mark Details is Completed");
@@ -290,17 +255,11 @@ public class MarkRepositoryImpl implements MarkRepository{
 				markList = query.list();
 				for(int i=0;i<markList.size();i++)
 				{
-					System.out.println("inside loop");
-					System.out.println(markList.get(i));
-					System.out.println(markList.get(i).getTermType());
 					if(markList.get(i).getTermType().equals("I") || markList.get(i).getTermType().equals("II") || markList.get(i).getTermType().equals("III")) {
-						System.out.println("inside term if");
-						if(markList.get(i).getTamil()!=null && markList.get(i).getEnglish()!=null && markList.get(i).getMaths()!=null && markList.get(i).getScience()!=null && markList.get(i).getSocialScience()!=null)
+						if(markList.get(i).getTamil()>=0 && markList.get(i).getEnglish()>=0 && markList.get(i).getMaths()>=0 && markList.get(i).getScience()>=0 && markList.get(i).getSocialScience()>=0)
 						{
-							System.out.println("inside mark if");
 							totalMarks = markList.get(i).getTamil()+markList.get(i).getEnglish()+markList.get(i).getMaths()+markList.get(i).getScience()+markList.get(i).getSocialScience();
-							System.out.println(totalMarks);
-							if(markList.get(i).getTamil()>=(markList.get(i).getStudentEntity().getClassEntity().getPassPercentage())*100 && markList.get(i).getEnglish()>=(markList.get(i).getStudentEntity().getClassEntity().getPassPercentage())*100 && markList.get(i).getMaths()>=(markList.get(i).getStudentEntity().getClassEntity().getPassPercentage())*100 && markList.get(i).getScience()>=(markList.get(i).getStudentEntity().getClassEntity().getPassPercentage())*100 && markList.get(i).getSocialScience()>=(markList.get(i).getStudentEntity().getClassEntity().getPassPercentage())*100)
+							if(markList.get(i).getTamil()>=markList.get(i).getStudentEntity().getClassEntity().getPassPercentage() && markList.get(i).getEnglish()>=markList.get(i).getStudentEntity().getClassEntity().getPassPercentage() && markList.get(i).getMaths()>=markList.get(i).getStudentEntity().getClassEntity().getPassPercentage()  && markList.get(i).getScience()>=markList.get(i).getStudentEntity().getClassEntity().getPassPercentage() && markList.get(i).getSocialScience()>=markList.get(i).getStudentEntity().getClassEntity().getPassPercentage())
 							{
 								termStatus="PASS";
 								updateResult(termStatus,markList.get(i).getStudentEntity().getRollNo(),markList.get(i).getTermType());

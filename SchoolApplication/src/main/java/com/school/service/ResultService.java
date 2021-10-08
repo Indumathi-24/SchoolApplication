@@ -12,5 +12,4 @@ public interface ResultService {
 	ResultEntity getResult(Long roomNo,Long rollNo) throws ServiceException, NotFoundException;
 	ResultEntity updateResult(Long roomNo,Long rollNo,Long resultId,Result result) throws ServiceException, NotFoundException;
 	List<ResultEntity> getResultByClass(Long roomNo) throws ServiceException, NotFoundException;
-	//Integer updateTermMarks(Long totalMarks,Long rollNo) throws ServiceException, NotFoundException ;
 }

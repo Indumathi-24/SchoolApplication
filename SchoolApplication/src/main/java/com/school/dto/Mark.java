@@ -1,5 +1,6 @@
 package com.school.dto;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Max;
 
 import lombok.Data;

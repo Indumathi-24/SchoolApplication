@@ -78,15 +78,4 @@ public class ResultServiceImpl implements ResultService{
 		}
 	}
 	
-//	@Override
-//	public Integer updateTermMarks(Long totalMarks,Long rollNo) throws ServiceException, NotFoundException 
-//	{
-//		logger.debug("In Updating Student's Result...");
-//		try {
-//			studentRepository.checkStudentRollNo(rollNo);
-//			return resultRepository.updateTermMarks(totalMarks,rollNo);
-//		} catch (DatabaseException e) {
-//			throw new ServiceException(e.getMessage());
-//		}
-//	}
 }

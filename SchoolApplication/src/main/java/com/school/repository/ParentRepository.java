@@ -12,7 +12,6 @@ import com.school.exception.NotFoundException;
 public interface ParentRepository {
 	 Long addParent(Long rollNo,Parent parent) throws  DatabaseException;
 	 List<ParentEntity> getParent(Long rollNo) throws  DatabaseException;
-	 //Parent getParent(Long id) throws ParentNotFoundException;
 	 ParentEntity updateParent(Long id,Parent parent) throws DatabaseException, NotFoundException;
 	 ParentEntity deleteParent(Long id) throws DatabaseException, NotFoundException;
 

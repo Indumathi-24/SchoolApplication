@@ -15,10 +15,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@NoArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="Class")
-public class ClassEntity implements Serializable{
+public class ClassEntity{
     @Id
     private Long roomNo;
     @Column(nullable=false)
@@ -33,9 +33,6 @@ public class ClassEntity implements Serializable{
 	@OneToMany(mappedBy="classEntity",fetch=FetchType.EAGER)
     @JsonIgnore
     private Set<SubjectClassEntity> subjectClass;
-	public ClassEntity() {
-		
-	}
 	public ClassEntity(Long roomNo, String standard, String section, Double passPercentage,
 			Set<StudentEntity> studentEntity, Set<SubjectClassEntity> subjectClass) {
 		super();

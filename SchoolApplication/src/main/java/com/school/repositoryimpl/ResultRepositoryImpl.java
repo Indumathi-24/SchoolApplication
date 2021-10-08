@@ -20,6 +20,8 @@ import com.school.entity.ClassEntity;
 import com.school.entity.ResultEntity;
 import com.school.entity.StudentEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.NotFoundException;
+import com.school.exception.StudentNotFoundException;
 import com.school.repository.ResultRepository;
 import com.school.util.ResultMapper;
 
@@ -94,7 +96,7 @@ public class ResultRepositoryImpl implements ResultRepository {
 	        return resultEntity;
 	 }
 	 
-	 public List<ResultEntity> getResultByClass(Long roomNo) throws DatabaseException
+	 public List<ResultEntity> getResultByClass(Long roomNo) throws DatabaseException, NotFoundException
 	 {
 		    logger.debug("In Retrieving Student Results By Class...");
 	        List<ResultEntity> resultList=new ArrayList<ResultEntity>();
@@ -109,6 +111,10 @@ public class ResultRepositoryImpl implements ResultRepository {
 			    if(!resultList.isEmpty())
 			    {
 			    	logger.info("Retrieving Student Results By Class is Completed");
+			    }
+			    else
+			    {
+			    	throw new StudentNotFoundException("Students are not assigned for this Class");
 			    }
 	        }
 			catch(HibernateException e)
@@ -148,45 +154,6 @@ public class ResultRepositoryImpl implements ResultRepository {
 	        return resultDetail;
 	 }
 	 
-//	 public List<ResultEntity> getResultByClass(Long roomNo) throws DatabaseException
-//	 {
-//		    logger.debug("In Retrieving Student Results By Class");
-//	        List<ResultEntity> resultList=new ArrayList<ResultEntity>();
-//		    Session session=null;
-//	        try
-//	        {
-//	        	logger.info("Retrieving Student Results By Class");
-//	        	session=sessionFactory.getCurrentSession();
-// 			   // Query query=session.createNativeQuery("Select p from Parent p join fetch p.rollNo where p.rollNo.rollNo=:rollNo");
-//	        	Query query = session.createSQLQuery("Select r.rollNo,r.term1,r.term2,r.term3,r.result,s.roomNo from Result r join Student s on s.rollNo=r.rollNo where roomNo=:roomNo");
-// 		   		query.setParameter("roomNo",roomNo);
-// 		   		List<Object[]> resultDetail =  query.list();
-// 		   		for(Object[] data:resultDetail)
-// 		   		{
-// 		   			ResultEntity result = new ResultEntity();
-// 		   			StudentEntity student = new StudentEntity();
-// 		   			ClassEntity classEntity = new ClassEntity();
-// 		   			classEntity.setRoomNo(Long.parseLong(data[5].toString()));
-// 		   			student.setRollNo(Long.parseLong(data[0].toString()));
-// 		   			student.setClassEntity(classEntity);
-// 		   		    result.setStudent(student);
-// 		   		    result.setTerm1(Long.parseLong(data[1].toString()));
-// 		   		    result.setTerm2(Long.parseLong(data[2].toString()));
-// 		   		    result.setTerm3(Long.parseLong(data[3].toString()));
-// 		   		    result.setResult(data[4].toString());
-// 		   			resultList.add(result);
-// 		   		}
-// 		    if(!resultList.isEmpty())
-// 		    {
-// 		    	logger.info("Retrieving  Student Results By Class is Completed");
-// 		    }
-//	      }
-//	        catch(HibernateException e)
-//	        {
-//	        	throw new DatabaseException(e.getMessage());
-//	        }
-//	    return resultList;
-//	 }
 	 
 	 public Integer updateTermMarks(String termType,Long totalMarks,String termStatus,Long rollNo) throws DatabaseException
 	 {

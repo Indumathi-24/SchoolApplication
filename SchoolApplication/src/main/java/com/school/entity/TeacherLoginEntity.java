@@ -25,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name="login")
-public class TeacherLoginEntity implements Serializable{
+public class TeacherLoginEntity{
 
 	
 	@Id

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.school.dto.TeacherSubject;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.service.TeacherSubjectService;
@@ -43,7 +44,14 @@ public class TeacherSubjectController {
 		} catch (ServiceException e) {
 			response = ResponseUtil.getResponse(500,e.getMessage(),id);
 		} catch (NotFoundException e) {
-			response = ResponseUtil.getResponse(404,e.getMessage(),id);
+			if(e instanceof ConstraintViolationException)
+			{
+				response = ResponseUtil.getResponse(422,"Teacher Already Assiged",id);
+			}
+			else
+			{
+				response = ResponseUtil.getResponse(404,e.getMessage(),id);
+			}
 		}
 		return response;
 	}

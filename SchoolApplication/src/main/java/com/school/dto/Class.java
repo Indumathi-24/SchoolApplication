@@ -1,4 +1,5 @@
 package com.school.dto;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
@@ -16,5 +17,6 @@ public class Class {
 	@NotNull
 	private String section;
 	@NotNull
+	@Max(100)
 	private Double passPercentage;
 }

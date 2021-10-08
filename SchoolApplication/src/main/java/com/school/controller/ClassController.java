@@ -99,7 +99,9 @@ public class ClassController {
 			 response = ResponseUtil.getResponse(200,"Room No's Retrieved",roomNo);
 		} catch (ServiceException  e) {
 			 response = ResponseUtil.getResponse(500,e.getMessage(),roomNo);
-		}
+		}catch (NotFoundException e) {
+				response = ResponseUtil.getResponse(404,e.getMessage(),roomNo);
+			}
 		return response; 
 	 }
 	 
@@ -139,6 +141,26 @@ public class ClassController {
 				{
 				  response = ResponseUtil.getResponse(404,e.getMessage(),classDetails);
 				}
+		}
+	    return response; 
+	 }
+	 
+	 @PutMapping("/{roomNo}/{passPercentage}")
+	 public ResponseEntity<Response> updatePassPercentage(@PathVariable("roomNo") Long roomNo,@PathVariable("passPercentage") Double passPercentage) 
+	 {
+		 logger.debug("In Update Class Details Method");
+		 ResponseEntity<Response> response=null;
+		 Integer count = null;
+		 try {
+			 count = classService.updatePassPercentage(roomNo,passPercentage);
+			 response = ResponseUtil.getResponse(200,"Class Details Updated",count);
+			} 
+		 catch (ServiceException  e) 
+		    {
+			 response = ResponseUtil.getResponse(500,e.getMessage(),count);
+			} catch (NotFoundException e) {
+			response = ResponseUtil.getResponse(404,e.getMessage(),count);
+				
 		}
 	    return response; 
 	 }

@@ -11,6 +11,7 @@ public interface ClassService {
 	List<ClassEntity> getAllClass() throws ServiceException;
     ClassEntity getParticularClass(Long roomNo) throws ServiceException, NotFoundException;
     ClassEntity updateClass(Long roomNo,Class classDetail) throws ServiceException, NotFoundException;
-    Long getRoomNo(String standard,String section) throws ServiceException;
+    Long getRoomNo(String standard,String section) throws ServiceException, NotFoundException;
     List<ClassEntity> getClassList(List<Long> roomNoList) throws ServiceException;
+    Integer updatePassPercentage(Long roomNo,Double passPercentage) throws NotFoundException,ServiceException;
 }

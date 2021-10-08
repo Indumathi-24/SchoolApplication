@@ -35,7 +35,6 @@ public class SubjectClassServiceImpl implements SubjectClassService{
       {
     	  logger.debug("In Adding SubjectClass Details");
     	  try {
-    		  System.out.println(subjectClass);
     		  classRepository.checkClassRoomNo(subjectClass.getClassDetail().getRoomNo());
     		  subjectRepository.checkSubjectCode(subjectClass.getSubject().getCode());
 			return subjectClassRepository.assignSubjectClass(subjectClass);
@@ -48,7 +47,6 @@ public class SubjectClassServiceImpl implements SubjectClassService{
       {
     	  logger.debug("In Retrieving SubjectClass Details");
     	  try {
-    		  System.out.println(roomNo);
     		  classRepository.checkClassRoomNo(roomNo);
 			return subjectClassRepository.viewSubjectClass(roomNo);
 		} catch (DatabaseException e) {
@@ -61,7 +59,6 @@ public class SubjectClassServiceImpl implements SubjectClassService{
       {
     	  logger.debug("In Retrieving SubjectClass Details");
     	  try {
-    		  System.out.println(code);
     		  subjectRepository.checkSubjectCode(code);
 			return subjectClassRepository.getSubjectClassAssignId(code,roomNo);
 		} catch (DatabaseException e) {

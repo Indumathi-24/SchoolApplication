@@ -84,7 +84,6 @@ public class ParentRepositoryImpl implements ParentRepository{
     	   {
     		   logger.info("Retrieving Parent Details");
     		   session=sessionFactory.getCurrentSession();
-    			   // Query query=session.createNativeQuery("Select p from Parent p join fetch p.rollNo where p.rollNo.rollNo=:rollNo");
     		   Query query = session.createSQLQuery("Select p.id,p.fatherName,p.motherName,p.contactNo from Parent p join rollNo r on p.id=r.ParentEntity_id where r.studentEntity_rollNo=:rollNo");
     		   query.setParameter("rollNo",rollNo);
     		   List<Object[]> parentDetail =  query.list();
@@ -110,23 +109,6 @@ public class ParentRepositoryImpl implements ParentRepository{
     	   return parent;
        }
        
-       /*public Parent getParent(Long id) throws ParentNotFoundException
-       {
-    	   Parent parent =new Parent();
-    	   boolean status=checkParentById(id);
-    	   if(!status) {
-    		   throw new ParentNotFoundException("Parent Not Found");
-    	   }
-    	   else
-    	   {
-    		   Session session=sessionFactory.openSession();
-    		   Query query=session.createQuery("from Parent where id=:id");
-    		   query.setParameter("id", id);
-    		   parent=(Parent) query.getSingleResult();
-    		   session.close();
-    	   }
-    	   return parent;
-       }*/
        
        public  ParentEntity updateParent(Long id,Parent parent) throws DatabaseException, NotFoundException{
     	   logger.debug("In Updating Parent Details...");

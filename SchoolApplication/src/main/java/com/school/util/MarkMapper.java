@@ -10,11 +10,12 @@ public class MarkMapper {
     	 MarkEntity markEntity = new MarkEntity();
     	 StudentEntity studentEntity = new StudentEntity();
     	 studentEntity.setRollNo(rollNo);
-    	 markEntity.setTamil(mark.getTamil());
-    	 markEntity.setEnglish(mark.getEnglish());
-    	 markEntity.setMaths(mark.getMaths());
-    	 markEntity.setScience(mark.getScience());
-    	 markEntity.setSocialScience(mark.getSocialScience());
+    	 markEntity.setTamil(-1l);
+    	 markEntity.setEnglish(-1l);
+    	 markEntity.setMaths(-1l);
+    	 markEntity.setScience(-1l);
+    	 markEntity.setSocialScience(-1l);
+    	 markEntity.setResult("NE");
     	 markEntity.setTermType(mark.getTermType());
     	 markEntity.setStudentEntity(studentEntity);
     	 return markEntity;

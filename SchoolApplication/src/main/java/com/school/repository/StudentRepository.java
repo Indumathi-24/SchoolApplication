@@ -12,7 +12,7 @@ public interface StudentRepository {
     void checkStudentRollNo(Long rollNo) throws StudentNotFoundException;
     StudentEntity getStudent(Long rollNo);
 	Long addStudent(Long roomNo,Student student) throws DatabaseException;
-	List<StudentEntity> getAllStudent(Long roomNo) throws DatabaseException;
+	List<StudentEntity> getAllStudent(Long roomNo) throws DatabaseException, NotFoundException;
 	StudentEntity getParticularStudent(Long rollNo) throws DatabaseException, NotFoundException;
 	StudentEntity updateStudent(Long roomNo,Long rollNo,Student student) throws  DatabaseException, NotFoundException;
 	StudentEntity deleteStudent(Long roomNo,Long rollNo) throws  DatabaseException, NotFoundException;

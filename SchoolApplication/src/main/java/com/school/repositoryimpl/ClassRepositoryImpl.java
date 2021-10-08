@@ -33,7 +33,6 @@ public class ClassRepositoryImpl implements ClassRepository {
 	      query.setParameter("rNo",roomNo);
 	      ClassEntity classDetail = new ClassEntity();
 	      classDetail= query.uniqueResultOptional().orElse(null);
-	      System.out.println(classDetail);
 	      if(classDetail==null)
 		  {
 		     throw new ClassNotFoundException("Class not Found,Enter the Valid Room No!");
@@ -48,7 +47,6 @@ public class ClassRepositoryImpl implements ClassRepository {
 	      query.setParameter("section",section);
 	      ClassEntity classDetail = new ClassEntity();
 	      classDetail= query.uniqueResultOptional().orElse(null);
-	      System.out.println(classDetail);
 	      if(classDetail!=null)
 		  {
 		     throw new ClassAlreadyExistException("Standard and Section already exists");
@@ -141,10 +139,10 @@ public class ClassRepositoryImpl implements ClassRepository {
 			checkClassStandardSection(classDetail.getStandard(),classDetail.getSection());
 			session=sessionFactory.getCurrentSession();
 			ClassEntity classEntity = ClassMapper.mapClass(classDetail);
-			session.find(ClassEntity.class,roomNo);
 			ClassEntity classDetails=session.load(ClassEntity.class,roomNo);
 			classDetails.setSection(classEntity.getSection());
 			classDetails.setStandard(classEntity.getStandard());
+			classDetails.setPassPercentage(classEntity.getPassPercentage());
 			updatedClass = (ClassEntity) session.merge(classDetails);
 			if(updatedClass!=null)
 			{
@@ -157,7 +155,7 @@ public class ClassRepositoryImpl implements ClassRepository {
 		return updatedClass;
     }
     
-     public Long getRoomNo(String standard,String section) throws DatabaseException
+     public Long getRoomNo(String standard,String section) throws DatabaseException, NotFoundException
      {
     	 logger.debug("In Retrieving Class Room No's Method");
     	 Session session = null;
@@ -172,6 +170,10 @@ public class ClassRepositoryImpl implements ClassRepository {
     		 if(roomNo!=null)
     		 {
     			 logger.info("Retrieving Class Room No's is Completed ");
+    		 }
+    		 else
+    		 {
+    			 throw new ClassNotFoundException("No Class Room Assigned!");
     		 }
     	 }
     	 catch(HibernateException e)
@@ -208,4 +210,27 @@ public class ClassRepositoryImpl implements ClassRepository {
  		}
  			return classEntityList;
      	}
+
+     public Integer updatePassPercentage(Long roomNo,Double passPercentage) throws NotFoundException, DatabaseException
+     {
+    	logger.debug("In Updating Pass Percentage Method...");
+     	Session session=null;
+     	Integer count = null;
+     	
+ 		try {
+ 			logger.info("Updating Pass Percentage...");
+ 			checkClassRoomNo(roomNo);
+ 			session=sessionFactory.getCurrentSession();
+ 			Query query = session.createQuery("Update ClassEntity set passPercentage=:passPercentage where roomNo=:roomNo");
+ 			query.setParameter("passPercentage", passPercentage);
+ 			query.setParameter("roomNo", roomNo);
+ 			count = query.executeUpdate();
+ 		}
+ 		catch(HibernateException e)
+ 		{
+ 			logger.error("Error Occured while Updating Class Details");
+			throw new DatabaseException(e.getMessage());
+ 		}
+ 		return count;
      }
+}

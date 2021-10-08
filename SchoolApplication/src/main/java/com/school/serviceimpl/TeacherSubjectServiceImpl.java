@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.school.dto.TeacherSubject;
+import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
@@ -41,9 +43,12 @@ public class TeacherSubjectServiceImpl implements TeacherSubjectService{
 	public Long assignTeacherSubject(TeacherSubject teacherSubjectDetails) throws ServiceException, NotFoundException {
 		logger.debug("In Adding TeacherSubject Details...");
 		try {
-			System.out.println(teacherSubjectDetails);
 			return teacherSubjectRepository.assignTeacherSubject(teacherSubjectDetails);
-		} catch (DatabaseException e) {
+		}catch(DataIntegrityViolationException e)
+		{
+			throw new ConstraintViolationException("Teacher is Already Assigned to Subject");
+		}
+		catch (DatabaseException e) {
 			throw new ServiceException(e.getMessage());
 		}
 	}

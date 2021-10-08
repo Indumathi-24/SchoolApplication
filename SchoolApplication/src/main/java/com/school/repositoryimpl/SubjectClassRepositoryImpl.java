@@ -20,6 +20,7 @@ import com.school.exception.NotFoundException;
 import com.school.exception.ServiceException;
 import com.school.exception.StudentNotFoundException;
 import com.school.exception.SubjectAssignIdNotFoundException;
+import com.school.exception.SubjectNotFoundException;
 import com.school.repository.SubjectClassRepository;
 import com.school.util.SubjectClassMapper;
 
@@ -69,7 +70,7 @@ public class SubjectClassRepositoryImpl implements SubjectClassRepository{
 	}
 	
 	@Override
-	public List<String> viewSubjectClass(Long roomNo) throws DatabaseException
+	public List<String> viewSubjectClass(Long roomNo) throws DatabaseException, NotFoundException
 	{
 		logger.debug("In Retrieving SubjectClass...");
 		Session session = null;
@@ -80,6 +81,14 @@ public class SubjectClassRepositoryImpl implements SubjectClassRepository{
 			Query query = session.createQuery("Select subjectEntity.code from SubjectClassEntity where classEntity.roomNo=:roomNo");
 			query.setParameter("roomNo", roomNo);
 			subjectClassList = query.list();
+			if(!subjectClassList.isEmpty())
+			{
+				logger.info("Retrieving SubjectClass is Completed");
+			}
+			else
+			{
+				throw new SubjectNotFoundException("Subjects are Not Assigned for this class!");
+			}
 		}
 		catch(HibernateException e)
 		{

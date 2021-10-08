@@ -97,7 +97,6 @@ public class HeadMasterRepositoryImpl implements HeadMasterRepository{
 		    checkHeadMaster(id);
 		    session=sessionFactory.getCurrentSession();
 		    HeadMasterEntity headMasterEntity = HeadMasterMapper.mapHeadMaster(headMasterDetails);
-		    //session.find(HeadMasterEntity.class, id);
 		    HeadMasterEntity newHeadMasterDetails=session.load(HeadMasterEntity.class, id);
 		    newHeadMasterDetails.setName(headMasterEntity.getName());
 		    newHeadMasterDetails.setDateOfBirth(headMasterEntity.getDateOfBirth());

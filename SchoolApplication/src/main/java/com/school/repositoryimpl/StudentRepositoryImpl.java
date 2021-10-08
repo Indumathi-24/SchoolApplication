@@ -74,7 +74,7 @@ public class StudentRepositoryImpl implements StudentRepository{
 		 return studentId;
   }
   
-  public List<StudentEntity> getAllStudent(Long roomNo) throws DatabaseException{
+  public List<StudentEntity> getAllStudent(Long roomNo) throws DatabaseException, NotFoundException{
 	  logger.debug("In Retrieving All Particular Student Detail");
 	  List<StudentEntity> studentList = new ArrayList<>();
 	  Session session=null;
@@ -88,6 +88,10 @@ public class StudentRepositoryImpl implements StudentRepository{
 		    if(!studentList.isEmpty())
 		    {
 		    	logger.info("Retrieving All Particular Student Detail is Completed");
+		    }
+		    else
+		    {
+		    	throw new StudentNotFoundException("Students are not assigned for this class!");
 		    }
 	  }
 		catch(HibernateException e)
@@ -135,7 +139,6 @@ public class StudentRepositoryImpl implements StudentRepository{
 		checkStudentRollNo(rollNo);
 		session=sessionFactory.getCurrentSession();
 		StudentEntity studentEntity = StudentMapper.mapStudent(student, roomNo);
-		session.find(StudentEntity.class,rollNo);
 		StudentEntity studentDetails=session.load(StudentEntity.class, rollNo);
 		studentDetails.setName(studentEntity.getName());
 		studentDetails.setDateOfBirth(studentEntity.getDateOfBirth());

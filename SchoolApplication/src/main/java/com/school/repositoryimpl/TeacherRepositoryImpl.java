@@ -93,7 +93,6 @@ public class TeacherRepositoryImpl implements TeacherRepository{
 			checkTeacher(id);
 			session=sessionFactory.getCurrentSession();
 			TeacherEntity teacherEntity = TeacherMapper.mapTeacher(teacherDetails);
-			session.find(TeacherEntity.class, id);
 			TeacherEntity newTeacherDetails=session.load(TeacherEntity.class, id);
 			newTeacherDetails.setName(teacherEntity.getName());
 			newTeacherDetails.setDateOfBirth(teacherEntity.getDateOfBirth());

@@ -14,6 +14,7 @@ public interface ClassRepository {
 	List<ClassEntity> getAllClass() throws DatabaseException;
 	ClassEntity getParticularClass(Long roomNo) throws DatabaseException, NotFoundException;
 	ClassEntity updateClass(Long roomNo,Class classDetail) throws DatabaseException, NotFoundException;
-	Long getRoomNo(String standard,String section) throws DatabaseException;
+	Long getRoomNo(String standard,String section) throws DatabaseException, NotFoundException;
 	List<ClassEntity> getClassList(List<Long> roomNoList) throws DatabaseException;
+	Integer updatePassPercentage(Long roomNo,Double passPercentage) throws NotFoundException, DatabaseException;
 }

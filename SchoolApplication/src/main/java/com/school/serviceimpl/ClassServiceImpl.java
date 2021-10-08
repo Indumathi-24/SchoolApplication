@@ -1,5 +1,6 @@
 package com.school.serviceimpl;
 import com.school.exception.ClassAlreadyExistException;
+
 import com.school.exception.ConstraintViolationException;
 import com.school.exception.DatabaseException;
 import com.school.exception.NotFoundException;
@@ -79,7 +80,7 @@ public class ClassServiceImpl implements ClassService {
 		}
 	}
 	@Override
-	public Long getRoomNo(String standard,String section) throws ServiceException
+	public Long getRoomNo(String standard,String section) throws ServiceException, NotFoundException
 	{
 		logger.debug("In Retrieving Class Room No's Method");
 		try {
@@ -98,5 +99,17 @@ public class ClassServiceImpl implements ClassService {
 			throw new ServiceException(e.getMessage());
 		}
 		
+	}
+	
+	@Override
+	public Integer updatePassPercentage(Long roomNo,Double passPercentage) throws NotFoundException,ServiceException
+	{
+		logger.debug("In Update Class Details Method");
+		try {
+			return  classRepository.updatePassPercentage(roomNo,passPercentage);
+		} 
+		catch (DatabaseException e) {
+			throw new ServiceException(e.getMessage());
+		}
 	}
 }

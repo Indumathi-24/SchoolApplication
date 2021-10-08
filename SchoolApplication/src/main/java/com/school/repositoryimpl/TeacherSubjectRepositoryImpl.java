@@ -15,6 +15,7 @@ import com.school.dto.TeacherSubject;
 import com.school.entity.SubjectClassEntity;
 import com.school.entity.TeacherSubjectEntity;
 import com.school.exception.DatabaseException;
+import com.school.exception.TeacherAlreadyExistException;
 import com.school.repository.TeacherSubjectRepository;
 import com.school.util.TeacherSubjectMapper;
 
@@ -27,7 +28,7 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public Long assignTeacherSubject(TeacherSubject teacherSubjectDetails) throws DatabaseException  {
+	public Long assignTeacherSubject(TeacherSubject teacherSubjectDetails) throws DatabaseException, TeacherAlreadyExistException  {
 		logger.debug("In Adding Teacher Subject Details");
 		Session session=null;
 		Long id;
@@ -40,6 +41,10 @@ public class TeacherSubjectRepositoryImpl implements TeacherSubjectRepository{
 			if(id!=null)
 			{
 				logger.info("Adding Teacher Subject Details is Completed");
+			}
+			else
+			{
+				throw new TeacherAlreadyExistException("Teacher Already Assigned to this Subject");
 			}
 			
 		}
